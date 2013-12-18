@@ -16,7 +16,7 @@ public class Chimaera {
     private static final Logger LOGGER = Logger.getLogger(Chimaera.class);
     private static final float FREE_MEMORY_THRESHOLD = 0.2f;
     private static final Map<String,FireStore> stores = Maps.newConcurrentMap();
-    private static ScheduledExecutorService memoryChecker = Executors.newSingleThreadScheduledExecutor(new ThreadFactory("Hydra.memory.checker"));
+    private static ScheduledExecutorService memoryChecker = Executors.newSingleThreadScheduledExecutor(new ThreadFactory("Chimaera.memory.checker"));
     private static boolean lackOfMemory = false;
     static{
         memoryChecker.scheduleWithFixedDelay(new Runnable() {
