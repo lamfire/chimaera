@@ -1,28 +1,25 @@
 package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.filestore.serializer.BytesSerializer;
-import com.lamfire.chimaera.store.filestore.serializer.StringSerializer;
 import com.lamfire.utils.Lists;
-import jdbm.PrimaryHashMap;
-import jdbm.PrimaryTreeMap;
-import jdbm.RecordManager;
-import jdbm.RecordManagerFactory;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 持久化的FireMap类，该对象中的数据将会被持久化到文件中。
  */
 public class FireMapInFile extends FileStore implements FireMap {
     private String storeKey;
-    private PrimaryHashMap<String,byte[]> map;
+    private Map<String,byte[]> map;
     public FireMapInFile(String file,String storeKey)throws IOException{
         super(file);
         this.storeKey = storeKey;
-        this.map = (PrimaryHashMap<String,byte[]>)getRecordManager().hashMap(storeKey,new StringSerializer(),new BytesSerializer());
+        this.map = getDB().getHashMap(this.storeKey);
+        if(this.map == null){
+            this.map = getDB().createHashMap(this.storeKey) ;
+        }
+        super.setMaxCacheSize(-1);
     }
 
     public FireMapInFile(String file,String storeKey,int maxCacheSize)throws IOException{

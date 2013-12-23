@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.store.filestore;
 
-import jdbm.RecordManager;
-import jdbm.RecordManagerFactory;
+import org.apache.jdbm.DB;
+import org.apache.jdbm.DBMaker;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,18 +15,18 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class FileStore {
     private String file; //文件路径
-    private RecordManager recordManager;
+    private DB db;
 
     private int maxCacheSize = 100;  //最大数据操作缓存次数，当达到该值时，刷新更改到文件。
     private AtomicInteger cacheCount = new AtomicInteger(); //数据更改次数记录器
 
     public FileStore(String file)throws IOException{
         this.file = file;
-        this.recordManager = RecordManagerFactory.createRecordManager(file);
+        this.db = DBMaker.openFile(file) .make();
     }
 
-    public RecordManager getRecordManager(){
-        return this.recordManager;
+    public DB getDB(){
+        return this.db;
     }
 
     public void setMaxCacheSize(int maxCacheSize){
@@ -44,9 +44,9 @@ public class FileStore {
 
     public synchronized void flush(){
         try {
-            recordManager.commit();
+            db.commit();
             cacheCount.set(0);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage(),e);
         }
     }
