@@ -9,28 +9,20 @@ import java.util.*;
 /**
  * 持久化的FireMap类，该对象中的数据将会被持久化到文件中。
  */
-public class FireMapInFile extends FileStore implements FireMap {
-    private String storeKey;
+public class FireMapInFile implements FireMap {
+    private FileStore store;
+    private String name;
     private Map<String,byte[]> map;
-    public FireMapInFile(String file,String storeKey)throws IOException{
-        super(file);
-        this.storeKey = storeKey;
-        this.map = getDB().getHashMap(this.storeKey);
-        if(this.map == null){
-            this.map = getDB().createHashMap(this.storeKey) ;
-        }
-        super.setMaxCacheSize(-1);
-    }
-
-    public FireMapInFile(String file,String storeKey,int maxCacheSize)throws IOException{
-        this(file,storeKey);
-        super.setMaxCacheSize(maxCacheSize);
+    public FireMapInFile(FileStore store,String name){
+        this.store = store;
+        this.name = name;
+        this.map = store.getHashMap(this.name);
     }
 
 	@Override
 	public void put(String key, byte[] value)  {
 		map.put(key, value);
-        cacheOrFlush();
+        store.cacheOrFlush();
     }
 
     @Override
@@ -61,7 +53,7 @@ public class FireMapInFile extends FileStore implements FireMap {
 	@Override
 	public void remove(String key) {
 		map.remove(key);
-        cacheOrFlush();
+        store.cacheOrFlush();
 	}
 
     @Override
@@ -72,7 +64,7 @@ public class FireMapInFile extends FileStore implements FireMap {
     @Override
 	public synchronized void clear() {
 		map.clear();
-        flush();
+        store.flush();
 	}
 
 }
