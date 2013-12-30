@@ -21,7 +21,6 @@ import java.util.Map;
 public class ChimaeraSubscribe {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraSubscribe.class);
     private  final Map<String,SessionGroup> groups = Maps.newHashMap();
-    public static final String SessionAttrKey = "_SUBSCRIBE_ATTR_KEY";
 
     private static final ChimaeraSubscribe instance = new ChimaeraSubscribe();
 
@@ -40,7 +39,6 @@ public class ChimaeraSubscribe {
         return group;
     }
     public  void bind(String key,String clientId,Session session){
-        session.setAttribute(SessionAttrKey,clientId);
         getSesionGroup(key).add(clientId,session);
     }
 
