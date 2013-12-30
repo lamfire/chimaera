@@ -69,7 +69,10 @@ public class ChimaeraServer extends Snake {
             err.setError(e.getMessage());
             response = err;
         }
-        sendResponse(context,response);
+
+        if(response != null){
+            sendResponse(context,response);
+        }
     }
 
     private void sendResponse(MessageContext context,Response response){

@@ -17,7 +17,7 @@ public class SubscribeUnbindService implements Service<SubscribeUnbindCommand> {
 
 	@Override
 	public Response execute(MessageContext context, SubscribeUnbindCommand cmd) {
-		subscribe.unbind(cmd.getKey(), context.getSessionId());
+		subscribe.unbind(cmd.getKey(),cmd.getClientId());
         return Responses.makeEmptyResponse(cmd);
 	}
 

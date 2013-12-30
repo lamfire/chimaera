@@ -10,7 +10,7 @@ public class Config {
     private static final int DEFAULT_PORT = 8090;
 
 
-    public static ChimaeraCli cli = new ChimaeraCli();
+    public static ChimaeraCli cli;
     public static FireStore store;
     public static FireIncrement inc;
     public static FireSet set;

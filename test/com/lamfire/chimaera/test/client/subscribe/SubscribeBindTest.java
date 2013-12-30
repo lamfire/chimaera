@@ -1,7 +1,8 @@
-package com.lamfire.chimaera.test.client;
+package com.lamfire.chimaera.test.client.subscribe;
 
 
 import com.lamfire.chimaera.SubscribePublishListener;
+import com.lamfire.chimaera.client.ChimaeraCli;
 import com.lamfire.chimaera.client.Subscribe;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,29 +15,23 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Time: 上午10:14
  * To change this template use File | Settings | File Templates.
  */
-public class SubscribeTest implements SubscribePublishListener {
+public class SubscribeBindTest implements SubscribePublishListener {
     private static AtomicInteger counter = new AtomicInteger();
     private Subscribe subscribe;
+    private String clientId = "001";
 
-    public SubscribeTest(){
-        Config.setupByArgs(SubscribeTest.class,null);
-        subscribe = Config.cli.getSubscribe();
+    public SubscribeBindTest(){
+        ChimaeraCli cli = new ChimaeraCli();
+        cli.open("127.0.0.1",8090);
+        subscribe =cli.getSubscribe();
     }
     public void bind() {
-        subscribe.bind("TEST",this);
-    }
-
-    public void publish(String message){
-        subscribe.publish("TEST",message.getBytes());
+        subscribe.bind("TEST",clientId,this);
     }
 
     public static void main(String[] args) {
-        SubscribeTest test = new SubscribeTest();
+        SubscribeBindTest test = new SubscribeBindTest();
         test.bind();
-
-//        while(true){
-//            test.publish("linfan["+counter.getAndIncrement()+"]:" + RandomUtils.randomText(100));
-//        }
     }
 
     @Override

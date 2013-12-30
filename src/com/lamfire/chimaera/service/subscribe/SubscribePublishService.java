@@ -17,8 +17,11 @@ public class SubscribePublishService implements Service<SubscribePublishCommand>
 
 	@Override
 	public Response execute(MessageContext context, SubscribePublishCommand cmd) {
-		subscribe.publish(cmd.getKey(),context.getSessionId(),cmd.getMessage());
-        return Responses.makeEmptyResponse(cmd);
+		subscribe.publish(cmd.getKey(),cmd.getMessage());
+        if(cmd.isFeedback()){
+            return Responses.makeEmptyResponse(cmd);
+        }
+        return null;
 	}
 
 }

@@ -7,6 +7,7 @@ import com.lamfire.chimaera.response.subscribe.PublishResponse;
 import com.lamfire.chimaera.serializer.Serializers;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Maps;
+import com.lamfire.utils.StringUtils;
 
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import java.util.Map;
 public class ChimaeraSubscribe {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraSubscribe.class);
     private  final Map<String,SessionGroup> groups = Maps.newHashMap();
+    public static final String SessionAttrKey = "_SUBSCRIBE_ATTR_KEY";
 
     private static final ChimaeraSubscribe instance = new ChimaeraSubscribe();
 
@@ -37,15 +39,16 @@ public class ChimaeraSubscribe {
         }
         return group;
     }
-    public  void bind(String key,Session session){
-            getSesionGroup(key).add(session.getSessionId(),session);
+    public  void bind(String key,String clientId,Session session){
+        session.setAttribute(SessionAttrKey,clientId);
+        getSesionGroup(key).add(clientId,session);
     }
 
-    public  void unbind(String key,int sessionId){
-        getSesionGroup(key).remove(sessionId);
+    public  void unbind(String key,String clientId){
+        getSesionGroup(key).remove(clientId);
     }
 
-    public  void publish(String key,int sessionId,byte[] bytes){
+    public  void publish(String key,byte[] bytes){
         SessionGroup group = getSesionGroup(key);
         PublishResponse response = new PublishResponse();
         response.setKey(key);
@@ -55,9 +58,7 @@ public class ChimaeraSubscribe {
         Message msg = new Message();
         msg.setBody(responseBytes);
         for(Session s :group.sessions()){
-            if(s.getSessionId() != sessionId){
-                sendResponse(s, msg);
-            }
+            sendResponse(s, msg);
         }
     }
 

@@ -17,7 +17,7 @@ public class SubscribeBindService implements Service<SubscribeBindCommand> {
 
 	@Override
 	public Response execute(MessageContext context, SubscribeBindCommand cmd) {
-		subscribe.bind(cmd.getKey(),context.getSession());
+		subscribe.bind(cmd.getKey(),cmd.getClientId(),context.getSession());
         return Responses.makeEmptyResponse(cmd);
 	}
 
