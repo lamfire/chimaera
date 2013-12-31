@@ -1,9 +1,10 @@
 package com.lamfire.chimaera.test.client.subscribe;
 
 
+import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.SubscribePublishListener;
 import com.lamfire.chimaera.client.ChimaeraCli;
-import com.lamfire.chimaera.client.Subscribe;
+import com.lamfire.chimaera.client.SubscribeAccessor;
 import com.lamfire.utils.RandomUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,13 +29,13 @@ public class SubscribePublishTest implements SubscribePublishListener {
     }
 
     public void publish(String message){
-        subscribe.publish("TEST",clientId,message.getBytes());
+        subscribe.publish("TEST", clientId, message.getBytes());
     }
 
     public static void main(String[] args) {
         SubscribePublishTest test = new SubscribePublishTest();
         while(true){
-            test.publish("linfan["+counter.getAndIncrement()+"]:" + RandomUtils.randomText(100));
+            test.publish("linfan[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
         }
     }
 

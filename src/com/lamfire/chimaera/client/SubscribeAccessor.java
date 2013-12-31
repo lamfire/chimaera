@@ -1,5 +1,6 @@
 package com.lamfire.chimaera.client;
 
+import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.SubscribePublishListener;
 import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.command.subscribe.SubscribeBindCommand;
@@ -14,11 +15,11 @@ import com.lamfire.chimaera.response.EmptyResponse;
  * Time: 上午11:13
  * To change this template use File | Settings | File Templates.
  */
-public class Subscribe {
+public class SubscribeAccessor implements Subscribe {
     private ChimaeraTransfer transfer;
     private String store = "_SUBSCRIBE_";
 
-    Subscribe(ChimaeraTransfer transfer){
+    SubscribeAccessor(ChimaeraTransfer transfer){
         this.transfer = transfer;
     }
 

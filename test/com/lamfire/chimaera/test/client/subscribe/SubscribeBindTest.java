@@ -1,9 +1,10 @@
 package com.lamfire.chimaera.test.client.subscribe;
 
 
+import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.SubscribePublishListener;
 import com.lamfire.chimaera.client.ChimaeraCli;
-import com.lamfire.chimaera.client.Subscribe;
+import com.lamfire.chimaera.client.SubscribeAccessor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,7 +27,7 @@ public class SubscribeBindTest implements SubscribePublishListener {
         subscribe =cli.getSubscribe();
     }
     public void bind() {
-        subscribe.bind("TEST",clientId,this);
+        subscribe.bind("TEST", clientId, this);
     }
 
     public static void main(String[] args) {

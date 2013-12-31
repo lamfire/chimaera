@@ -1,6 +1,7 @@
 package com.lamfire.chimaera.client;
 
 import com.lamfire.chimaera.ChimaeraException;
+import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
 
@@ -32,7 +33,7 @@ public class ChimaeraCli {
     }
 
     public Subscribe getSubscribe(){
-        return new Subscribe(this.transfer);
+        return new SubscribeAccessor(this.transfer);
     }
 
     public void close(){
