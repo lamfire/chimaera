@@ -29,10 +29,10 @@ public class FileFireStore implements FireStore {
     private String storeName;
     private StoreEngine engine;
 
-    public FileFireStore(String storeName){
+    public FileFireStore(String file,String storeName){
         this.storeName = storeName;
         try {
-            this.engine = new StoreEngine(storeName);
+            this.engine = new StoreEngine(file);
             this.meta = this.engine.getHashMap(KEY_META);
             this.increments = this.engine.getHashMap(KEY_INCREMENT, new IncrementSerializer());
         } catch (IOException e) {
