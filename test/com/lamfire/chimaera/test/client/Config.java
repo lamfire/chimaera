@@ -1,13 +1,17 @@
 package com.lamfire.chimaera.test.client;
 
+import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.chimaera.client.ChimaeraCli;
 import com.lamfire.chimaera.store.*;
+import com.lamfire.utils.FilenameUtils;
+
+import java.io.File;
 
 public class Config {
     private static final String DEFAULT_HOST = "127.0.0.1";
     //private static final String DEFAULT_HOST = "192.168.1.220";
 
-    private static final int DEFAULT_PORT = 8090;
+    private static final int DEFAULT_PORT = 19800;
 
 
     public static ChimaeraCli cli;
@@ -66,8 +70,13 @@ public class Config {
     }
 
     public static void main(String[] args)throws Exception{
-        System.out.println(store.size("TEST_MAP"));
-
-        shutdown();
+        String storeName = "test";
+        ChimaeraOpts opts = ChimaeraOpts.get();
+        String dir = opts.getStoreDir();
+        String file = FilenameUtils.getPath(opts.getStoreDir()) +storeName+".cma";
+        String concat = FilenameUtils.concat(opts.getStoreDir(),storeName+".cma");
+        System.out.println(dir);
+        System.out.println(file);
+        System.out.println(concat);
     }
 }

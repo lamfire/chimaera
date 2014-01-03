@@ -1,12 +1,15 @@
 package com.lamfire.chimaera;
 
+import com.lamfire.chimaera.store.filestore.FileFireStore;
 import com.lamfire.chimaera.store.memstore.MemoryFireStore;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
+import com.lamfire.utils.FilenameUtils;
 import com.lamfire.utils.JvmInfo;
 import com.lamfire.utils.Maps;
 import com.lamfire.utils.ThreadFactory;
 
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -42,7 +45,13 @@ public class Chimaera {
     private synchronized static FireStore newFireStore(String storeName){
         FireStore store = stores.get(storeName);
         if(store == null){
-            store = new MemoryFireStore(storeName);
+            ChimaeraOpts opts = ChimaeraOpts.get();
+            if(opts.isStoreInMemory()){
+                store = new MemoryFireStore(storeName);
+            } else{
+                String file = FilenameUtils.concat(opts.getStoreDir(),storeName);
+                store = new FileFireStore(file,storeName);
+            }
             stores.put(storeName,store);
         }
         return store;

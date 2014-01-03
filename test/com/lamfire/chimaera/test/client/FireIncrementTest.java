@@ -12,9 +12,13 @@ import com.lamfire.utils.Asserts;
  * To change this template use File | Settings | File Templates.
  */
 public class FireIncrementTest {
-    static FireStore store = Config.store;
+    FireStore store;
 
-    public static void test() {
+    FireIncrementTest(FireStore store){
+       this.store =store ;
+    }
+
+    public void test() {
         store.remove("INCREMENT_TEST");
         FireIncrement inc = store.getFireIncrement("INCREMENT_TEST");
         long startAt = System.currentTimeMillis();
@@ -69,7 +73,8 @@ public class FireIncrementTest {
 
     public static void main(String[] args) {
         Config.setupByArgs(FireIncrementTest.class,args);
-        test();
+        FireIncrementTest test = new FireIncrementTest(Config.getFireStore());
+        test.test();
         Config.shutdown();
     }
 }

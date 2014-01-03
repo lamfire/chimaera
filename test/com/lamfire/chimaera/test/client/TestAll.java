@@ -13,7 +13,7 @@ public class TestAll {
         FireStoreTest.test();
         FireMapTest.test();
         FireRankTest.test();
-        FireIncrementTest.test();
+        FireIncrementTest.main(null);
         FireListTest.test();
         FireSetTest.test();
         Config.shutdown();

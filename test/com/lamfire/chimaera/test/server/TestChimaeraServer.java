@@ -1,5 +1,6 @@
 package com.lamfire.chimaera.test.server;
 
+import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.chimaera.ChimaeraServer;
 import com.lamfire.logger.Logger;
 
@@ -14,8 +15,8 @@ import com.lamfire.logger.Logger;
 public class TestChimaeraServer {
     private static final Logger LOGGER = Logger.getLogger(TestChimaeraServer.class);
     public static void main(String[] args) {
-        ChimaeraServer server = new ChimaeraServer("0.0.0.0",8090);
-        server.bind();
-        LOGGER.info("ChimaeraServer startup on " + server.getHost() +":" +server.getPort());
+        ChimaeraOpts opts = ChimaeraOpts.get();
+        ChimaeraServer.startup(opts.getBind(), opts.getPort());
+        LOGGER.info("ChimaeraServer startup on " + opts.getBind() +":" +opts.getPort());
     }
 }
