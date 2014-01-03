@@ -27,6 +27,7 @@ public class MapTest {
 
     public MapTest() throws IOException {
         FileStore store = new FileStore(FILE);
+        store.setMaxCacheSize(10000);
         this.map  = new FireMapInFile(store,"TEST_MAP");
     }
 
@@ -108,6 +109,6 @@ public class MapTest {
         Threads.startup(new Writer(test));
         Threads.startup(new Writer(test));
         Threads.startup(new Writer(test));
-        Threads.startup(new Writer(test));
+
 	}
 }

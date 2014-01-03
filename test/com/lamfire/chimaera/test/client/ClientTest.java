@@ -116,13 +116,13 @@ public class ClientTest {
         FireQueue queue = store.getFireQueue("TEST_QUEUE");
         queue.clear();
         for(int i=0;i<100;i++){
-            queue.pushRight(("" + i).getBytes());
+            queue.push(("" + i).getBytes());
         }
 
         System.out.println("queue.size:"+queue.size());
 
         for(int i=0;i<100;i++){
-            byte[] bytes = queue.popLeft();
+            byte[] bytes = queue.pop();
             System.out.println("queue.popLeft:"+new String(bytes));
         }
 

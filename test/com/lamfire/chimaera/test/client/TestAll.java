@@ -15,7 +15,6 @@ public class TestAll {
         FireRankTest.test();
         FireIncrementTest.test();
         FireListTest.test();
-        FireQueueTest.test();
         FireSetTest.test();
         Config.shutdown();
     }

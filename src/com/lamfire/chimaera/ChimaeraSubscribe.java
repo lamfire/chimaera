@@ -1,5 +1,6 @@
 package com.lamfire.chimaera;
 
+import com.lamfire.chimaera.store.filestore.FileStore;
 import com.lamfire.hydra.Message;
 import com.lamfire.hydra.net.Session;
 import com.lamfire.hydra.net.SessionGroup;
@@ -21,14 +22,15 @@ import java.util.Map;
 public class ChimaeraSubscribe {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraSubscribe.class);
     private  final Map<String,SessionGroup> groups = Maps.newHashMap();
-
     private static final ChimaeraSubscribe instance = new ChimaeraSubscribe();
 
     public static final ChimaeraSubscribe getInstance(){
         return   instance;
     }
 
-    private ChimaeraSubscribe(){}
+    private ChimaeraSubscribe(){
+
+    }
 
     public  synchronized SessionGroup getSesionGroup(String key){
         SessionGroup group = groups.get(key);

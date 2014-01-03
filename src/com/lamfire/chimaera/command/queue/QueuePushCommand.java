@@ -3,8 +3,8 @@ package com.lamfire.chimaera.command.queue;
 import com.lamfire.chimaera.annotation.COMMAND;
 import com.lamfire.chimaera.command.Command;
 
-@COMMAND(name=Command.QUEUE_PUSHLEFT,writeProtected = true)
-public class QueuePushLeftCommand extends Command{
+@COMMAND(name=Command.QUEUE_PUSH,writeProtected = true)
+public class QueuePushCommand extends Command{
 
 	private byte[] value;
 

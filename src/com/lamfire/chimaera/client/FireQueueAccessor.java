@@ -27,41 +27,21 @@ public class FireQueueAccessor implements FireQueue {
     }
 
     @Override
-    public void pushLeft(byte[] value) {
-        QueuePushLeftCommand cmd = new QueuePushLeftCommand();
+    public void push(byte[] value) {
+        QueuePushCommand cmd = new QueuePushCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
-        cmd.setCommand(Command.QUEUE_PUSHLEFT);
+        cmd.setCommand(Command.QUEUE_PUSH);
         cmd.setValue(value);
         transfer.sendCommand(cmd,EmptyResponse.class).waitResponse();
     }
 
     @Override
-    public byte[] popLeft() {
-        QueuePopLeftCommand cmd = new QueuePopLeftCommand();
+    public byte[] pop() {
+        QueuePopCommand cmd = new QueuePopCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
-        cmd.setCommand(Command.QUEUE_POPLEFT);
-        ResponseFuture<GetResponse> future = transfer.sendCommand(cmd, GetResponse.class);
-        return future.getResponse().getValue();
-    }
-
-    @Override
-    public void pushRight(byte[] value) {
-        QueuePushRightCommand cmd = new QueuePushRightCommand();
-        cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setCommand(Command.QUEUE_PUSHRIGHT);
-        cmd.setValue(value);
-        transfer.sendCommand(cmd,EmptyResponse.class).waitResponse();
-    }
-
-    @Override
-    public byte[] popRight() {
-        QueuePopRightCommand cmd = new QueuePopRightCommand();
-        cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setCommand(Command.QUEUE_POPRIGHT);
+        cmd.setCommand(Command.QUEUE_POP);
         ResponseFuture<GetResponse> future = transfer.sendCommand(cmd, GetResponse.class);
         return future.getResponse().getValue();
     }

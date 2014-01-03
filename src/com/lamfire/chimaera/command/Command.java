@@ -33,10 +33,8 @@ public class Command {
     public static final String SET_CLEAR = "SET_CLEAR";
     public static final String SET_EXISTS = "SET_EXISTS";
 
-    public static final String QUEUE_PUSHLEFT = "QUEUE_PUSHLEFT";
-    public static final String QUEUE_PUSHRIGHT = "QUEUE_PUSHRIGHT";
-    public static final String QUEUE_POPLEFT = "QUEUE_POPLEFT";
-    public static final String QUEUE_POPRIGHT = "QUEUE_POPRIGHT";
+    public static final String QUEUE_PUSH = "QUEUE_PUSH";
+    public static final String QUEUE_POP = "QUEUE_POP";
     public static final String QUEUE_SIZE = "QUEUE_SIZE";
     public static final String QUEUE_CLEAR = "QUEUE_CLEAR";
 

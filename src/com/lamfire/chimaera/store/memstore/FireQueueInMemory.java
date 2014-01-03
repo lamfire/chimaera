@@ -9,8 +9,7 @@ public class FireQueueInMemory implements FireQueue {
 	
 	private final LinkedList<byte[]> queue = new LinkedList<byte[]>();
 
-	@Override
-	public void pushLeft(byte[] value) {
+	public void push(byte[] value) {
 		queue.addFirst(value);
 	}
 
@@ -19,20 +18,7 @@ public class FireQueueInMemory implements FireQueue {
     }
 
 	@Override
-	public byte[] popLeft() {
-        if(queue.isEmpty()){
-            return null;
-        }
-		return queue.removeFirst();
-	}
-
-	@Override
-	public void pushRight(byte[] value) {
-		queue.addLast(value);
-	}
-
-	@Override
-	public byte[] popRight() {
+	public byte[] pop() {
         if(queue.isEmpty()){
             return null;
         }
