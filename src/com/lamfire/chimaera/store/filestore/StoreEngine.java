@@ -2,13 +2,11 @@ package com.lamfire.chimaera.store.filestore;
 
 import org.apache.jdbm.DB;
 import org.apache.jdbm.DBMaker;
+import org.apache.jdbm.Serialization;
 import org.apache.jdbm.Serializer;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -18,14 +16,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Time: 下午3:19
  * To change this template use File | Settings | File Templates.
  */
-public class FileStore {
+public class StoreEngine {
     private String file; //文件路径
     private DB db;
 
     private int maxCacheSize = 100;  //最大数据操作缓存次数，当达到该值时，刷新更改到文件。
     private AtomicInteger cacheCount = new AtomicInteger(); //数据更改次数记录器
 
-    public FileStore(String file)throws IOException{
+    public StoreEngine(String file)throws IOException{
         this.file = file;
         this.db = DBMaker.openFile(file) .make();
     }
@@ -38,6 +36,14 @@ public class FileStore {
         Map<K,V> map =  this.db.getHashMap(name);
         if(map == null){
             map = this.db.createHashMap(name);
+        }
+        return map;
+    }
+
+    public synchronized  <K,V> Map<K,V> getHashMap(String name,Serializer<V> serializer){
+        Map<K,V> map =  this.db.getHashMap(name);
+        if(map == null){
+            map = this.db.createHashMap(name, new Serialization(),serializer);
         }
         return map;
     }
