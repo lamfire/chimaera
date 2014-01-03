@@ -1,6 +1,6 @@
 package com.lamfire.chimaera;
 
-import com.lamfire.chimaera.store.memstore.FireStoreInMemory;
+import com.lamfire.chimaera.store.memstore.MemoryFireStore;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.JvmInfo;
@@ -42,7 +42,7 @@ public class Chimaera {
     private synchronized static FireStore newFireStore(String storeName){
         FireStore store = stores.get(storeName);
         if(store == null){
-            store = new FireStoreInMemory();
+            store = new MemoryFireStore(storeName);
             stores.put(storeName,store);
         }
         return store;

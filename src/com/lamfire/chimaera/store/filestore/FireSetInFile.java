@@ -12,14 +12,14 @@ public class FireSetInFile implements FireSet {
 	private final Map<String, byte[]> map;
     private final List<String> index;
     private final Lock lock = new ReentrantLock();
-    private FileStore store;
+    private StoreEngine engine;
     private String name;
 
-    public FireSetInFile(FileStore store,String name){
-        this.store = store;
+    public FireSetInFile(StoreEngine engine,String name){
+        this.engine = engine;
         this.name = name;
-        this.map = store.getHashMap(name);
-        this.index = store.getLinkedList(name+"_index");
+        this.map = engine.getHashMap(name);
+        this.index = engine.getLinkedList(name+"_index");
     }
 
 	static String hash(byte[] bytes) {
@@ -36,7 +36,7 @@ public class FireSetInFile implements FireSet {
             String hash = hash(value);
             map.put(hash, value);
             index.add(hash);
-            store.cacheOrFlush();
+            engine.cacheOrFlush();
 		} finally {
 		}
 	}
@@ -82,7 +82,7 @@ public class FireSetInFile implements FireSet {
 		byte[] bytes = get(index);
 		if (bytes != null) {
 			remove(bytes);
-            store.cacheOrFlush();
+            engine.cacheOrFlush();
 		}
 		return bytes;
 	}
@@ -93,7 +93,7 @@ public class FireSetInFile implements FireSet {
 		try {
             map.clear();
             index.clear();
-            store.flush();
+            engine.flush();
 		} finally {
             lock.unlock();
 		}
@@ -106,7 +106,7 @@ public class FireSetInFile implements FireSet {
             String hash = hash(value);
             map.remove(hash);
             index.remove(hash);
-            store.cacheOrFlush();
+            engine.cacheOrFlush();
             return value;
 		} finally {
             lock.unlock();

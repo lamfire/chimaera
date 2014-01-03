@@ -6,9 +6,18 @@ import com.lamfire.chimaera.store.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class FireStoreInMemory implements FireStore {
+public class MemoryFireStore implements FireStore {
 
     private final Map<String, Object> store = new ConcurrentHashMap<String, Object>();
+    private String storeName;
+
+    public MemoryFireStore(String storeName){
+        this.storeName = storeName;
+    }
+
+    public String getStoreName(){
+        return this.storeName;
+    }
 	
 	boolean isInstance(String key,Class<?> type){
 		Object obj = store.get(key);

@@ -1,14 +1,8 @@
 package com.lamfire.chimaera.test.filestore;
 
-import com.lamfire.chimaera.store.FireList;
-import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.chimaera.store.FireSet;
-import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.chimaera.store.filestore.FileStore;
-import com.lamfire.chimaera.store.filestore.FireListInFile;
-import com.lamfire.chimaera.store.filestore.FireMapInFile;
+import com.lamfire.chimaera.store.filestore.StoreEngine;
 import com.lamfire.chimaera.store.filestore.FireSetInFile;
-import com.lamfire.chimaera.test.client.Config;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;
@@ -88,7 +82,7 @@ public class FireSetFileStoreTest {
     }
 
     public static void main(String[] args)throws Exception {
-        FileStore store = new FileStore(FILE);
+        StoreEngine store = new StoreEngine(FILE);
         FireSet set  = new FireSetInFile(store,"TEST_SET");
         FireSetFileStoreTest test = new FireSetFileStoreTest(set);
         test.test();

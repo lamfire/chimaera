@@ -1,12 +1,8 @@
 package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.FireSet;
-import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.chimaera.store.filestore.FileStore;
+import com.lamfire.chimaera.store.filestore.StoreEngine;
 import com.lamfire.chimaera.store.filestore.FireMapInFile;
-import com.lamfire.chimaera.store.filestore.FireSetInFile;
-import com.lamfire.chimaera.test.client.Config;
 import com.lamfire.utils.Asserts;
 import com.lamfire.utils.RandomUtils;
 
@@ -88,7 +84,7 @@ public class FireMapFileStoreTest {
     }
 
     public static void main(String[] args)throws Exception {
-        FileStore store = new FileStore(FILE);
+        StoreEngine store = new StoreEngine(FILE);
         FireMap map  = new FireMapInFile(store,"TEST_MAP");
         FireMapFileStoreTest test = new FireMapFileStoreTest(map);
         test.test();

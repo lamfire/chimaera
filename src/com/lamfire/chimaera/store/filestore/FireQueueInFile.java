@@ -3,7 +3,6 @@ package com.lamfire.chimaera.store.filestore;
 import com.lamfire.chimaera.store.FireQueue;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -11,14 +10,14 @@ import java.util.concurrent.locks.ReentrantLock;
 public class FireQueueInFile implements FireQueue {
 
     private final List<byte[]> list;
-    private FileStore store;
+    private StoreEngine engine;
     private String name;
     private final Lock lock = new ReentrantLock();
 
-    public FireQueueInFile(FileStore store,String name){
-        this.store = store;
+    public FireQueueInFile(StoreEngine engine,String name){
+        this.engine = engine;
         this.name = name;
-        this.list = store.getLinkedList(name);
+        this.list = engine.getLinkedList(name);
     }
 
 	@Override

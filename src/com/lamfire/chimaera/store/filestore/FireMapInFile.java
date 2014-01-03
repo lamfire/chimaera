@@ -3,26 +3,25 @@ package com.lamfire.chimaera.store.filestore;
 import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.utils.Lists;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
  * 持久化的FireMap类，该对象中的数据将会被持久化到文件中。
  */
 public class FireMapInFile implements FireMap {
-    private FileStore store;
+    private StoreEngine engine;
     private String name;
     private Map<String,byte[]> map;
-    public FireMapInFile(FileStore store,String name){
-        this.store = store;
+    public FireMapInFile(StoreEngine engine,String name){
+        this.engine = engine;
         this.name = name;
-        this.map = store.getHashMap(this.name);
+        this.map = engine.getHashMap(this.name);
     }
 
 	@Override
 	public void put(String key, byte[] value)  {
 		map.put(key, value);
-        store.cacheOrFlush();
+        engine.cacheOrFlush();
     }
 
     @Override
@@ -53,7 +52,7 @@ public class FireMapInFile implements FireMap {
 	@Override
 	public void remove(String key) {
 		map.remove(key);
-        store.cacheOrFlush();
+        engine.cacheOrFlush();
 	}
 
     @Override
@@ -64,7 +63,7 @@ public class FireMapInFile implements FireMap {
     @Override
 	public synchronized void clear() {
 		map.clear();
-        store.flush();
+        engine.flush();
 	}
 
 }

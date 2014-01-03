@@ -4,23 +4,22 @@ import com.lamfire.chimaera.store.FireList;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class FireListInFile implements FireList {
 	private final List<byte[]> list;
-    private FileStore store;
+    private StoreEngine engine;
     private String name;
-    public FireListInFile(FileStore store,String name){
-        this.store = store;
+    public FireListInFile(StoreEngine engine,String name){
+        this.engine = engine;
         this.name = name;
-        this.list = store.getLinkedList(name);
+        this.list = engine.getLinkedList(name);
     }
 
 	@Override
 	public void add(byte[] value) {
 		list.add(value);
-        store.cacheOrFlush();
+        engine.cacheOrFlush();
 	}
 
     public  Iterator<byte[]> iterator(){
@@ -30,7 +29,7 @@ public class FireListInFile implements FireList {
 	@Override
 	public void set(int index, byte[] value) {
 		list.set(index, value);
-        store.cacheOrFlush();
+        engine.cacheOrFlush();
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class FireListInFile implements FireList {
 	@Override
 	public byte[] remove(int index) {
 		byte[] bytes =  list.remove(index);
-        store.flush();
+        engine.flush();
         return bytes;
 	}
 
@@ -65,7 +64,7 @@ public class FireListInFile implements FireList {
 	@Override
 	public void clear() {
 		list.clear();
-        store.flush();
+        engine.flush();
 	}
 
 }
