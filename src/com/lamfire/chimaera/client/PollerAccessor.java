@@ -1,8 +1,12 @@
 package com.lamfire.chimaera.client;
 
 import com.lamfire.chimaera.OnMessageListener;
+import com.lamfire.chimaera.Poller;
 import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.command.Command;
+import com.lamfire.chimaera.command.poller.PollerBindCommand;
+import com.lamfire.chimaera.command.poller.PollerPublishCommand;
+import com.lamfire.chimaera.command.poller.PollerUnbindCommand;
 import com.lamfire.chimaera.command.subscribe.SubscribeBindCommand;
 import com.lamfire.chimaera.command.subscribe.SubscribePublishCommand;
 import com.lamfire.chimaera.command.subscribe.SubscribeUnbindCommand;
@@ -15,11 +19,11 @@ import com.lamfire.chimaera.response.EmptyResponse;
  * Time: 上午11:13
  * To change this template use File | Settings | File Templates.
  */
-public class SubscribeAccessor implements Subscribe {
+public class PollerAccessor implements Poller {
     private ChimaeraTransfer transfer;
-    private String store = "_SUBSCRIBE_";
+    private String store = "_POLLER_";
 
-    SubscribeAccessor(ChimaeraTransfer transfer){
+    PollerAccessor(ChimaeraTransfer transfer){
         this.transfer = transfer;
     }
 
@@ -30,10 +34,10 @@ public class SubscribeAccessor implements Subscribe {
      * @param listener
      */
     public void bind(String key,String clientId,OnMessageListener listener) {
-        SubscribeBindCommand cmd = new SubscribeBindCommand();
+        PollerBindCommand cmd = new PollerBindCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
-        cmd.setCommand(Command.SUBSCRIBE_BIND);
+        cmd.setCommand(Command.POLLER_BIND);
         cmd.setClientId(clientId);
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
         future.waitResponse();
@@ -47,11 +51,11 @@ public class SubscribeAccessor implements Subscribe {
      * @param clientId
      */
     public void unbind(String key,String clientId) {
-        SubscribeUnbindCommand cmd = new SubscribeUnbindCommand();
+        PollerUnbindCommand cmd = new PollerUnbindCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setClientId(clientId);
-        cmd.setCommand(Command.SUBSCRIBE_UNBIND);
+        cmd.setCommand(Command.POLLER_UNBIND);
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
         future.waitResponse();
         transfer.unbindSubscribePublishListener(key);
@@ -64,11 +68,11 @@ public class SubscribeAccessor implements Subscribe {
      * @param bytes
      */
     public void publish(String key,String clientId,byte[] bytes) {
-        SubscribePublishCommand cmd = new SubscribePublishCommand();
+        PollerPublishCommand cmd = new PollerPublishCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setClientId(clientId);
-        cmd.setCommand(Command.SUBSCRIBE_PUBLISH);
+        cmd.setCommand(Command.POLLER_PUBLISH);
         cmd.setMessage(bytes);
         transfer.sendCommand(cmd);
     }
@@ -80,12 +84,12 @@ public class SubscribeAccessor implements Subscribe {
      * @param bytes
      */
     public void publishSync(String key,String clientId,byte[] bytes) {
-        SubscribePublishCommand cmd = new SubscribePublishCommand();
+        PollerPublishCommand cmd = new PollerPublishCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setClientId(clientId);
         cmd.setFeedback(true);
-        cmd.setCommand(Command.SUBSCRIBE_PUBLISH);
+        cmd.setCommand(Command.POLLER_PUBLISH);
         cmd.setMessage(bytes);
         transfer.sendCommand(cmd,EmptyResponse.class).await();
     }

@@ -1,14 +1,13 @@
 package com.lamfire.chimaera;
 
 /**
- * 消息定阅器
+ * Created with IntelliJ IDEA.
  * User: lamfire
- * Date: 13-11-14
- * Time: 上午11:13
+ * Date: 14-1-7
+ * Time: 下午7:17
  * To change this template use File | Settings | File Templates.
  */
-public interface Subscribe {
-
+public interface Poller {
     /**
      * 绑定到定阅器，绑定后能收到发布发布的消息
      * @param key
@@ -31,5 +30,4 @@ public interface Subscribe {
      * @param bytes
      */
     public void publish(String key,String clientId,byte[] bytes);
-
 }

@@ -1,6 +1,7 @@
 package com.lamfire.chimaera.client;
 
 import com.lamfire.chimaera.ChimaeraException;
+import com.lamfire.chimaera.Poller;
 import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
@@ -34,6 +35,10 @@ public class ChimaeraCli {
 
     public Subscribe getSubscribe(){
         return new SubscribeAccessor(this.transfer);
+    }
+
+    public Poller getPoller(){
+        return new PollerAccessor(this.transfer);
     }
 
     public void close(){

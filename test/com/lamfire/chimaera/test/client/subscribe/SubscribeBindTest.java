@@ -1,10 +1,9 @@
 package com.lamfire.chimaera.test.client.subscribe;
 
 
+import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.Subscribe;
-import com.lamfire.chimaera.SubscribePublishListener;
 import com.lamfire.chimaera.client.ChimaeraCli;
-import com.lamfire.chimaera.client.SubscribeAccessor;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Time: 上午10:14
  * To change this template use File | Settings | File Templates.
  */
-public class SubscribeBindTest implements SubscribePublishListener {
+public class SubscribeBindTest implements OnMessageListener {
     private static AtomicInteger counter = new AtomicInteger();
     private Subscribe subscribe;
     private String clientId = "001";

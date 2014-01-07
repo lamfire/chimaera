@@ -63,6 +63,11 @@ public class Command {
     public static final String SUBSCRIBE_BIND = "SUBSCRIBE_BIND";
     public static final String SUBSCRIBE_UNBIND = "SUBSCRIBE_UNBIND";
     public static final String SUBSCRIBE_PUBLISH = "SUBSCRIBE_PUBLISH";
+
+
+    public static final String POLLER_BIND = "POLLER_BIND";
+    public static final String POLLER_UNBIND = "POLLER_UNBIND";
+    public static final String POLLER_PUBLISH = "POLLER_PUBLISH";
 	
 	private String store;
     private String command;

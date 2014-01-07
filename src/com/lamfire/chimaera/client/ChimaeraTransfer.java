@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.client;
 
 import com.lamfire.chimaera.ChimaeraException;
-import com.lamfire.chimaera.SubscribePublishListener;
+import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.hydra.*;
 import com.lamfire.chimaera.command.Command;
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ChimaeraTransfer extends Snake {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraTransfer.class);
-    private final Map<String,SubscribePublishListener> publishListeners = Maps.newHashMap();
+    private final Map<String,OnMessageListener> publishListeners = Maps.newHashMap();
     private static final AtomicInteger MessageID = new AtomicInteger();
     private ResponseWaitQueue waitQueue;
     private CycleSessionIterator sessionIt;
@@ -42,7 +42,7 @@ public class ChimaeraTransfer extends Snake {
         sessionIt = new CycleSessionIterator(this);
     }
 
-    public void bindSubscribePublishListener(String key,SubscribePublishListener listener){
+    public void bindSubscribePublishListener(String key,OnMessageListener listener){
         this.publishListeners.put(key,listener);
     }
 
@@ -50,7 +50,7 @@ public class ChimaeraTransfer extends Snake {
         this.publishListeners.remove(key);
     }
 
-    public SubscribePublishListener getSubscribePublishListener(String key){
+    public OnMessageListener getSubscribePublishListener(String key){
         return this.publishListeners.get(key);
     }
 
@@ -98,7 +98,7 @@ public class ChimaeraTransfer extends Snake {
         //subscribe response
         if(status == PublishResponse.STATUS){
             PublishResponse response =  (PublishResponse)Serializers.getResponseSerializer().decode(json,Response.class);
-            SubscribePublishListener listener = this.getSubscribePublishListener(response.getKey());
+            OnMessageListener listener = this.getSubscribePublishListener(response.getKey());
             if(listener != null){
                 listener.onMessage(response.getKey(),response.getMessage());
             }
