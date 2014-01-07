@@ -3,6 +3,7 @@ package com.lamfire.chimaera.store.filestore;
 import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.code.MD5;
 import com.lamfire.code.MurmurHash;
+import org.apache.jdbm.Serialization;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -19,7 +20,7 @@ public class FireSetInFile implements FireSet {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name);
-        this.index = engine.getLinkedList(name+"_index");
+        this.index = engine.getLinkedList(name+"_index",new Serialization());
     }
 
 	static String hash(byte[] bytes) {

@@ -16,9 +16,13 @@ import java.util.List;
  */
 public class FireMapTest {
 
-    public static void test() {
-        FireStore store = Config.getFireStore();
-        FireMap map = store.getFireMap("TEST_MAP");
+    FireMap map;
+
+    FireMapTest(FireMap map){
+        this.map = map;
+    }
+
+    public void test() {
         map.clear();
         System.out.println("map.clear()");
 
@@ -83,7 +87,10 @@ public class FireMapTest {
 
     public static void main(String[] args) {
         Config.setupByArgs(FireMapTest.class,args);
-        test();
+        FireStore store = Config.getFireStore();
+        FireMap map = store.getFireMap("TEST_MAP");
+        FireMapTest test = new FireMapTest(map);
+        test.test();
         Config.shutdown();
     }
 }

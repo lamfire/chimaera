@@ -13,7 +13,7 @@ public class FireListInFile implements FireList {
     public FireListInFile(StoreEngine engine,String name){
         this.engine = engine;
         this.name = name;
-        this.list = engine.getLinkedList(name);
+        this.list = engine.getLinkedList(name,new BytesSerializer());
     }
 
 	@Override
@@ -64,7 +64,7 @@ public class FireListInFile implements FireList {
 	@Override
 	public void clear() {
 		list.clear();
-        engine.flush();
+        //engine.flush();
 	}
 
 }

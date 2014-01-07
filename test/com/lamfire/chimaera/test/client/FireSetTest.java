@@ -15,10 +15,14 @@ import java.util.List;
  */
 public class FireSetTest {
 
-    static FireStore store = Config.store;
+    FireSet set;
 
-    public static void test() {
-        FireSet set = store.getFireSet("TEST_SET");
+    FireSetTest(FireSet set){
+        this.set = set;
+    }
+
+    public  void test() {
+
         set.clear();
         System.out.println("set.clear()");
 
@@ -79,7 +83,9 @@ public class FireSetTest {
 
     public static void main(String[] args) {
         Config.setupByArgs(FireSetTest.class,args);
-        test();
+        FireSet set = Config.getFireStore().getFireSet("TEST_SET");
+        FireSetTest test = new FireSetTest(set);
+        test.test();
         Config.shutdown();
     }
 }

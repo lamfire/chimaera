@@ -11,11 +11,11 @@ public class TestAll {
     public static void main(String[] args) {
         Config.setupByArgs(TestAll.class,args);
         FireStoreTest.test();
-        FireMapTest.test();
-        FireRankTest.test();
+        FireMapTest.main(null);
+        FireRankTest.main(null);
         FireIncrementTest.main(null);
-        FireListTest.test();
-        FireSetTest.test();
+        FireListTest.main(null);
+        FireSetTest.main(null);
         Config.shutdown();
     }
 }

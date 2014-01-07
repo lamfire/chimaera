@@ -17,7 +17,7 @@ public class FireQueueInFile implements FireQueue {
     public FireQueueInFile(StoreEngine engine,String name){
         this.engine = engine;
         this.name = name;
-        this.list = engine.getLinkedList(name);
+        this.list = engine.getLinkedList(name,new BytesSerializer());
     }
 
 	@Override

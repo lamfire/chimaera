@@ -48,10 +48,10 @@ public class StoreEngine {
         return map;
     }
 
-    public synchronized <E> List<E> getLinkedList(String name){
+    public synchronized <E> List<E> getLinkedList(String name,Serializer<E> serializer){
         List<E> list = this.db.getLinkedList(name);
         if(list == null){
-            list = this.db.createLinkedList(name);
+            list = this.db.createLinkedList(name,serializer);
         }
         return list;
     }
@@ -89,7 +89,7 @@ public class StoreEngine {
         try {
             db.commit();
             cacheCount.set(0);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e.getMessage(),e);
         }
     }

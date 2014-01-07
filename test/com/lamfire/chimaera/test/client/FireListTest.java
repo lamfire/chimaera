@@ -16,8 +16,12 @@ import java.util.List;
 public class FireListTest {
     static FireStore store = Config.store;
 
-    public static void test() {
-        FireList list = store.getFireList("TEST_LIST");
+    private FireList list;
+
+    public  FireListTest(FireList list){
+        this.list = list;
+    }
+    public void test() {
         list.clear();
         System.out.println("list.clear()");
 
@@ -69,7 +73,8 @@ public class FireListTest {
 
     public static void main(String[] args) {
         Config.setupByArgs(FireListTest.class,args);
-        test();
+        FireListTest test = new FireListTest(Config.getFireStore().getFireList("TEST_LIST"));
+        test.test();
         Config.shutdown();
     }
 }

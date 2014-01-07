@@ -7,6 +7,7 @@ import org.apache.jdbm.Serializer;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,7 +16,7 @@ import java.io.IOException;
  * Time: 下午2:48
  * To change this template use File | Settings | File Templates.
  */
-public class IncrementSerializer implements Serializer<FireIncrement> {
+public class IncrementSerializer implements Serializer<FireIncrement>,Serializable {
 
     @Override
     public void serialize(DataOutput dataOutput, FireIncrement inc) throws IOException {

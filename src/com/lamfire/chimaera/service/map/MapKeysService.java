@@ -7,6 +7,7 @@ import com.lamfire.chimaera.command.map.MapKeysCommand;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
+import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.chimaera.response.ErrorResponse;
 import com.lamfire.chimaera.store.FireStore;
@@ -21,12 +22,13 @@ public class MapKeysService implements Service<MapKeysCommand> {
 	public Response execute(MessageContext context, MapKeysCommand cmd) {
 		FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        if(!store.exists(cmd.getKey())){
+        FireMap map = store.getFireMap(cmd.getKey());
+        if(map == null){
             ErrorResponse err = new ErrorResponse();
             err.setError("The key["+cmd.getKey()+"] not exists on store");
             return err;
         }
-        List<String> keys = store.getFireMap(cmd.getKey()).keys();
+        List<String> keys = map.keys();
         return Responses.makeMapKeysResponse(cmd, keys);
 	}
 

@@ -7,6 +7,7 @@ import com.lamfire.chimaera.response.ErrorResponse;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
+import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.chimaera.command.map.MapGetCommand;
 import com.lamfire.chimaera.store.FireStore;
@@ -19,12 +20,13 @@ public class MapGetService implements Service<MapGetCommand> {
 	public Response execute(MessageContext context, MapGetCommand cmd) {
 		FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        if(!store.exists(cmd.getKey())){
+        FireMap map = store.getFireMap(cmd.getKey());
+        if(map == null){
             ErrorResponse err = new ErrorResponse();
             err.setError("The key["+cmd.getKey()+"] not exists on store");
             return err;
         }
-        byte[] bytes = store.getFireMap(cmd.getKey()).get(cmd.getField());
+        byte[] bytes = map.get(cmd.getField());
 
         return Responses.makeGetResponse(cmd, bytes);
 	}

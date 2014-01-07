@@ -51,6 +51,7 @@ public class Chimaera {
             } else{
                 String file = FilenameUtils.concat(opts.getStoreDir(),storeName);
                 store = new FileFireStore(file,storeName);
+                LOGGER.info("create store file["+storeName+"] :" +file);
             }
             stores.put(storeName,store);
         }

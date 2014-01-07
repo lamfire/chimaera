@@ -23,7 +23,7 @@ public class SubscribeBindTest implements SubscribePublishListener {
 
     public SubscribeBindTest(){
         ChimaeraCli cli = new ChimaeraCli();
-        cli.open("127.0.0.1",8090);
+        cli.open("127.0.0.1",19800);
         subscribe =cli.getSubscribe();
     }
     public void bind() {

@@ -1,6 +1,7 @@
 package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.*;
+import com.lamfire.chimaera.store.memstore.FireIncrementInMemory;
 import com.lamfire.chimaera.store.memstore.FireRankInMemory;
 import com.lamfire.utils.Maps;
 
@@ -74,8 +75,13 @@ public class FileFireStore implements FireStore {
     }
 
     @Override
-    public FireIncrement getFireIncrement(String key) {
-        return increments.get(key);
+    public synchronized FireIncrement getFireIncrement(String key) {
+        FireIncrement result = increments.get(key);
+        if(result == null){
+            result =  new FireIncrementInMemory();
+            increments.put(key,result);
+        }
+        return result;
     }
 
     @Override
