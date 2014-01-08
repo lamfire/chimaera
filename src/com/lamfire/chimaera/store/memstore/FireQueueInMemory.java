@@ -10,7 +10,7 @@ public class FireQueueInMemory implements FireQueue {
 	private final LinkedList<byte[]> queue = new LinkedList<byte[]>();
 
 	public void push(byte[] value) {
-		queue.addFirst(value);
+		queue.addLast(value);
 	}
 
     public Iterator<byte[]> iterator(){
@@ -22,8 +22,15 @@ public class FireQueueInMemory implements FireQueue {
         if(queue.isEmpty()){
             return null;
         }
-		return queue.removeLast();
+		return queue.removeFirst();
 	}
+
+    public byte[] peek() {
+        if(queue.isEmpty()){
+            return null;
+        }
+        return queue.peekFirst();
+    }
 
 	@Override
 	public int size() {

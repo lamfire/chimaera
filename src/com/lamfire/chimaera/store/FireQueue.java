@@ -6,4 +6,5 @@ public interface FireQueue extends FireCollection{
 	
 	public byte[] pop();
 
+    public byte[] peek();
 }

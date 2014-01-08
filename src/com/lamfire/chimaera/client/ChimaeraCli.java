@@ -22,7 +22,7 @@ public class ChimaeraCli {
 
     public void open(String host,int port){
         if(this.transfer != null){
-            throw new ChimaeraException("The 'HydraCli' already connected to " + transfer.getHost() +":" + transfer.getPort());
+            throw new ChimaeraException("The 'ChimaeraCli' already connected to " + transfer.getHost() +":" + transfer.getPort());
         }
         this.transfer = new ChimaeraTransfer(host, port, poolSize,waitQueue);
         this.transfer.setKeepaliveConnsWithClient(poolSize);

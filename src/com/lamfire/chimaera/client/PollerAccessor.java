@@ -2,14 +2,10 @@ package com.lamfire.chimaera.client;
 
 import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.Poller;
-import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.command.poller.PollerBindCommand;
 import com.lamfire.chimaera.command.poller.PollerPublishCommand;
 import com.lamfire.chimaera.command.poller.PollerUnbindCommand;
-import com.lamfire.chimaera.command.subscribe.SubscribeBindCommand;
-import com.lamfire.chimaera.command.subscribe.SubscribePublishCommand;
-import com.lamfire.chimaera.command.subscribe.SubscribeUnbindCommand;
 import com.lamfire.chimaera.response.EmptyResponse;
 
 /**
@@ -41,7 +37,7 @@ public class PollerAccessor implements Poller {
         cmd.setClientId(clientId);
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
         future.waitResponse();
-        transfer.bindSubscribePublishListener(key, listener);
+        transfer.bindMessageListener(key, listener);
     }
 
 
@@ -58,7 +54,7 @@ public class PollerAccessor implements Poller {
         cmd.setCommand(Command.POLLER_UNBIND);
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
         future.waitResponse();
-        transfer.unbindSubscribePublishListener(key);
+        transfer.unbindMessageListener(key);
     }
 
     /**

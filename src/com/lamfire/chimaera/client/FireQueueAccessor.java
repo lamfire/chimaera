@@ -47,6 +47,16 @@ public class FireQueueAccessor implements FireQueue {
     }
 
     @Override
+    public byte[] peek() {
+        QueuePeekCommand cmd = new QueuePeekCommand();
+        cmd.setStore(this.store);
+        cmd.setKey(key);
+        cmd.setCommand(Command.QUEUE_PEEK);
+        ResponseFuture<GetResponse> future = transfer.sendCommand(cmd, GetResponse.class);
+        return future.getResponse().getValue();
+    }
+
+    @Override
     public int size() {
         QueueSizeCommand cmd = new QueueSizeCommand();
         cmd.setStore(this.store);

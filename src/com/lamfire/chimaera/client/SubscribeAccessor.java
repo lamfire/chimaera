@@ -37,7 +37,7 @@ public class SubscribeAccessor implements Subscribe {
         cmd.setClientId(clientId);
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
         future.waitResponse();
-        transfer.bindSubscribePublishListener(key, listener);
+        transfer.bindMessageListener(key, listener);
     }
 
 
@@ -54,7 +54,7 @@ public class SubscribeAccessor implements Subscribe {
         cmd.setCommand(Command.SUBSCRIBE_UNBIND);
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
         future.waitResponse();
-        transfer.unbindSubscribePublishListener(key);
+        transfer.unbindMessageListener(key);
     }
 
     /**

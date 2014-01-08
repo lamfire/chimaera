@@ -37,6 +37,7 @@ public class Command {
     public static final String QUEUE_POP = "QUEUE_POP";
     public static final String QUEUE_SIZE = "QUEUE_SIZE";
     public static final String QUEUE_CLEAR = "QUEUE_CLEAR";
+    public static final String QUEUE_PEEK = "QUEUE_PEEK";
 
     public static final String MAP_PUT = "MAP_PUT";
     public static final String MAP_GET = "MAP_GET";

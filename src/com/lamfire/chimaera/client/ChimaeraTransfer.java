@@ -25,33 +25,34 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ChimaeraTransfer extends Snake {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraTransfer.class);
-    private final Map<String,OnMessageListener> publishListeners = Maps.newHashMap();
+    private final Map<String,OnMessageListener> onMessageListeners = Maps.newHashMap();
     private static final AtomicInteger MessageID = new AtomicInteger();
     private ResponseWaitQueue waitQueue;
     private CycleSessionIterator sessionIt;
 
     public ChimaeraTransfer(String host, int port, ResponseWaitQueue waitQueue) {
         super(host, port);
+        super.setAutoConnectRetry(true);
+        super.setKeepAlive(true);
         this.waitQueue = waitQueue;
-        sessionIt = new CycleSessionIterator(this);
+        this.sessionIt = new CycleSessionIterator(this);
     }
 
     public ChimaeraTransfer(String host, int port, int threads, ResponseWaitQueue waitQueue) {
-        super(host, port);
-        this.waitQueue = waitQueue;
-        sessionIt = new CycleSessionIterator(this);
+        this(host, port,waitQueue);
+        super.setKeepaliveConnsWithClient(threads);
     }
 
-    public void bindSubscribePublishListener(String key,OnMessageListener listener){
-        this.publishListeners.put(key,listener);
+    public void bindMessageListener(String key, OnMessageListener listener){
+        this.onMessageListeners.put(key, listener);
     }
 
-    public void unbindSubscribePublishListener(String key){
-        this.publishListeners.remove(key);
+    public void unbindMessageListener(String key){
+        this.onMessageListeners.remove(key);
     }
 
-    public OnMessageListener getSubscribePublishListener(String key){
-        return this.publishListeners.get(key);
+    public OnMessageListener getMessageListener(String key){
+        return this.onMessageListeners.get(key);
     }
 
     private int getMessageId(){
@@ -98,7 +99,7 @@ public class ChimaeraTransfer extends Snake {
         //subscribe response
         if(status == PublishResponse.STATUS){
             PublishResponse response =  (PublishResponse)Serializers.getResponseSerializer().decode(json,Response.class);
-            OnMessageListener listener = this.getSubscribePublishListener(response.getKey());
+            OnMessageListener listener = this.getMessageListener(response.getKey());
             if(listener != null){
                 listener.onMessage(response.getKey(),response.getMessage());
             }

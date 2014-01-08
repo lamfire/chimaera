@@ -5,6 +5,7 @@ import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.Poller;
 import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.client.ChimaeraCli;
+import com.lamfire.chimaera.client.PollerAccessor;
 import com.lamfire.utils.RandomUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,16 +30,14 @@ public class PollerPublishTest implements OnMessageListener {
     }
 
     public void publish(String message){
-        poller.publish("TEST", clientId, message.getBytes());
+        PollerAccessor accessor = (PollerAccessor)poller;
+        accessor.publishSync("TEST", clientId, message.getBytes());
     }
 
     public static void main(String[] args) {
         PollerPublishTest test = new PollerPublishTest();
         while(true){
             test.publish("linfan[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
-            if(counter.get() == 10){
-                return;
-            }
         }
     }
 
