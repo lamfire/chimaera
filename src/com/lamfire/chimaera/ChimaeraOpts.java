@@ -1,5 +1,6 @@
 package com.lamfire.chimaera;
 
+import com.lamfire.logger.Logger;
 import com.lamfire.utils.PropertiesUtils;
 import com.lamfire.utils.StringUtils;
 
@@ -13,6 +14,7 @@ import java.util.Properties;
  * To change this template use File | Settings | File Templates.
  */
 public class ChimaeraOpts {
+    private static final Logger LOGGER = Logger.getLogger(ChimaeraOpts.class);
     public static final String CONFIG_RESOURCE_NAME = "chimaera.conf";
     private String bind = "0.0.0.0";
     private int port = 19800;
@@ -30,17 +32,28 @@ public class ChimaeraOpts {
     }
 
     private  ChimaeraOpts(){
-        Properties prop = PropertiesUtils.load(CONFIG_RESOURCE_NAME,ChimaeraOpts.class);
-        this.bind = (String)prop.get("bind");
-        this.port = Integer.parseInt((String)prop.get("port"));
-        String store = (String)prop.get("store");
-        if(StringUtils.equalsIgnoreCase("file",store)){
-            this.storeInMemory = false;
-        }else{
-            this.storeInMemory = true;
+        try{
+            Properties prop = PropertiesUtils.load(CONFIG_RESOURCE_NAME,ChimaeraOpts.class);
+            this.bind = (String)prop.get("bind");
+            this.port = Integer.parseInt((String)prop.get("port"));
+            String store = (String)prop.get("store");
+            if(StringUtils.equalsIgnoreCase("file",store)){
+                this.storeInMemory = false;
+            }else{
+                this.storeInMemory = true;
+            }
+            this.storeDir = (String)prop.get("store.dir");
+            this.storeCacheSize = Integer.parseInt((String)prop.get("store.cache.size"));
+            LOGGER.info("bind:" +bind);
+            LOGGER.info("port:" +port);
+            LOGGER.info("store:" +(storeInMemory?"memory":"file"));
+            if(! storeInMemory){
+                LOGGER.info("storeDir:" +storeDir);
+                LOGGER.info("storeCacheSize:" +storeCacheSize);
+            }
+        }catch (Exception e){
+            LOGGER.warn("Parse '"+CONFIG_RESOURCE_NAME+"' file failed,use memory store.");
         }
-        this.storeDir = (String)prop.get("store.dir");
-        this.storeCacheSize = Integer.parseInt((String)prop.get("store.cache.size"));
     }
 
     public String getBind() {

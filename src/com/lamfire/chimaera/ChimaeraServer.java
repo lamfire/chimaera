@@ -20,7 +20,12 @@ public class ChimaeraServer extends Snake {
 		ChimaeraServer server = new ChimaeraServer(host, port);
 		server.bind();
         LOGGER.info("[startup] available memory = " + (Chimaera.getAvailableHeapMemory()/1024/1024) +"mb");
+        LOGGER.info("[startup] startup on - " + host +":" + port);
 	}
+
+    public static void startup(ChimaeraOpts opts){
+        startup(opts.getBind(), opts.getPort());
+    }
 
 	static void usage() {
 		LOGGER.info(ChimaeraServer.class.getName() + " [host] [port]");

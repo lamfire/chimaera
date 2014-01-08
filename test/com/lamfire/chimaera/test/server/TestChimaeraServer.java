@@ -15,8 +15,6 @@ import com.lamfire.logger.Logger;
 public class TestChimaeraServer {
     private static final Logger LOGGER = Logger.getLogger(TestChimaeraServer.class);
     public static void main(String[] args) {
-        ChimaeraOpts opts = ChimaeraOpts.get();
-        ChimaeraServer.startup(opts.getBind(), opts.getPort());
-        LOGGER.info("ChimaeraServer startup on " + opts.getBind() +":" +opts.getPort());
+        ChimaeraServer.startup(ChimaeraOpts.get());
     }
 }
