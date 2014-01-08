@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 public class ChimaeraOpts {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraOpts.class);
-    public static final String CONFIG_RESOURCE_NAME = "chimaera.conf";
+    public static final String CONFIG_RESOURCE_NAME = "chimaera.properties";
     private String bind = "0.0.0.0";
     private int port = 19800;
     private boolean storeInMemory = true;
@@ -44,7 +44,7 @@ public class ChimaeraOpts {
             }
             this.storeDir = (String)prop.get("store.dir");
             this.storeCacheSize = Integer.parseInt((String)prop.get("store.cache.size"));
-            LOGGER.info("bind:" +bind);
+            LOGGER.info("bind:" + bind);
             LOGGER.info("port:" +port);
             LOGGER.info("store:" +(storeInMemory?"memory":"file"));
             if(! storeInMemory){
