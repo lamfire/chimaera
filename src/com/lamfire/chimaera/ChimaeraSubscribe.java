@@ -95,15 +95,17 @@ public class ChimaeraSubscribe implements Runnable{
 
             //获得下个Session
             SessionGroup group = getSesionGroup(key);
+            if(group.isEmpty()){
+                LOGGER.warn("Not found available subscribe session,waiting...");
+                synchronized (lock){
+                    lock.wait();
+                }
+            }
+
             if(!group.isEmpty()){
                 this.queue.pop();
                 for(Session s :group.sessions()){
                     sendResponse(s, msg);
-                }
-            }else{
-                LOGGER.warn("Not found available subscribe session,waiting...");
-                synchronized (lock){
-                    lock.wait();
                 }
             }
         }catch(Throwable e){
