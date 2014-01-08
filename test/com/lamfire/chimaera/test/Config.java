@@ -1,11 +1,9 @@
-package com.lamfire.chimaera.test.client;
+package com.lamfire.chimaera.test;
 
 import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.chimaera.client.ChimaeraCli;
 import com.lamfire.chimaera.store.*;
 import com.lamfire.utils.FilenameUtils;
-
-import java.io.File;
 
 public class Config {
     private static final String DEFAULT_HOST = "127.0.0.1";

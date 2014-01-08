@@ -2,6 +2,7 @@ package com.lamfire.chimaera.test.client;
 
 import com.lamfire.chimaera.store.FireIncrement;
 import com.lamfire.chimaera.store.FireStore;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 
 /**
@@ -72,7 +73,7 @@ public class FireIncrementTest {
     }
 
     public static void main(String[] args) {
-        Config.setupByArgs(FireIncrementTest.class,args);
+        Config.setupByArgs(FireIncrementTest.class, args);
         FireIncrementTest test = new FireIncrementTest(Config.getFireStore());
         test.test();
         Config.shutdown();

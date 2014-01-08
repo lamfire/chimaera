@@ -2,6 +2,7 @@ package com.lamfire.chimaera.test.client;
 
 import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.Item;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.lamfire.chimaera.test.client;
 
 import com.lamfire.chimaera.store.FireStore;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 
 /**

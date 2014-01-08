@@ -1,6 +1,6 @@
 package com.lamfire.chimaera.test.client.incr;
 
-import com.lamfire.chimaera.test.client.Config;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.Threads;

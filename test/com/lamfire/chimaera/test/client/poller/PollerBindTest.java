@@ -3,9 +3,8 @@ package com.lamfire.chimaera.test.client.poller;
 
 import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.Poller;
-import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.client.ChimaeraCli;
-import com.lamfire.chimaera.test.client.Config;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.RandomUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;

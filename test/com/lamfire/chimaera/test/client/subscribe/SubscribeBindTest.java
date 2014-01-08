@@ -3,8 +3,8 @@ package com.lamfire.chimaera.test.client.subscribe;
 
 import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.Subscribe;
-import com.lamfire.chimaera.client.ChimaeraCli;
-import com.lamfire.chimaera.test.client.Config;
+import com.lamfire.chimaera.test.Config;
+import com.lamfire.utils.RandomUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SubscribeBindTest implements OnMessageListener {
     private static AtomicInteger counter = new AtomicInteger();
     private Subscribe subscribe;
-    private String clientId = "001";
+    private String clientId = RandomUtils.randomText(3, 9);;
 
     public SubscribeBindTest(){
         subscribe = Config.getChimaeraCli().getSubscribe();

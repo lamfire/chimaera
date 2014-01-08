@@ -1,6 +1,6 @@
 package com.lamfire.chimaera.test.client.map;
 
-import com.lamfire.chimaera.test.client.Config;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.Threads;
 

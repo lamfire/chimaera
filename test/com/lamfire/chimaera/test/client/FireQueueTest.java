@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.test.client;
 
 import com.lamfire.chimaera.store.FireQueue;
-import com.lamfire.chimaera.store.memstore.FireQueueInMemory;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 
 /**
@@ -44,7 +44,7 @@ public class FireQueueTest {
     }
 
     public static void main(String[] args) {
-        Config.setupByArgs(FireRankTest.class,args);
+        Config.setupByArgs(FireRankTest.class, args);
         FireQueueTest test = new FireQueueTest(Config.getFireStore().getFireQueue("TEST_QUEUE"));
         test.test();
         Config.shutdown();

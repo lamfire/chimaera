@@ -2,6 +2,7 @@ package com.lamfire.chimaera.test.client;
 
 import com.lamfire.chimaera.client.ChimaeraCli;
 import com.lamfire.chimaera.store.*;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.RandomUtils;
 
 public class ClientTest {

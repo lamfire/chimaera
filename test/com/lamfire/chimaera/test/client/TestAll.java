@@ -1,5 +1,7 @@
 package com.lamfire.chimaera.test.client;
 
+import com.lamfire.chimaera.test.Config;
+
 /**
  * Created with IntelliJ IDEA.
  * User: lamfire
@@ -9,7 +11,7 @@ package com.lamfire.chimaera.test.client;
  */
 public class TestAll {
     public static void main(String[] args) {
-        Config.setupByArgs(TestAll.class,args);
+        Config.setupByArgs(TestAll.class, args);
         FireStoreTest.main(null);
         FireMapTest.main(null);
         FireRankTest.main(null);

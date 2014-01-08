@@ -2,6 +2,7 @@ package com.lamfire.chimaera.test.client;
 
 import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.chimaera.store.FireStore;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 import com.lamfire.utils.RandomUtils;
 
@@ -86,7 +87,7 @@ public class FireMapTest {
     }
 
     public static void main(String[] args) {
-        Config.setupByArgs(FireMapTest.class,args);
+        Config.setupByArgs(FireMapTest.class, args);
         FireStore store = Config.getFireStore();
         FireMap map = store.getFireMap("TEST_MAP");
         FireMapTest test = new FireMapTest(map);

@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.test.client;
 
 import com.lamfire.chimaera.store.FireList;
-import com.lamfire.chimaera.store.FireStore;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;
@@ -70,7 +70,7 @@ public class FireListTest {
     }
 
     public static void main(String[] args) {
-        Config.setupByArgs(FireListTest.class,args);
+        Config.setupByArgs(FireListTest.class, args);
         FireListTest test = new FireListTest(Config.getFireStore().getFireList("TEST_LIST"));
         test.test();
         Config.shutdown();
