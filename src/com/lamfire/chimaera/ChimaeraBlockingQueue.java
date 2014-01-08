@@ -50,7 +50,7 @@ public class ChimaeraBlockingQueue implements FireQueue{
         }
         try{
             if(LOGGER.isDebugEnabled()){
-                LOGGER.debug("queue was empty,waiting.");
+                LOGGER.debug("queue was empty,waiting...");
             }
             this.wait();
         }catch (Exception e){}

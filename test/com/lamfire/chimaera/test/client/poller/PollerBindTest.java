@@ -6,6 +6,7 @@ import com.lamfire.chimaera.Poller;
 import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.client.ChimaeraCli;
 import com.lamfire.chimaera.test.client.Config;
+import com.lamfire.utils.RandomUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PollerBindTest implements OnMessageListener {
     private static AtomicInteger counter = new AtomicInteger();
     private Poller poller;
-    private String clientId = "001";
+    private String clientId = RandomUtils.randomText(3,9);
 
     public PollerBindTest(){
         ChimaeraCli cli = Config.getChimaeraCli();

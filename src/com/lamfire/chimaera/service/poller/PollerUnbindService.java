@@ -15,10 +15,11 @@ import com.lamfire.logger.Logger;
 @SERVICE(command = Command.POLLER_UNBIND)
 public class PollerUnbindService implements Service<PollerUnbindCommand> {
 	static final Logger LOGGER = Logger.getLogger(PollerUnbindService.class);
-    private ChimaeraPoller poller = ChimaeraPoller.getInstance();
+
 
 	@Override
 	public Response execute(MessageContext context, PollerUnbindCommand cmd) {
+        ChimaeraPoller poller = ChimaeraPoller.getInstance();
         poller.unbind(cmd.getKey(),cmd.getClientId());
         return Responses.makeEmptyResponse(cmd);
 	}

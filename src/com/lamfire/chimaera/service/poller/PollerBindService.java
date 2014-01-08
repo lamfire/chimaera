@@ -10,16 +10,20 @@ import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
 import com.lamfire.hydra.MessageContext;
+import com.lamfire.hydra.net.Session;
 import com.lamfire.logger.Logger;
 
 @SERVICE(command = Command.POLLER_BIND)
 public class PollerBindService implements Service<PollerBindCommand> {
 	static final Logger LOGGER = Logger.getLogger(PollerBindService.class);
-    private ChimaeraPoller poller = ChimaeraPoller.getInstance();
 
 	@Override
 	public Response execute(MessageContext context, PollerBindCommand cmd) {
-        poller.bind(cmd.getKey(),cmd.getClientId(),context.getSession());
+        ChimaeraPoller poller = ChimaeraPoller.getInstance();
+        String key = cmd.getKey();
+        String cid = cmd.getClientId();
+        Session session = context.getSession();
+        poller.bind(key,cid,session);
         return Responses.makeEmptyResponse(cmd);
 	}
 

@@ -14,6 +14,8 @@ import com.lamfire.utils.Threads;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created with IntelliJ IDEA.
@@ -36,6 +38,7 @@ public class ChimaeraSubscribe implements Runnable{
     private FireStore store;   //store
     private ChimaeraBlockingQueue queue;   //消息队列
     private ExecutorService service; //消息分发服务
+    private Lock lock = new ReentrantLock();
 
     private ChimaeraSubscribe(){
         this.store = Chimaera.getFireStore(STORE_NAME);
@@ -44,7 +47,7 @@ public class ChimaeraSubscribe implements Runnable{
         this.service.submit(this);
     }
 
-    public  synchronized SessionGroup getSesionGroup(String key){
+    public SessionGroup getSesionGroup(String key){
         SessionGroup group = groups.get(key);
         if(group == null){
             group = new SessionGroup();
@@ -52,9 +55,11 @@ public class ChimaeraSubscribe implements Runnable{
         }
         return group;
     }
-    public synchronized  void bind(String key,String clientId,Session session){
+    public  void bind(String key,String clientId,Session session){
         getSesionGroup(key).add(clientId,session);
-        this.notifyAll();
+        synchronized (lock){
+            lock.notifyAll();
+        }
     }
 
     public  void unbind(String key,String clientId){
@@ -78,7 +83,7 @@ public class ChimaeraSubscribe implements Runnable{
         }
     }
 
-    private synchronized void processNext(){
+    private void processNext(){
         try{
             byte[] responseBytes = this.queue.peek();
             String json = new String(responseBytes);
@@ -96,8 +101,10 @@ public class ChimaeraSubscribe implements Runnable{
                     sendResponse(s, msg);
                 }
             }else{
-                LOGGER.warn("Not found available poller session.waiting");
-                this.wait();
+                LOGGER.warn("Not found available subscribe session,waiting...");
+                synchronized (lock){
+                    lock.wait();
+                }
             }
         }catch(Throwable e){
             LOGGER.warn(e.getMessage(),e);

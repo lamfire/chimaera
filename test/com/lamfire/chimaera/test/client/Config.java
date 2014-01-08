@@ -8,14 +8,14 @@ import com.lamfire.utils.FilenameUtils;
 import java.io.File;
 
 public class Config {
-    //private static final String DEFAULT_HOST = "127.0.0.1";
-    public static final String DEFAULT_HOST = "192.168.9.126";
+    private static final String DEFAULT_HOST = "127.0.0.1";
+    //public static final String DEFAULT_HOST = "192.168.9.126";
 
     public static final int DEFAULT_PORT = 19800;
 
     public static ChimaeraCli cli;
 
-    public static ChimaeraCli getChimaeraCli(){
+    public synchronized static ChimaeraCli getChimaeraCli(){
         if(cli == null){
             setup(DEFAULT_HOST,DEFAULT_PORT);
         }

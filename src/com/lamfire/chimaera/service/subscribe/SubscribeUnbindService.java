@@ -13,10 +13,10 @@ import com.lamfire.hydra.MessageContext;
 @SERVICE(command = Command.SUBSCRIBE_UNBIND)
 public class SubscribeUnbindService implements Service<SubscribeUnbindCommand> {
 	static final Logger LOGGER = Logger.getLogger(SubscribeUnbindService.class);
-    private ChimaeraSubscribe subscribe = ChimaeraSubscribe.getInstance();
 
 	@Override
 	public Response execute(MessageContext context, SubscribeUnbindCommand cmd) {
+        ChimaeraSubscribe subscribe = ChimaeraSubscribe.getInstance();
 		subscribe.unbind(cmd.getKey(),cmd.getClientId());
         return Responses.makeEmptyResponse(cmd);
 	}

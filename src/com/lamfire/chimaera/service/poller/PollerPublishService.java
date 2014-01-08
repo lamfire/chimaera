@@ -15,10 +15,10 @@ import com.lamfire.logger.Logger;
 @SERVICE(command = Command.POLLER_PUBLISH)
 public class PollerPublishService implements Service<PollerPublishCommand> {
 	static final Logger LOGGER = Logger.getLogger(PollerPublishService.class);
-    private ChimaeraPoller poller = ChimaeraPoller.getInstance();
 
 	@Override
 	public Response execute(MessageContext context, PollerPublishCommand cmd) {
+        ChimaeraPoller poller = ChimaeraPoller.getInstance();
         poller.publish(cmd.getKey(),cmd.getMessage());
         if(cmd.isFeedback()){
             return Responses.makeEmptyResponse(cmd);

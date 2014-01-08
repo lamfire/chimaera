@@ -13,10 +13,9 @@ import com.lamfire.hydra.MessageContext;
 @SERVICE(command = Command.SUBSCRIBE_PUBLISH)
 public class SubscribePublishService implements Service<SubscribePublishCommand> {
 	static final Logger LOGGER = Logger.getLogger(SubscribePublishService.class);
-    private ChimaeraSubscribe subscribe = ChimaeraSubscribe.getInstance();
-
 	@Override
 	public Response execute(MessageContext context, SubscribePublishCommand cmd) {
+        ChimaeraSubscribe subscribe = ChimaeraSubscribe.getInstance();
 		subscribe.publish(cmd.getKey(),cmd.getMessage());
         if(cmd.isFeedback()){
             return Responses.makeEmptyResponse(cmd);

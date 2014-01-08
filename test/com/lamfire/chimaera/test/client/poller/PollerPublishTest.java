@@ -34,15 +34,20 @@ public class PollerPublishTest implements OnMessageListener {
         accessor.publishSync("TEST", clientId, message.getBytes());
     }
 
-    public static void main(String[] args) {
-        PollerPublishTest test = new PollerPublishTest();
-        while(true){
-            test.publish("linfan[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
-        }
-    }
-
     @Override
     public void onMessage(String key, byte[] message) {
         System.out.println( key + ":" + new String(message));
     }
+
+
+    public static void main(String[] args) {
+        PollerPublishTest test = new PollerPublishTest();
+        while(true){
+            test.publish("linfan[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
+            if(counter.get() >= 10){
+                return;
+            }
+        }
+    }
+
 }
