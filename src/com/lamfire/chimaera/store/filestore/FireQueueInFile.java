@@ -27,6 +27,7 @@ public class FireQueueInFile implements FireQueue {
 		    list.add(value);
         }finally{
             lock.unlock();
+            engine.cacheOrFlush();
         }
 	}
 
@@ -44,6 +45,7 @@ public class FireQueueInFile implements FireQueue {
 		    return list.remove(0);
         }finally{
             lock.unlock();
+            engine.cacheOrFlush();
         }
 	}
 
