@@ -4,6 +4,7 @@ package com.lamfire.chimaera.test.client.subscribe;
 import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.client.ChimaeraCli;
+import com.lamfire.chimaera.test.client.Config;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -21,9 +22,7 @@ public class SubscribeBindTest implements OnMessageListener {
     private String clientId = "001";
 
     public SubscribeBindTest(){
-        ChimaeraCli cli = new ChimaeraCli();
-        cli.open("127.0.0.1",19800);
-        subscribe =cli.getSubscribe();
+        subscribe = Config.getChimaeraCli().getSubscribe();
     }
     public void bind() {
         subscribe.bind("TEST", clientId, this);

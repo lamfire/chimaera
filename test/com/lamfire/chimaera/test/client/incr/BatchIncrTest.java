@@ -22,7 +22,7 @@ public class BatchIncrTest {
     private static void test(){
         long startAt = System.currentTimeMillis();
         try{
-            Config.inc.incrGet();
+            Config.getFireStore().getFireIncrement("TEST_INC").incrGet();
         }   catch (Exception e){
             logger.error("error incr ( )",e);
             errorAtomic.getAndIncrement();

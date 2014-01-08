@@ -46,7 +46,7 @@ public class MapTest {
         String key = String.valueOf(val);
         long startAt = System.currentTimeMillis();
         try{
-            return Config.map.get(key);
+            return map.get(key);
         }   catch (Exception e){
             logger.error("error get (" + val +")",e);
             errorAtomic.getAndIncrement();

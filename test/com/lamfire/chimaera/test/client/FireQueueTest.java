@@ -45,7 +45,7 @@ public class FireQueueTest {
 
     public static void main(String[] args) {
         Config.setupByArgs(FireRankTest.class,args);
-        FireQueueTest test = new FireQueueTest(Config.queue);
+        FireQueueTest test = new FireQueueTest(Config.getFireStore().getFireQueue("TEST_QUEUE"));
         test.test();
         Config.shutdown();
     }

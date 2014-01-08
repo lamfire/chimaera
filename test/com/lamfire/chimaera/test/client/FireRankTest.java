@@ -25,7 +25,7 @@ public class FireRankTest {
     }
 
     static FireRank rank(){
-        return Config.rank;
+        return Config.getFireStore().getFireRank("TEST_RANK");
     }
 
     static void puts(){

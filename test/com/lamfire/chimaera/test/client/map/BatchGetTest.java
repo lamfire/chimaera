@@ -23,7 +23,7 @@ public class BatchGetTest {
         String key = String.valueOf(val);
         long startAt = System.currentTimeMillis();
         try{
-             return Config.map.get(key);
+             return Config.getFireStore().getFireMap("TEST_MAP").get(key);
         }   catch (Exception e){
             logger.error("error get (" + val +")",e);
             errorAtomic.getAndIncrement();

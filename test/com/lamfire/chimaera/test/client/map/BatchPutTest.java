@@ -18,7 +18,7 @@ public class BatchPutTest {
     private static void put(String v){
         try{
             byte[] bytes = v.getBytes();
-            Config.map.put(v,bytes);
+            Config.getFireStore().getFireMap("TEST_MAP").put(v,bytes);
         }   catch(Exception e){
              e.printStackTrace();
             errorAtomic.getAndIncrement();

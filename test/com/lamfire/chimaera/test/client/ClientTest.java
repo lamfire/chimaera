@@ -6,9 +6,8 @@ import com.lamfire.utils.RandomUtils;
 
 public class ClientTest {
 
-    static ChimaeraCli cli = Config.cli;
-    static FireStore store = Config.store;
-    static FireIncrement inc = Config.inc;
+    static ChimaeraCli cli = Config.getChimaeraCli();
+    static FireStore store = Config.getFireStore();
 
     public static void size(){
         System.out.println(store.size());

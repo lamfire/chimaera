@@ -10,7 +10,7 @@ package com.lamfire.chimaera.test.client;
 public class TestAll {
     public static void main(String[] args) {
         Config.setupByArgs(TestAll.class,args);
-        FireStoreTest.test();
+        FireStoreTest.main(null);
         FireMapTest.main(null);
         FireRankTest.main(null);
         FireIncrementTest.main(null);

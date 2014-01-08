@@ -11,10 +11,13 @@ import com.lamfire.utils.Asserts;
  * To change this template use File | Settings | File Templates.
  */
 public class FireStoreTest {
-    static FireStore store = Config.store;
+    FireStore store;
 
+    public FireStoreTest(FireStore store){
+        this.store = store;
+    }
 
-    public static void test() {
+    public void test() {
         store.clear();
         System.out.println("store.clear()");
 
@@ -25,8 +28,8 @@ public class FireStoreTest {
     }
 
     public static void main(String[] args) {
-        Config.setupByArgs(FireStoreTest.class,args);
-        test();
+        FireStoreTest test = new FireStoreTest(Config.getFireStore());
+        test.test();
         Config.shutdown();
     }
 }

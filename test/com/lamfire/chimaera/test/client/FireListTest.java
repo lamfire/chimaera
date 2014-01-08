@@ -14,8 +14,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class FireListTest {
-    static FireStore store = Config.store;
-
     private FireList list;
 
     public  FireListTest(FireList list){
