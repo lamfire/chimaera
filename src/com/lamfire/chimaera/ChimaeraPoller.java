@@ -112,7 +112,7 @@ public class ChimaeraPoller {
             //获得下个Session
             SessionGroup group = getSesionGroup(key);
             Session session = group.next();
-            if(session != null){
+            if(session != null && session.isConnected()){
                 Message msg = new Message();
                 msg.setBody(responseBytes);
                 sendResponse(session,msg);
