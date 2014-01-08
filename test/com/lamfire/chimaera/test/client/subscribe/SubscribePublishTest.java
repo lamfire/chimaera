@@ -4,6 +4,7 @@ package com.lamfire.chimaera.test.client.subscribe;
 import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.client.ChimaeraCli;
+import com.lamfire.chimaera.client.SubscribeAccessor;
 import com.lamfire.utils.RandomUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -28,7 +29,8 @@ public class SubscribePublishTest implements OnMessageListener {
     }
 
     public void publish(String message){
-        subscribe.publish("TEST", clientId, message.getBytes());
+        SubscribeAccessor sa = (SubscribeAccessor)subscribe;
+        sa.publishSync("TEST", clientId, message.getBytes());
     }
 
     public static void main(String[] args) {
@@ -36,7 +38,7 @@ public class SubscribePublishTest implements OnMessageListener {
         while(true){
             test.publish("linfan[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
             if(counter.get() >= 10){
-                return ;
+                //return ;
             }
         }
     }

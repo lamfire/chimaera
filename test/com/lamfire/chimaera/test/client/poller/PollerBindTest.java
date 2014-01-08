@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PollerBindTest implements OnMessageListener {
     private static AtomicInteger counter = new AtomicInteger();
     private Poller poller;
-    private String clientId = "002";
+    private String clientId = "001";
 
     public PollerBindTest(){
         ChimaeraCli cli = new ChimaeraCli();
