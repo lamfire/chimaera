@@ -6,8 +6,8 @@ import com.lamfire.chimaera.store.*;
 import com.lamfire.utils.FilenameUtils;
 
 public class Config {
-    //private static final String DEFAULT_HOST = "127.0.0.1";
-    public static final String DEFAULT_HOST = "192.168.9.126";
+    private static final String DEFAULT_HOST = "127.0.0.1";
+    //public static final String DEFAULT_HOST = "192.168.9.126";
 
     public static final int DEFAULT_PORT = 19800;
 
