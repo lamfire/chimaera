@@ -60,11 +60,19 @@ public class ChimaeraPoller {
         this.service.submit(executor);
     }
 
+    private synchronized SessionGroup newSessionGroup(String key){
+        SessionGroup group = groups.get(key);
+        if(group == null) {
+            group = new SessionGroup();
+            groups.put(key,group);
+        }
+        return group;
+    }
+
     public SessionGroup getSesionGroup(String key){
         SessionGroup group = groups.get(key);
         if(group == null){
-            group = new SessionGroup();
-            groups.put(key,group);
+            return newSessionGroup(key);
         }
         return group;
     }
@@ -102,7 +110,7 @@ public class ChimaeraPoller {
         this.queue.push(responseBytes);
     }
 
-    private synchronized void processNext(){
+    private void processNext(){
         try{
             byte[] responseBytes = this.queue.peek();
             String json = new String(responseBytes);

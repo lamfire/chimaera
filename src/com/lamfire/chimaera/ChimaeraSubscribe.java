@@ -47,14 +47,23 @@ public class ChimaeraSubscribe implements Runnable{
         this.service.submit(this);
     }
 
-    public SessionGroup getSesionGroup(String key){
+    private synchronized SessionGroup newSessionGroup(String key){
         SessionGroup group = groups.get(key);
-        if(group == null){
+        if(group == null) {
             group = new SessionGroup();
             groups.put(key,group);
         }
         return group;
     }
+
+    public SessionGroup getSesionGroup(String key){
+        SessionGroup group = groups.get(key);
+        if(group == null){
+            return newSessionGroup(key);
+        }
+        return group;
+    }
+
     public  void bind(String key,String clientId,Session session){
         getSesionGroup(key).add(clientId,session);
         synchronized (lock){
