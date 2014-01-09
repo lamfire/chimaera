@@ -4,6 +4,9 @@ import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.chimaera.client.ChimaeraCli;
 import com.lamfire.chimaera.store.*;
 import com.lamfire.utils.FilenameUtils;
+import com.lamfire.utils.PropertiesUtils;
+
+import java.util.Map;
 
 public class Config {
     private static final String DEFAULT_HOST = "127.0.0.1";
@@ -12,6 +15,17 @@ public class Config {
     public static final int DEFAULT_PORT = 19800;
 
     public static ChimaeraCli cli;
+
+    static{
+        try{
+            Map<String,String> map = PropertiesUtils.loadAsMap("chimaera-cli.properties", Config.class);
+            String host = map.get("host");
+            int port = Integer.parseInt(map.get("port"));
+            setup(host,port);
+        }catch (Exception e){
+
+        }
+    }
 
     public synchronized static ChimaeraCli getChimaeraCli(){
         if(cli == null){
