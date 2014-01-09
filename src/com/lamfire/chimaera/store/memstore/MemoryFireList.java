@@ -1,25 +1,16 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.memstore;
 
 import com.lamfire.chimaera.store.FireList;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-public class FireListInFile implements FireList {
-	private final List<byte[]> list;
-    private StoreEngine engine;
-    private String name;
-    public FireListInFile(StoreEngine engine,String name){
-        this.engine = engine;
-        this.name = name;
-        this.list = engine.getLinkedList(name,new BytesSerializer());
-    }
+public class MemoryFireList implements FireList {
+	
+	private final List<byte[]> list = new LinkedList<byte[]>();
 
 	@Override
 	public void add(byte[] value) {
 		list.add(value);
-        engine.cacheOrFlush();
 	}
 
     public  Iterator<byte[]> iterator(){
@@ -29,7 +20,6 @@ public class FireListInFile implements FireList {
 	@Override
 	public void set(int index, byte[] value) {
 		list.set(index, value);
-        engine.cacheOrFlush();
 	}
 
 	@Override
@@ -51,9 +41,7 @@ public class FireListInFile implements FireList {
 
 	@Override
 	public byte[] remove(int index) {
-		byte[] bytes =  list.remove(index);
-        engine.flush();
-        return bytes;
+		return list.remove(index);
 	}
 
 	@Override
@@ -64,7 +52,6 @@ public class FireListInFile implements FireList {
 	@Override
 	public void clear() {
 		list.clear();
-        //engine.flush();
 	}
 
 }

@@ -38,7 +38,7 @@ public class SubscribePublishTest implements OnMessageListener {
         while(true){
             test.publish("linfan[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
             if(counter.get() >= 10){
-                return ;
+                //return ;
             }
         }
     }

@@ -5,7 +5,7 @@ import com.lamfire.chimaera.store.FireQueue;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class FireQueueInMemory implements FireQueue {
+public class MemoryFireQueue implements FireQueue {
 	
 	private final LinkedList<byte[]> queue = new LinkedList<byte[]>();
 

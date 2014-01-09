@@ -1,8 +1,8 @@
 package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireSet;
+import com.lamfire.chimaera.store.filestore.DiskFireSet;
 import com.lamfire.chimaera.store.filestore.StoreEngine;
-import com.lamfire.chimaera.store.filestore.FireSetInFile;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;
@@ -83,7 +83,7 @@ public class FireSetFileStoreTest {
 
     public static void main(String[] args)throws Exception {
         StoreEngine store = new StoreEngine(FILE);
-        FireSet set  = new FireSetInFile(store,"TEST_SET");
+        FireSet set  = new DiskFireSet(store,"TEST_SET");
         FireSetFileStoreTest test = new FireSetFileStoreTest(set);
         test.test();
     }

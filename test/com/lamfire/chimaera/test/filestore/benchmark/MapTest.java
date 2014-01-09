@@ -1,8 +1,8 @@
 package com.lamfire.chimaera.test.filestore.benchmark;
 
 import com.lamfire.chimaera.store.FireMap;
+import com.lamfire.chimaera.store.filestore.DiskFireMap;
 import com.lamfire.chimaera.store.filestore.StoreEngine;
-import com.lamfire.chimaera.store.filestore.FireMapInFile;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.Threads;
@@ -27,7 +27,7 @@ public class MapTest {
     public MapTest() throws IOException {
         StoreEngine store = new StoreEngine(FILE);
         store.setMaxCacheSize(1000);
-        this.map  = new FireMapInFile(store,"TEST_MAP");
+        this.map  = new DiskFireMap(store,"TEST_MAP");
     }
 
     private void put(String v){

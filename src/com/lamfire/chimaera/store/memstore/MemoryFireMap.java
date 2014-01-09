@@ -5,7 +5,7 @@ import com.lamfire.utils.Lists;
 
 import java.util.*;
 
-public class FireMapInMemory implements FireMap {
+public class MemoryFireMap implements FireMap {
 	
 	private final Map<String,byte[]> map = new LinkedHashMap<String, byte[]>();
 

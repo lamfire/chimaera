@@ -9,14 +9,14 @@ import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class FireSetInFile implements FireSet {
+public class DiskFireSet implements FireSet {
 	private final Map<String, byte[]> map;
     private final List<String> index;
     private final Lock lock = new ReentrantLock();
     private StoreEngine engine;
     private String name;
 
-    public FireSetInFile(StoreEngine engine,String name){
+    public DiskFireSet(StoreEngine engine, String name){
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name);

@@ -4,7 +4,7 @@ import com.lamfire.chimaera.store.FireIncrement;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-public class FireIncrementInMemory implements FireIncrement {
+public class MemoryFireIncrement implements FireIncrement {
 	
 	private final AtomicLong atomic = new AtomicLong();
 

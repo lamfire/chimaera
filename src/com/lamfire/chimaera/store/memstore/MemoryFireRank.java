@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Time: 上午11:53
  * To change this template use File | Settings | File Templates.
  */
-public class FireRankInMemory implements FireRank {
+public class MemoryFireRank implements FireRank {
     private final TreeSet<Item> set = new TreeSet<Item>(new ItemComparator());
     private final HashMap<String,Item> items = new HashMap<String,Item>();
     private final Lock lock = new ReentrantLock();

@@ -22,6 +22,13 @@ public class FireQueueTest {
         queue.clear();
         System.out.println("queue.clear()");
 
+        String s = "hayash";
+        queue.push(s.getBytes());
+        String peek = new String(queue.peek());
+        Asserts.assertEquals(s, peek);
+        String pop = new String(queue.pop());
+        Asserts.assertEquals(s, pop);
+
         for(int i=0;i<100;i++){
             String val = String.valueOf(i);
             queue.push(val.getBytes());

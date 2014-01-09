@@ -50,7 +50,7 @@ public class MemoryFireStore implements FireStore {
 	public FireIncrement getFireIncrement(String key){
 		FireIncrement result =   assertInstance(key,FireIncrement.class);
 		if(result == null){
-			result = FireFactory.newFireIncrement();
+			result =new MemoryFireIncrement();
 			store.put(key, result);
 		}
 		return result;
@@ -60,7 +60,7 @@ public class MemoryFireStore implements FireStore {
 	public FireList getFireList(String key){
 		FireList result =   assertInstance(key,FireList.class);
 		if(result == null){
-			result = FireFactory.newFireList();
+			result =  new MemoryFireList();
 			store.put(key, result);
 		}
 		return result;
@@ -70,7 +70,7 @@ public class MemoryFireStore implements FireStore {
 	public FireMap getFireMap(String key){
 		FireMap result =   assertInstance(key,FireMap.class);
 		if(result == null){
-			result = FireFactory.newFireMap();
+			result = new MemoryFireMap();
 			store.put(key, result);
 		}
 		return result;
@@ -80,7 +80,7 @@ public class MemoryFireStore implements FireStore {
 	public FireQueue getFireQueue(String key){
 		FireQueue result =   assertInstance(key,FireQueue.class);
 		if(result == null){
-			result = FireFactory.newFireQueue();
+			result = new MemoryFireQueue();
 			store.put(key, result);
 		}
 		return result;
@@ -90,7 +90,7 @@ public class MemoryFireStore implements FireStore {
 	public FireSet getFireSet(String key){
 		FireSet result =   assertInstance(key,FireSet.class);
 		if(result == null){
-			result = FireFactory.newFireSet();
+			result = new MemoryFireSet();
 			store.put(key, result);
 		}
 		return result;
@@ -100,7 +100,7 @@ public class MemoryFireStore implements FireStore {
     public FireRank getFireRank(String key) {
         FireRank result =   assertInstance(key,FireRank.class);
         if(result == null){
-            result = FireFactory.newFireCounter();
+            result = new MemoryFireRank();
             store.put(key, result);
         }
         return result;

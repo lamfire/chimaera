@@ -8,11 +8,11 @@ import java.util.*;
 /**
  * 持久化的FireMap类，该对象中的数据将会被持久化到文件中。
  */
-public class FireMapInFile implements FireMap {
+public class DiskFireMap implements FireMap {
     private StoreEngine engine;
     private String name;
     private Map<String,byte[]> map;
-    public FireMapInFile(StoreEngine engine,String name){
+    public DiskFireMap(StoreEngine engine, String name){
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(this.name);

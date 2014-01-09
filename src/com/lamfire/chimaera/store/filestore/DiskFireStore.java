@@ -1,13 +1,12 @@
 package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.*;
-import com.lamfire.chimaera.store.memstore.FireIncrementInMemory;
-import com.lamfire.chimaera.store.memstore.FireRankInMemory;
+import com.lamfire.chimaera.store.memstore.MemoryFireIncrement;
+import com.lamfire.chimaera.store.memstore.MemoryFireRank;
 import com.lamfire.utils.Maps;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,21 +15,21 @@ import java.util.concurrent.ConcurrentHashMap;
  * Time: 下午4:47
  * To change this template use File | Settings | File Templates.
  */
-public class FileFireStore implements FireStore {
+public class DiskFireStore implements FireStore {
     private static final String KEY_META = "_META_";
     private static final String KEY_INCREMENT = "_INCREMENT_";
     private Map<String, String> meta; //meta info as json
     private Map<String, FireIncrement> increments;
-    private Map<String,FireListInFile> fireListCache = Maps.newHashMap();
-    private Map<String,FireMapInFile> fireMapCache = Maps.newHashMap();
-    private Map<String,FireQueueInFile> fireQueueCache = Maps.newHashMap();
-    private Map<String,FireSetInFile> fireSetCache = Maps.newHashMap();
+    private Map<String,DiskFireList> fireListCache = Maps.newHashMap();
+    private Map<String,DiskFireMap> fireMapCache = Maps.newHashMap();
+    private Map<String,DiskFireQueue> fireQueueCache = Maps.newHashMap();
+    private Map<String,DiskFireSet> fireSetCache = Maps.newHashMap();
     private Map<String,FireRank> fireRankCache = Maps.newHashMap();
 
     private String storeName;
     private StoreEngine engine;
 
-    public FileFireStore(String file,String storeName){
+    public DiskFireStore(String file, String storeName){
         this.storeName = storeName;
         try {
             this.engine = new StoreEngine(file);
@@ -78,7 +77,7 @@ public class FileFireStore implements FireStore {
     public synchronized FireIncrement getFireIncrement(String key) {
         FireIncrement result = increments.get(key);
         if(result == null){
-            result =  new FireIncrementInMemory();
+            result =  new MemoryFireIncrement();
             increments.put(key,result);
         }
         return result;
@@ -86,9 +85,9 @@ public class FileFireStore implements FireStore {
 
     @Override
     public synchronized FireList getFireList(String key) {
-        FireListInFile result = fireListCache.get(key);
+        DiskFireList result = fireListCache.get(key);
         if(result == null){
-            result =  new FireListInFile(this.engine,key);
+            result =  new DiskFireList(this.engine,key);
             fireListCache.put(key,result);
         }
         return result;
@@ -96,9 +95,9 @@ public class FileFireStore implements FireStore {
 
     @Override
     public synchronized FireMap getFireMap(String key) {
-        FireMapInFile result = fireMapCache.get(key);
+        DiskFireMap result = fireMapCache.get(key);
         if(result == null){
-            result =  new FireMapInFile(this.engine,key);
+            result =  new DiskFireMap(this.engine,key);
             fireMapCache.put(key,result);
         }
         return result;
@@ -106,9 +105,9 @@ public class FileFireStore implements FireStore {
 
     @Override
     public synchronized FireQueue getFireQueue(String key) {
-        FireQueueInFile result = fireQueueCache.get(key);
+        DiskFireQueue result = fireQueueCache.get(key);
         if(result == null){
-            result =  new FireQueueInFile(this.engine,key);
+            result =  new DiskFireQueue(this.engine,key);
             fireQueueCache.put(key,result);
         }
         return result;
@@ -116,9 +115,9 @@ public class FileFireStore implements FireStore {
 
     @Override
     public synchronized FireSet getFireSet(String key) {
-        FireSetInFile result = fireSetCache.get(key);
+        DiskFireSet result = fireSetCache.get(key);
         if(result == null){
-            result =  new FireSetInFile(this.engine,key);
+            result =  new DiskFireSet(this.engine,key);
             fireSetCache.put(key,result);
         }
         return result;
@@ -128,7 +127,7 @@ public class FileFireStore implements FireStore {
     public FireRank getFireRank(String key) {
         FireRank result = fireRankCache.get(key);
         if(result == null){
-            result =  new FireRankInMemory();
+            result =  new MemoryFireRank();
             fireRankCache.put(key,result);
         }
         return result;

@@ -8,7 +8,7 @@ import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.code.MD5;
 import com.lamfire.code.MurmurHash;
 
-public class FireSetInMemory implements FireSet {
+public class MemoryFireSet implements FireSet {
 
 	private final Map<String, byte[]> store = new LinkedHashMap<String, byte[]>();
     private final Lock lock = new ReentrantLock();

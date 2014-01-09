@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class FireQueueInFile implements FireQueue {
+public class DiskFireQueue implements FireQueue {
 
     private final List<byte[]> list;
     private StoreEngine engine;
     private String name;
     private final Lock lock = new ReentrantLock();
 
-    public FireQueueInFile(StoreEngine engine,String name){
+    public DiskFireQueue(StoreEngine engine, String name){
         this.engine = engine;
         this.name = name;
         this.list = engine.getLinkedList(name,new BytesSerializer());

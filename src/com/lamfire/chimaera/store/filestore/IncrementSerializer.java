@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.FireIncrement;
-import com.lamfire.chimaera.store.memstore.FireIncrementInMemory;
+import com.lamfire.chimaera.store.memstore.MemoryFireIncrement;
 import org.apache.jdbm.Serializer;
 
 import java.io.DataInput;
@@ -26,7 +26,7 @@ public class IncrementSerializer implements Serializer<FireIncrement>,Serializab
     @Override
     public FireIncrement deserialize(DataInput dataInput) throws IOException, ClassNotFoundException {
         long val = dataInput.readLong();
-        FireIncrement inc = new FireIncrementInMemory();
+        FireIncrement inc = new MemoryFireIncrement();
         inc.set(val);
         return inc;
     }

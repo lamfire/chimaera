@@ -1,8 +1,8 @@
 package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireQueue;
+import com.lamfire.chimaera.store.filestore.DiskFireQueue;
 import com.lamfire.chimaera.store.filestore.StoreEngine;
-import com.lamfire.chimaera.store.filestore.FireQueueInFile;
 import com.lamfire.utils.Asserts;
 
 /**
@@ -46,7 +46,7 @@ public class FireQueueFileStoreTest {
 
     public static void main(String[] args)throws Exception {
         StoreEngine store = new StoreEngine(FILE);
-        FireQueue queue  = new FireQueueInFile(store,"TEST_SET");
+        FireQueue queue  = new DiskFireQueue(store,"TEST_SET");
         FireQueueFileStoreTest test = new FireQueueFileStoreTest(queue);
         test.test();
     }

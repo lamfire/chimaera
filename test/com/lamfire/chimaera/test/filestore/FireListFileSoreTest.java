@@ -1,8 +1,8 @@
 package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireList;
+import com.lamfire.chimaera.store.filestore.DiskFireList;
 import com.lamfire.chimaera.store.filestore.StoreEngine;
-import com.lamfire.chimaera.store.filestore.FireListInFile;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;
@@ -74,7 +74,7 @@ public class FireListFileSoreTest {
 
     public static void main(String[] args) throws Exception{
         StoreEngine store = new StoreEngine(FILE);
-        FireList list  = new FireListInFile(store,"TEST_LIST");
+        FireList list  = new DiskFireList(store,"TEST_LIST");
         FireListFileSoreTest test = new FireListFileSoreTest(list);
         test.test();
     }
