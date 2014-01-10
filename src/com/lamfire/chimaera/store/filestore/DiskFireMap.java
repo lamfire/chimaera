@@ -63,7 +63,7 @@ public class DiskFireMap implements FireMap {
     @Override
 	public synchronized void clear() {
 		map.clear();
-        engine.flush();
+        engine.cacheOrFlush();
 	}
 
 }

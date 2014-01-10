@@ -52,7 +52,7 @@ public class DiskFireList implements FireList {
 	@Override
 	public byte[] remove(int index) {
 		byte[] bytes =  list.remove(index);
-        engine.flush();
+        engine.cacheOrFlush();
         return bytes;
 	}
 
@@ -64,7 +64,7 @@ public class DiskFireList implements FireList {
 	@Override
 	public void clear() {
 		list.clear();
-        //engine.flush();
+        engine.cacheOrFlush();
 	}
 
 }

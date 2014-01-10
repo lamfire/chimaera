@@ -1,5 +1,6 @@
 package com.lamfire.chimaera.store.filestore;
 
+import com.lamfire.utils.Threads;
 import org.apache.jdbm.DB;
 import org.apache.jdbm.DBMaker;
 import org.apache.jdbm.Serialization;
@@ -25,7 +26,7 @@ public class StoreEngine {
 
     public StoreEngine(String file)throws IOException{
         this.file = file;
-        this.db = DBMaker.openFile(file) .make();
+        this.db = DBMaker.openFile(file).enableSoftCache() .make();
     }
 
     public DB getDB(){
@@ -81,7 +82,7 @@ public class StoreEngine {
      */
     protected synchronized void cacheOrFlush(){
         if(cacheCount.getAndIncrement() >= maxCacheSize){
-            flush();
+            Threads.startup(flushStoreWorker);
         }
     }
 
@@ -93,4 +94,11 @@ public class StoreEngine {
             throw new RuntimeException(e.getMessage(),e);
         }
     }
+
+    Runnable flushStoreWorker = new Runnable() {
+        @Override
+        public void run() {
+            flush();
+        }
+    };
 }
