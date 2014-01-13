@@ -51,7 +51,6 @@ public class BatchIncrTest {
 	};
 
 	public static void main(String[] args) {
-        Config.setupByArgs(BatchIncrTest.class,args);
 		Threads.startup(task);
         Threads.startup(task);
         Threads.startup(task);

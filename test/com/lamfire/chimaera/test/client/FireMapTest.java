@@ -19,11 +19,9 @@ import java.util.List;
 public class FireMapTest {
 
     public static void main(String[] args) {
-        Config.setupByArgs(FireMapTest.class, args);
-        FireStore store = Config.getFireStore();
+        FireStore store = Config.getFireStore(args);
         FireMap map = store.getFireMap("TEST_MAP");
         FireMapTester test = new FireMapTester(map);
         test.test();
-        Config.shutdown();
     }
 }

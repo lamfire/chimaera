@@ -11,7 +11,6 @@ import com.lamfire.chimaera.test.Config;
  */
 public class TestAll {
     public static void main(String[] args) {
-        Config.setupByArgs(TestAll.class, args);
         FireStoreTest.main(null);
         FireMapTest.main(null);
         FireRankTest.main(null);

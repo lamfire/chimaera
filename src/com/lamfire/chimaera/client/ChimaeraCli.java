@@ -20,7 +20,7 @@ public class ChimaeraCli {
         this.poolSize = poolSize;
     }
 
-    public void open(String host,int port){
+    public synchronized void open(String host,int port){
         if(this.transfer != null){
             throw new ChimaeraException("The 'ChimaeraCli' already connected to " + transfer.getHost() +":" + transfer.getPort());
         }

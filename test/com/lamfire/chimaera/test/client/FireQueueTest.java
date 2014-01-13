@@ -15,9 +15,7 @@ import com.lamfire.utils.Asserts;
 public class FireQueueTest {
 
     public static void main(String[] args) {
-        Config.setupByArgs(FireRankTest.class, args);
-        FireQueueTester test = new FireQueueTester(Config.getFireStore().getFireQueue("TEST_QUEUE"));
+        FireQueueTester test = new FireQueueTester(Config.getFireStore(args).getFireQueue("TEST_QUEUE"));
         test.test();
-        Config.shutdown();
     }
 }

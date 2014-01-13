@@ -17,10 +17,8 @@ import java.util.List;
 public class FireSetTest {
 
     public static void main(String[] args) {
-        Config.setupByArgs(FireSetTest.class, args);
-        FireSet set = Config.getFireStore().getFireSet("TEST_SET");
+        FireSet set = Config.getFireStore(args).getFireSet("TEST_SET");
         FireSetTester test = new FireSetTester(set);
         test.test();
-        Config.shutdown();
     }
 }

@@ -66,27 +66,6 @@ public class Item{
                 ", score=" + count +
                 '}';
     }
-
-    public int compareTo(Item o) {
-        if(this.equals(o)){
-            return 0;
-        }
-
-        if(this.getValue() > o.getValue()){
-            return 1;
-        }
-
-        if(this.getValue() == o.getValue()){
-            if(this.hashCode() == o.hashCode()){
-                return 0;
-            }
-            if(this.hashCode() > o.hashCode()){
-                return 1;
-            }
-        }
-
-        return -1;
-    }
 }
 
 

@@ -88,12 +88,4 @@ public class FireMapTester {
         System.out.println("<<== finish.");
     }
 
-    public static void main(String[] args) {
-        Config.setupByArgs(FireMapTester.class, args);
-        FireStore store = Config.getFireStore();
-        FireMap map = store.getFireMap("TEST_MAP");
-        FireMapTester test = new FireMapTester(map);
-        test.test();
-        Config.shutdown();
-    }
 }

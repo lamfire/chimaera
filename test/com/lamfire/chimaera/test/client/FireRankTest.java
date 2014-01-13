@@ -19,9 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class FireRankTest {
 
     public static void main(String[] args) {
-        Config.setupByArgs(FireRankTest.class,args);
-        FireRankTester test = new FireRankTester(Config.getFireStore().getFireRank("TEST_RANK"));
+        FireRankTester test = new FireRankTester(Config.getFireStore(args).getFireRank("TEST_RANK"));
         test.test();
-        Config.shutdown();
     }
 }

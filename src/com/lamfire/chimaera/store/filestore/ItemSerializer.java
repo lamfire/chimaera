@@ -1,7 +1,6 @@
 package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.Item;
-import com.lamfire.json.JSON;
 import org.apache.jdbm.Serializer;
 
 import java.io.DataInput;
@@ -19,19 +18,16 @@ import java.io.Serializable;
 public class ItemSerializer implements Serializer<Item> ,Serializable {
 
     @Override
-    public void serialize(DataOutput dataOutput,Item item) throws IOException {
-        byte[] bytes = JSON.toJSONString(item).getBytes();
-        dataOutput.writeInt(bytes.length);
-        dataOutput.write(bytes);
+    public void serialize(DataOutput dataOutput, Item item) throws IOException {
+        dataOutput.writeLong(item.getValue());
+        dataOutput.writeUTF(item.getName());
     }
 
     @Override
     public Item deserialize(DataInput dataInput) throws IOException, ClassNotFoundException {
-        int len = dataInput.readInt();
-        byte[] bytes = new byte[len];
-        dataInput.readFully(bytes);
-        String js = new String(bytes);
-        JSON json = new JSON(js);
-        return json.toObject(Item.class);
+        Item item = new Item();
+        item.setValue(dataInput.readLong());
+        item.setName(dataInput.readUTF());
+        return item;
     }
 }

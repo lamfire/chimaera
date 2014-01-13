@@ -81,11 +81,4 @@ public class FireSetTester {
 
     }
 
-    public static void main(String[] args) {
-        Config.setupByArgs(FireSetTester.class, args);
-        FireSet set = Config.getFireStore().getFireSet("TEST_SET");
-        FireSetTester test = new FireSetTester(set);
-        test.test();
-        Config.shutdown();
-    }
 }

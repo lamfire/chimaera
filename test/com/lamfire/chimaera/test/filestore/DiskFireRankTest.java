@@ -25,6 +25,12 @@ public class DiskFireRankTest {
     public static void main(String[] args) throws IOException {
         StoreEngine store = new StoreEngine(FILE);
         FireRankTester test = new FireRankTester(new DiskFireRank(store,"TEST_RANK"));
-        test.test();
+        //test.test();
+        test.incr();
+        test.max(5);
+        test.putsRandom(20);
+        test.max(5);
+        test.size();
+
     }
 }

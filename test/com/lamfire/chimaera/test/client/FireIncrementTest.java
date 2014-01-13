@@ -15,9 +15,7 @@ import com.lamfire.utils.Asserts;
  */
 public class FireIncrementTest {
     public static void main(String[] args) {
-        Config.setupByArgs(FireIncrementTest.class, args);
-        FireIncrementTester test = new FireIncrementTester(Config.getFireStore());
+        FireIncrementTester test = new FireIncrementTester(Config.getFireStore(args));
         test.test();
-        Config.shutdown();
     }
 }

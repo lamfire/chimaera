@@ -15,8 +15,7 @@ import com.lamfire.utils.Asserts;
 public class FireStoreTest {
 
     public static void main(String[] args) {
-        FireStoreTester test = new FireStoreTester(Config.getFireStore());
+        FireStoreTester test = new FireStoreTester(Config.getFireStore(args));
         test.test();
-        Config.shutdown();
     }
 }

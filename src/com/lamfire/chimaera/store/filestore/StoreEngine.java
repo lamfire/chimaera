@@ -24,7 +24,7 @@ public class StoreEngine {
     private String file; //文件路径
     private DB db;
 
-    private int maxCacheSize = 100;  //最大数据操作缓存次数，当达到该值时，刷新更改到文件。
+    private int maxCacheSize = -1;  //最大数据操作缓存次数，当达到该值时，刷新更改到文件。
     private AtomicInteger cacheCount = new AtomicInteger(); //数据更改次数记录器
     private ScheduledExecutorService service ;
 

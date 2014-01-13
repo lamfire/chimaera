@@ -46,7 +46,6 @@ public class BatchPutTest {
 
 
 	public static void main(String[] args) {
-        Config.setupByArgs(BatchPutTest.class,args);
 		Threads.startup(task);
         Threads.startup(task);
         Threads.startup(task);

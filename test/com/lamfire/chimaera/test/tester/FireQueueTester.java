@@ -50,10 +50,4 @@ public class FireQueueTester {
         Asserts.assertEquals(0, size);
     }
 
-    public static void main(String[] args) {
-        Config.setupByArgs(FireRankTester.class, args);
-        FireQueueTester test = new FireQueueTester(Config.getFireStore().getFireQueue("TEST_QUEUE"));
-        test.test();
-        Config.shutdown();
-    }
 }

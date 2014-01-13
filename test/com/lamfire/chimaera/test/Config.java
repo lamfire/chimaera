@@ -9,19 +9,16 @@ import com.lamfire.utils.PropertiesUtils;
 import java.util.Map;
 
 public class Config {
-    private static final String DEFAULT_HOST = "127.0.0.1";
-    //public static final String DEFAULT_HOST = "192.168.9.126";
-
-    public static final int DEFAULT_PORT = 19800;
+    private static String HOST = "127.0.0.1";
+    public static int PORT = 19800;
 
     public static ChimaeraCli cli;
 
     static{
         try{
             Map<String,String> map = PropertiesUtils.loadAsMap("chimaera-cli.properties", Config.class);
-            String host = map.get("host");
-            int port = Integer.parseInt(map.get("port"));
-            setup(host,port);
+            HOST = map.get("host");
+            PORT = Integer.parseInt(map.get("port"));
         }catch (Exception e){
 
         }
@@ -29,26 +26,35 @@ public class Config {
 
     public synchronized static ChimaeraCli getChimaeraCli(){
         if(cli == null){
-            setup(DEFAULT_HOST,DEFAULT_PORT);
+            setup(HOST,PORT);
         }
         return cli;
     }
 
+    public synchronized static ChimaeraCli getChimaeraCli(String[] args){
+        if(args!= null && args.length == 2){
+            return newChimaeraCli(args);
+        }
+        return getChimaeraCli();
+    }
 
-    public static void setupByArgs(Class<?> cls ,String[] args) {
-        String host = DEFAULT_HOST;
-        int port = DEFAULT_PORT;
+
+    static ChimaeraCli newChimaeraCli(String[] args) {
+        String host = HOST;
+        int port = PORT;
 
         if (args != null && args.length > 0 && "?".equals(args[0])) {
-            System.out.println(cls.getName() + " [host] [port]");
-            return;
+            System.out.println(" [host] [port]");
+            return null;
         }
 
         if (args != null && args.length == 2) {
             host = args[0];
             port = Integer.valueOf(args[1]);
         }
-        Config.setup(host,port);
+        ChimaeraCli cli = new ChimaeraCli();
+        cli.open(host, port);
+        return cli;
     }
 
     public static void setup(String host,int port ){
@@ -70,18 +76,12 @@ public class Config {
          return getChimaeraCli().getFireStore("DEFAULT");
     }
 
-    public static void shutdown(){
-        getChimaeraCli().close();
+    public static FireStore getFireStore(String[] args){
+        return getChimaeraCli(args).getFireStore("DEFAULT");
     }
 
-    public static void main(String[] args)throws Exception{
-        String storeName = "test";
-        ChimaeraOpts opts = ChimaeraOpts.get();
-        String dir = opts.getStoreDir();
-        String file = FilenameUtils.getPath(opts.getStoreDir()) +storeName+".cma";
-        String concat = FilenameUtils.concat(opts.getStoreDir(),storeName+".cma");
-        System.out.println(dir);
-        System.out.println(file);
-        System.out.println(concat);
+    public static void shutdown(){
+        getChimaeraCli().close();
+        System.exit(0);
     }
 }

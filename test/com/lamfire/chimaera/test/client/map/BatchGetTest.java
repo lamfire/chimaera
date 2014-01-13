@@ -54,7 +54,6 @@ public class BatchGetTest {
 	};
 
 	public static void main(String[] args) {
-        Config.setupByArgs(BatchGetTest.class,args);
 		Threads.startup(task);
         Threads.startup(task);
         Threads.startup(task);

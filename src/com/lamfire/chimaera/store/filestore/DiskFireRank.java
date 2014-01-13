@@ -17,18 +17,18 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class DiskFireRank implements FireRank {
     private final Lock lock = new ReentrantLock();
-    private NavigableSet<Item> set;
+    private NavigableSet<Item> tree;
     private NavigableSet<Item> descending;
-    private Map<String,Item> items;
+    private Map<String,Item> map;
     private StoreEngine engine;
     private String name;
 
     public DiskFireRank(StoreEngine engine, String name){
         this.engine = engine;
         this.name = name;
-        this.set = engine.getTreeSet(name+"_TREE",new ItemComparator(),new ItemSerializer());
-        this.descending = engine.getTreeSet(name+"_TREE_DESCENDING",new ItemComparator().descending(),new ItemSerializer());
-        this.items = engine.getHashMap(name+"_MAP",new ItemSerializer());
+        this.map = engine.getHashMap(name+"_MAP",new ItemSerializer());
+        this.tree = engine.getTreeSet(name+"_TREE_ASC",new ItemComparator(),new ItemSerializer());
+        this.descending = engine.getTreeSet(name+"_TREE_DESC",new ItemComparator().descending(),new ItemSerializer());
     }
 
     @Override
@@ -36,24 +36,31 @@ public class DiskFireRank implements FireRank {
         incr(name,1);
     }
 
+    private synchronized void insert(Item item){
+        descending.add(item);
+        map.put(item.getName(), item);
+        tree.add(item);
+    }
+
+    private synchronized void removeOnTree(Item item){
+        tree.remove(item);
+        descending.remove(item);
+    }
+
     @Override
     public void incr(String name, long step) {
         lock.lock();
         try{
-            Item item = items.get(name);
+            Item item = map.get(name);
             if(item == null){
                 item = new Item(name);
                 item.increment(step);
-                items.put(name,item);
-                set.add(item);
-                descending.add(item);
+                insert(item);
                 return;
             }
-            set.remove(item);
-            descending.remove(item);
+            removeOnTree(item);
             item.increment(step);
-            set.add(item);
-            descending.add(item);
+            insert(item);
             engine.cacheOrFlush();
         }finally {
             lock.unlock();
@@ -64,21 +71,17 @@ public class DiskFireRank implements FireRank {
     public synchronized void set(String name, long count) {
         lock.lock();
         try{
-            Item item = items.get(name);
+            Item item = map.get(name);
             if(item == null){
                 item = new Item();
                 item.setName(name);
                 item.setValue(count);
-                items.put(name,item);
-                set.add(item);
-                descending.add(item);
+                insert(item);
                 return;
             }
-            set.remove(item);
-            descending.remove(item);
+            removeOnTree(item);
             item.setValue(count);
-            set.add(item);
-            descending.add(item);
+            insert(item);
             engine.cacheOrFlush();
         }finally {
             lock.unlock();
@@ -86,12 +89,12 @@ public class DiskFireRank implements FireRank {
     }
 
     public Iterator<Item> iterator(){
-        return set.iterator();
+        return tree.iterator();
     }
 
     @Override
     public long score(String name) {
-        Item item = items.get(name);
+        Item item = map.get(name);
         if(item == null){
             return 0;
         }
@@ -102,11 +105,11 @@ public class DiskFireRank implements FireRank {
     public synchronized long remove(String name) {
         lock.unlock();
         try{
-            Item item = items.remove(name);
+            Item item = map.remove(name);
             if(item == null){
                 return 0;
             }
-            set.remove(item);
+            tree.remove(item);
             descending.remove(item);
             engine.cacheOrFlush();
             return item.getValue();
@@ -117,10 +120,10 @@ public class DiskFireRank implements FireRank {
 
     @Override
     public List<Item> max(int size) {
-        if(set.isEmpty()){
+        if(tree.isEmpty()){
             return null;
         }
-        return subList(set.iterator(),0, size);
+        return subList(tree.iterator(),0, size);
     }
 
     private synchronized List<Item> subList(Iterator<Item> it,int from,int size){
@@ -148,7 +151,7 @@ public class DiskFireRank implements FireRank {
 
     @Override
     public  List<Item> min(int size) {
-        if(set.isEmpty()){
+        if(tree.isEmpty()){
             return null;
         }
         return subList(descending.iterator(),0,size);
@@ -156,15 +159,15 @@ public class DiskFireRank implements FireRank {
 
     @Override
     public List<Item> maxRange(int from, int size) {
-        if(set.isEmpty()){
+        if(tree.isEmpty()){
             return null;
         }
-        return subList(set.iterator(),from,size);
+        return subList(tree.iterator(),from,size);
     }
 
     @Override
     public List<Item> minRange(int from, int size) {
-        if(set.isEmpty()){
+        if(tree.isEmpty()){
             return null;
         }
         return subList(descending.iterator(),from,size);
@@ -172,15 +175,15 @@ public class DiskFireRank implements FireRank {
 
     @Override
     public int size() {
-        return set.size();
+        return map.size();
     }
 
     @Override
     public synchronized void clear() {
         lock.lock();
         try{
-            this.set.clear();
-            this.items.clear();
+            this.tree.clear();
+            this.map.clear();
             this.descending.clear();
             engine.cacheOrFlush();
         }finally {

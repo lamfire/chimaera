@@ -19,7 +19,7 @@ public class ItemComparator implements Comparator<Item> ,Serializable {
         if(!desc){
             return val;
         }
-        return val * (-1);
+        return -(val);
     }
 
     public ItemComparator descending(){
