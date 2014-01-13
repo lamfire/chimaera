@@ -102,6 +102,7 @@ public class FireRankTester {
 
     public void putsRandom(int count){
         long startAt = System.currentTimeMillis();
+        long begin = startAt;
         for(int i=0;i<count;i++){
             this.rank.put(String.valueOf((int) (Math.random() * count)));
             if(i % 1000 == 0){
@@ -113,6 +114,7 @@ public class FireRankTester {
                 startAt = System.currentTimeMillis();
             }
         }
+        System.out.println("rank.put("+count+"):" + (System.currentTimeMillis() - begin) +" ms");
         System.out.println("rank.size:" + this.rank.size());
     }
 

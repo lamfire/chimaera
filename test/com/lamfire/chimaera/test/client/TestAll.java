@@ -1,6 +1,7 @@
 package com.lamfire.chimaera.test.client;
 
 import com.lamfire.chimaera.test.Config;
+import com.lamfire.chimaera.test.tester.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,12 +12,27 @@ import com.lamfire.chimaera.test.Config;
  */
 public class TestAll {
     public static void main(String[] args) {
-        FireStoreTest.main(null);
-        FireMapTest.main(null);
-        FireRankTest.main(null);
-        FireIncrementTest.main(null);
-        FireListTest.main(null);
-        FireSetTest.main(null);
+        FireIncrementTester t1 = new FireIncrementTester(Config.getFireStore(args));
+        t1.test();
+
+        FireListTester t2 = new FireListTester(Config.getFireStore(args).getFireList("TEST_LIST"));
+        t2.test();
+
+        FireMapTester t3 = new FireMapTester(Config.getFireStore(args).getFireMap("TEST_MAP"));
+        t3.test();
+
+        FireQueueTester t4 = new FireQueueTester(Config.getFireStore(args).getFireQueue("TEST_QUEUE"));
+        t4.test();
+
+        FireRankTester t5 = new FireRankTester(Config.getFireStore(args).getFireRank("TEST_RANK"));
+        t5.test();
+
+        FireSetTester t6 = new FireSetTester( Config.getFireStore(args).getFireSet("TEST_SET"));
+        t6.test();
+
+        FireStoreTester t7 = new FireStoreTester(Config.getFireStore(args));
+        t7.test();
+
         Config.shutdown();
     }
 }
