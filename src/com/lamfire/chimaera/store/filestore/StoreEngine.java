@@ -8,6 +8,9 @@ import org.apache.jdbm.Serializer;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -23,10 +26,13 @@ public class StoreEngine {
 
     private int maxCacheSize = 100;  //最大数据操作缓存次数，当达到该值时，刷新更改到文件。
     private AtomicInteger cacheCount = new AtomicInteger(); //数据更改次数记录器
+    private ScheduledExecutorService service ;
 
     public StoreEngine(String file)throws IOException{
         this.file = file;
-        this.db = DBMaker.openFile(file).enableSoftCache() .make();
+        this.db = DBMaker.openFile(file).enableSoftCache().make();
+        this.service = Executors.newScheduledThreadPool(1,Threads.makeThreadFactory("StoreEngine"));
+        this.service.scheduleWithFixedDelay(flushStoreWorker,30,30, TimeUnit.SECONDS);
     }
 
     public DB getDB(){
@@ -49,6 +55,14 @@ public class StoreEngine {
         return map;
     }
 
+    public synchronized  <K,V> Map<K,V> getHashMap(String name,Serializer<K> keySerializer,Serializer<V> valSerializer){
+        Map<K,V> map =  this.db.getHashMap(name);
+        if(map == null){
+            map = this.db.createHashMap(name,keySerializer,valSerializer);
+        }
+        return map;
+    }
+
     public synchronized <E> List<E> getLinkedList(String name,Serializer<E> serializer){
         List<E> list = this.db.getLinkedList(name);
         if(list == null){
@@ -65,10 +79,18 @@ public class StoreEngine {
         return set;
     }
 
-    public synchronized <E> Set<E> getTreeSet(String name){
-        Set<E> set = this.db.getTreeSet(name);
+    public synchronized <E> NavigableSet<E> getTreeSet(String name){
+        NavigableSet<E> set = this.db.getTreeSet(name);
         if(set == null){
             set = this.db.createTreeSet(name);
+        }
+        return set;
+    }
+
+    public synchronized <E> NavigableSet<E> getTreeSet(String name,Comparator<E> comparator,Serializer<E> serializer){
+        NavigableSet<E> set = this.db.getTreeSet(name);
+        if(set == null){
+            set = this.db.createTreeSet(name,comparator,serializer);
         }
         return set;
     }

@@ -1,5 +1,6 @@
 package com.lamfire.chimaera.store;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -9,9 +10,25 @@ import java.util.Comparator;
  * Time: 上午11:25
  * To change this template use File | Settings | File Templates.
  */
-public class ItemComparator implements Comparator<Item> {
+public class ItemComparator implements Comparator<Item> ,Serializable {
+    private boolean desc = false;
+
     @Override
-    public int compare(Item o1, Item o2) {
+    public int compare(Item o1, Item o2){
+        int val = docompare(o1,o2);
+        if(!desc){
+            return val;
+        }
+        return val * (-1);
+    }
+
+    public ItemComparator descending(){
+        this.desc = true;
+        return this;
+    }
+
+
+    public int docompare(Item o1, Item o2) {
         if(o1 == o2){
             return 0;
         }

@@ -29,9 +29,13 @@ public class ChimaeraBlockingQueue implements FireQueue{
 
     @Override
     public synchronized byte[] pop() {
-        byte[] val = this.storeQueue.pop();
-        if(val != null){
-            return val;
+        try{
+            byte[] val = this.storeQueue.pop();
+            if(val != null){
+                return val;
+            }
+        }catch(Exception e){
+
         }
         try{
             if(LOGGER.isDebugEnabled()){
@@ -44,9 +48,13 @@ public class ChimaeraBlockingQueue implements FireQueue{
 
     @Override
     public synchronized byte[] peek() {
-        byte[] val = this.storeQueue.peek();
-        if(val != null){
-            return val;
+        try{
+            byte[] val = this.storeQueue.peek();
+            if(val != null){
+                return val;
+            }
+        }catch(Exception e){
+
         }
         try{
             if(LOGGER.isDebugEnabled()){

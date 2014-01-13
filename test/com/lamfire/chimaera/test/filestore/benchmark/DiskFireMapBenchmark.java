@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MapTest {
-    static final Logger logger = Logger.getLogger(MapTest.class);
+public class DiskFireMapBenchmark {
+    static final Logger logger = Logger.getLogger(DiskFireMapBenchmark.class);
     static AtomicInteger atomic = new AtomicInteger();
     static AtomicInteger errorAtomic =   new AtomicInteger();
     static List<String> errorList = Lists.newArrayList();
@@ -24,7 +24,7 @@ public class MapTest {
     private static final String FILE = "/data/chimaera/store";
     private FireMap map ;
 
-    public MapTest() throws IOException {
+    public DiskFireMapBenchmark() throws IOException {
         StoreEngine store = new StoreEngine(FILE);
         store.setMaxCacheSize(1000);
         this.map  = new DiskFireMap(store,"TEST_MAP");
@@ -59,8 +59,8 @@ public class MapTest {
     }
 	
 	private static class Writer implements Runnable  {
-        MapTest test;
-        public Writer(MapTest test){
+        DiskFireMapBenchmark test;
+        public Writer(DiskFireMapBenchmark test){
              this.test = test;
         }
 		@Override
@@ -81,8 +81,8 @@ public class MapTest {
 	};
 
     private static class Reader implements Runnable{
-        MapTest test;
-        public Reader(MapTest test){
+        DiskFireMapBenchmark test;
+        public Reader(DiskFireMapBenchmark test){
             this.test = test;
         }
         public void run() {
@@ -103,7 +103,7 @@ public class MapTest {
 
 
 	public static void main(String[] args) throws Exception{
-        MapTest test = new MapTest();
+        DiskFireMapBenchmark test = new DiskFireMapBenchmark();
 		Threads.startup(new Writer(test));
         Threads.startup(new Writer(test));
         Threads.startup(new Writer(test));

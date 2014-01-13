@@ -1,8 +1,7 @@
-package com.lamfire.chimaera.test.filestore;
+package com.lamfire.chimaera.test.tester;
 
 import com.lamfire.chimaera.store.FireList;
-import com.lamfire.chimaera.store.filestore.DiskFireList;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;
@@ -14,14 +13,12 @@ import java.util.List;
  * Time: 上午10:28
  * To change this template use File | Settings | File Templates.
  */
-public class FireListFileSoreTest {
-    private static final String FILE = "/data/chimaera/store";
+public class FireListTester {
     private FireList list;
 
-    public FireListFileSoreTest(FireList list) {
+    public FireListTester(FireList list){
         this.list = list;
     }
-
     public void test() {
         list.clear();
         System.out.println("list.clear()");
@@ -70,12 +67,6 @@ public class FireListFileSoreTest {
         System.out.println("list.size():"+size);
         Asserts.assertEquals(size,99);
 
-    }
-
-    public static void main(String[] args) throws Exception{
-        StoreEngine store = new StoreEngine(FILE);
-        FireList list  = new DiskFireList(store,"TEST_LIST");
-        FireListFileSoreTest test = new FireListFileSoreTest(list);
-        test.test();
+        System.out.println("<<== finish.");
     }
 }

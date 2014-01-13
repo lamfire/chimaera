@@ -21,7 +21,7 @@ public class DiskFireQueue implements FireQueue {
     }
 
 	@Override
-	public void push(byte[] value) {
+	public synchronized void push(byte[] value) {
         lock.lock();
         try{
 		    list.add(value);
@@ -36,12 +36,12 @@ public class DiskFireQueue implements FireQueue {
     }
 
 	@Override
-	public byte[] pop() {
-        if(list.isEmpty()){
-            return null;
-        }
+	public synchronized byte[] pop() {
         lock.lock();
         try{
+            if(list.isEmpty()){
+                return null;
+            }
 		    return list.remove(0);
         }finally{
             lock.unlock();
@@ -49,11 +49,16 @@ public class DiskFireQueue implements FireQueue {
         }
 	}
 
-    public byte[] peek(){
-        if(list.isEmpty()){
-            return null;
+    public synchronized byte[] peek(){
+        lock.lock();
+        try{
+            if(list.isEmpty()){
+                return null;
+            }
+            return list.get(0);
+        }finally{
+            lock.unlock();
         }
-        return list.get(0);
     }
 
 	@Override

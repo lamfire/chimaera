@@ -1,8 +1,8 @@
-package com.lamfire.chimaera.test.filestore;
+package com.lamfire.chimaera.test.tester;
 
 import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.filestore.DiskFireMap;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
+import com.lamfire.chimaera.store.FireStore;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 import com.lamfire.utils.RandomUtils;
 
@@ -11,19 +11,22 @@ import java.util.List;
 /**
  * Created with IntelliJ IDEA.
  * User: lamfire
- * Date: 13-12-18
- * Time: 下午1:54
+ * Date: 13-10-25
+ * Time: 上午10:49
  * To change this template use File | Settings | File Templates.
  */
-public class FireMapFileStoreTest {
-    private static final String FILE = "/data/chimaera/store";
-    private FireMap map ;
+public class FireMapTester {
 
-    FireMapFileStoreTest(FireMap map){
+    FireMap map;
+
+    public FireMapTester(FireMap map){
         this.map = map;
     }
 
-    public void test() throws Exception{
+    public void test() {
+        map.clear();
+        System.out.println("map.clear()");
+
         String field = "TEST1";
         String value = "22222222222222";
         long startAt = System.currentTimeMillis();
@@ -81,12 +84,16 @@ public class FireMapFileStoreTest {
 
         List<String> keys = map.keys();
         System.out.println(keys);
+
+        System.out.println("<<== finish.");
     }
 
-    public static void main(String[] args)throws Exception {
-        StoreEngine store = new StoreEngine(FILE);
-        FireMap map  = new DiskFireMap(store,"TEST_MAP");
-        FireMapFileStoreTest test = new FireMapFileStoreTest(map);
+    public static void main(String[] args) {
+        Config.setupByArgs(FireMapTester.class, args);
+        FireStore store = Config.getFireStore();
+        FireMap map = store.getFireMap("TEST_MAP");
+        FireMapTester test = new FireMapTester(map);
         test.test();
+        Config.shutdown();
     }
 }

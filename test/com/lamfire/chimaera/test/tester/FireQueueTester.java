@@ -1,8 +1,7 @@
-package com.lamfire.chimaera.test.filestore;
+package com.lamfire.chimaera.test.tester;
 
 import com.lamfire.chimaera.store.FireQueue;
-import com.lamfire.chimaera.store.filestore.DiskFireQueue;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 
 /**
@@ -12,10 +11,10 @@ import com.lamfire.utils.Asserts;
  * Time: 上午11:06
  * To change this template use File | Settings | File Templates.
  */
-public class FireQueueFileStoreTest {
-    private static final String FILE = "/data/chimaera/store";
+public class FireQueueTester {
     FireQueue queue ;
-    public FireQueueFileStoreTest(FireQueue queue){
+
+    public FireQueueTester(FireQueue queue){
         this.queue = queue;
     }
 
@@ -23,10 +22,17 @@ public class FireQueueFileStoreTest {
         queue.clear();
         System.out.println("queue.clear()");
 
+        String s = "hayash";
+        queue.push(s.getBytes());
+        String peek = new String(queue.peek());
+        Asserts.assertEquals(s, peek);
+        String pop = new String(queue.pop());
+        Asserts.assertEquals(s, pop);
+
         for(int i=0;i<100;i++){
             String val = String.valueOf(i);
             queue.push(val.getBytes());
-            System.out.println("queue.pushLeft("+val+")");
+            System.out.println("queue.push("+val+")");
         }
 
         int size = queue.size();
@@ -35,7 +41,7 @@ public class FireQueueFileStoreTest {
 
         for(int i=0;i<100;i++){
             String val = new String(queue.pop());
-            System.out.println("queue.popLeft():"+val);
+            System.out.println("queue.pop():"+val);
             Asserts.assertEquals(val,String.valueOf(i));
         }
 
@@ -44,10 +50,10 @@ public class FireQueueFileStoreTest {
         Asserts.assertEquals(0, size);
     }
 
-    public static void main(String[] args)throws Exception {
-        StoreEngine store = new StoreEngine(FILE);
-        FireQueue queue  = new DiskFireQueue(store,"TEST_SET");
-        FireQueueFileStoreTest test = new FireQueueFileStoreTest(queue);
+    public static void main(String[] args) {
+        Config.setupByArgs(FireRankTester.class, args);
+        FireQueueTester test = new FireQueueTester(Config.getFireStore().getFireQueue("TEST_QUEUE"));
         test.test();
+        Config.shutdown();
     }
 }

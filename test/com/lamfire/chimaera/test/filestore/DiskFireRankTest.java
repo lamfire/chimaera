@@ -1,11 +1,14 @@
-package com.lamfire.chimaera.test.client;
+package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.Item;
+import com.lamfire.chimaera.store.filestore.DiskFireRank;
+import com.lamfire.chimaera.store.filestore.StoreEngine;
 import com.lamfire.chimaera.test.Config;
 import com.lamfire.chimaera.test.tester.FireRankTester;
 import com.lamfire.utils.Asserts;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,12 +19,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Time: 下午2:02
  * To change this template use File | Settings | File Templates.
  */
-public class FireRankTest {
+public class DiskFireRankTest {
+    private static final String FILE = "/data/chimaera/store";
 
-    public static void main(String[] args) {
-        Config.setupByArgs(FireRankTest.class,args);
-        FireRankTester test = new FireRankTester(Config.getFireStore().getFireRank("TEST_RANK"));
+    public static void main(String[] args) throws IOException {
+        StoreEngine store = new StoreEngine(FILE);
+        FireRankTester test = new FireRankTester(new DiskFireRank(store,"TEST_RANK"));
         test.test();
-        Config.shutdown();
     }
 }

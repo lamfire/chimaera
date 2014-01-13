@@ -127,7 +127,7 @@ public class DiskFireStore implements FireStore {
     public FireRank getFireRank(String key) {
         FireRank result = fireRankCache.get(key);
         if(result == null){
-            result =  new MemoryFireRank();
+            result =  new DiskFireRank(this.engine,key);
             fireRankCache.put(key,result);
         }
         return result;

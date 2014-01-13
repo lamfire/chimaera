@@ -1,8 +1,7 @@
-package com.lamfire.chimaera.test.filestore;
+package com.lamfire.chimaera.test.tester;
 
 import com.lamfire.chimaera.store.FireSet;
-import com.lamfire.chimaera.store.filestore.DiskFireSet;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
+import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;
@@ -14,15 +13,16 @@ import java.util.List;
  * Time: 上午10:38
  * To change this template use File | Settings | File Templates.
  */
-public class FireSetFileStoreTest {
-    private static final String FILE = "/data/chimaera/store";
-    private FireSet set;
+public class FireSetTester {
 
-    public FireSetFileStoreTest(FireSet set){
+    FireSet set;
+
+    public FireSetTester(FireSet set){
         this.set = set;
     }
 
-    public void test()throws Exception {
+    public  void test() {
+
         set.clear();
         System.out.println("set.clear()");
 
@@ -81,10 +81,11 @@ public class FireSetFileStoreTest {
 
     }
 
-    public static void main(String[] args)throws Exception {
-        StoreEngine store = new StoreEngine(FILE);
-        FireSet set  = new DiskFireSet(store,"TEST_SET");
-        FireSetFileStoreTest test = new FireSetFileStoreTest(set);
+    public static void main(String[] args) {
+        Config.setupByArgs(FireSetTester.class, args);
+        FireSet set = Config.getFireStore().getFireSet("TEST_SET");
+        FireSetTester test = new FireSetTester(set);
         test.test();
+        Config.shutdown();
     }
 }
