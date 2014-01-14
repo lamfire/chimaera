@@ -25,10 +25,22 @@ public class ChimaeraServiceTask implements Runnable{
         this.command = command;
     }
 
+    private void checkMemory(){
+        if(!ChimaeraOpts.get().isStoreInMemory()){
+            return;
+        }
+        if(ServiceRegistry.getInstance().isWriteProtectedCommand(command.getCommand())){ //如果为写入操作，则检查剩余内存
+            if(Chimaera.isLackOfMemory()){ //内存缺乏
+                throw new ChimaeraException("Lack of memory,available less " + Chimaera.getAvailableHeapMemory() / 1024 /1024 +"mb");
+            }
+        }
+    }
+
     @Override
     public void run() {
         Response response = null;
         try{
+            checkMemory();
             Service<Command> service =ServiceRegistry.getInstance().getService(command.getCommand());
             response = service.execute(context, command);
         }catch(Exception e){
