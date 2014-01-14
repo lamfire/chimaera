@@ -6,6 +6,7 @@ import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.hydra.CycleSessionIterator;
 import com.lamfire.hydra.Message;
+import com.lamfire.hydra.net.Future;
 import com.lamfire.hydra.net.Session;
 import com.lamfire.hydra.net.SessionGroup;
 import com.lamfire.json.JSON;
@@ -138,7 +139,7 @@ public class ChimaeraPoller {
 
     private void sendResponse(Session session,Message message){
         try{
-            session.send(message);
+            session.send(message).sync();
         }catch(Exception e){
             LOGGER.error("error send response.",e);
         }
