@@ -89,7 +89,7 @@ public class FireRankTester {
         while(true){
             i = count.getAndIncrement();
             this.rank.put(String.valueOf((int) (Math.random() * 100000)));
-            if(i % 1000 == 0){
+            if(i % 10 == 0){
                 long timeUsed = System.currentTimeMillis() - startAt;
                 if(timeUsed > max_used_time){
                     max_used_time =  timeUsed;

@@ -36,15 +36,25 @@ public class DiskFireRank implements FireRank {
         incr(name,1);
     }
 
-    private synchronized void insert(Item item){
-        descending.add(item);
-        map.put(item.getName(), item);
-        tree.add(item);
+    private void insert(Item item){
+        lock.lock();
+        try{
+            descending.add(item);
+            map.put(item.getName(), item);
+            tree.add(item);
+        }finally {
+            lock.unlock();
+        }
     }
 
-    private synchronized void removeOnTree(Item item){
-        tree.remove(item);
-        descending.remove(item);
+    private void removeOnTree(Item item){
+        lock.lock();
+        try{
+            tree.remove(item);
+            descending.remove(item);
+        }finally {
+            lock.unlock();
+        }
     }
 
     @Override
@@ -120,13 +130,18 @@ public class DiskFireRank implements FireRank {
 
     @Override
     public List<Item> max(int size) {
-        if(tree.isEmpty()){
-            return null;
+        lock.lock();
+        try{
+            if(tree.isEmpty()){
+                return null;
+            }
+            return subList(tree.iterator(),0, size);
+        }finally {
+            lock.unlock();
         }
-        return subList(tree.iterator(),0, size);
     }
 
-    private synchronized List<Item> subList(Iterator<Item> it,int from,int size){
+    private List<Item> subList(Iterator<Item> it,int from,int size){
         lock.lock();
         try{
             List<Item> result = new ArrayList<Item>();
@@ -151,26 +166,41 @@ public class DiskFireRank implements FireRank {
 
     @Override
     public  List<Item> min(int size) {
-        if(tree.isEmpty()){
-            return null;
+        lock.lock();
+        try{
+            if(tree.isEmpty()){
+                return null;
+            }
+            return subList(descending.iterator(),0,size);
+        }finally {
+            lock.unlock();
         }
-        return subList(descending.iterator(),0,size);
     }
 
     @Override
     public List<Item> maxRange(int from, int size) {
-        if(tree.isEmpty()){
-            return null;
+        lock.lock();
+        try{
+            if(tree.isEmpty()){
+                return null;
+            }
+            return subList(tree.iterator(),from,size);
+        }finally {
+            lock.unlock();
         }
-        return subList(tree.iterator(),from,size);
     }
 
     @Override
     public List<Item> minRange(int from, int size) {
-        if(tree.isEmpty()){
-            return null;
+        lock.lock();
+        try{
+            if(tree.isEmpty()){
+                return null;
+            }
+            return subList(descending.iterator(),from,size);
+        }finally {
+            lock.unlock();
         }
-        return subList(descending.iterator(),from,size);
     }
 
     @Override

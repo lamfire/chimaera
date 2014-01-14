@@ -7,13 +7,18 @@ import com.lamfire.chimaera.response.ErrorResponse;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.serializer.Serializers;
 import com.lamfire.logger.Logger;
+import com.lamfire.utils.Threads;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ChimaeraServer extends Snake {
 	private static final Logger LOGGER = Logger.getLogger(ChimaeraServer.class);
-
+    private ExecutorService service ;
     private ServiceRegistry serviceRegistry = ServiceRegistry.getInstance();
 	public ChimaeraServer(String host, int port) {
 		super(host, port);
+        this.service = Executors.newFixedThreadPool(64, Threads.makeThreadFactory("ServiceTask"));
 	}
 
 	public static void startup(String host, int port) {
@@ -55,7 +60,8 @@ public class ChimaeraServer extends Snake {
         Command  cmd = Serializers.getCommandSerializer().decode(bytes,Command.class);
         try{
             if(ServiceRegistry.getInstance().validateCommand(cmd)){
-                executeCommand(context, cmd);
+                //executeCommand(context, cmd);
+                submitTask(context, cmd);
             }
         }catch(Exception e){
             ErrorResponse err = new ErrorResponse();
@@ -63,6 +69,11 @@ public class ChimaeraServer extends Snake {
             sendResponse(context,err);
         }
 	}
+
+    private void submitTask(MessageContext context,Command command){
+        ChimaeraServiceTask task = new ChimaeraServiceTask(context,command);
+        this.service.submit(task);
+    }
 
     private void executeCommand(MessageContext context,Command command){
         Response response = null;

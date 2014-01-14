@@ -30,7 +30,7 @@ public class StoreEngine {
 
     public StoreEngine(String file)throws IOException{
         this.file = file;
-        this.db = DBMaker.openFile(file).enableSoftCache().make();
+        this.db = DBMaker.openFile(file).enableSoftCache().disableLocking().disableTransactions().make();
         this.service = Executors.newScheduledThreadPool(1,Threads.makeThreadFactory("StoreEngine"));
         this.service.scheduleWithFixedDelay(flushStoreWorker,30,30, TimeUnit.SECONDS);
     }
@@ -104,7 +104,8 @@ public class StoreEngine {
      */
     protected synchronized void cacheOrFlush(){
         if(cacheCount.getAndIncrement() >= maxCacheSize){
-            Threads.startup(flushStoreWorker);
+            //Threads.startup(flushStoreWorker);
+            flush();
         }
     }
 
