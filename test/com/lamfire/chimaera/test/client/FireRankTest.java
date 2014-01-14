@@ -25,6 +25,6 @@ public class FireRankTest {
         test.max(10);
         test.min(10);
         test.size();
-        //test.putsRandom();
+        test.putsRandom();
     }
 }

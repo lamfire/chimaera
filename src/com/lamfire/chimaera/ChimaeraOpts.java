@@ -1,6 +1,7 @@
 package com.lamfire.chimaera;
 
 import com.lamfire.logger.Logger;
+import com.lamfire.utils.NumberUtils;
 import com.lamfire.utils.PropertiesUtils;
 import com.lamfire.utils.StringUtils;
 
@@ -21,6 +22,7 @@ public class ChimaeraOpts {
     private boolean storeInMemory = true;
     private String storeDir;
     private int storeCacheSize = -1;
+    private int threads = 16;
 
     static ChimaeraOpts instance;
 
@@ -36,6 +38,7 @@ public class ChimaeraOpts {
             Properties prop = PropertiesUtils.load(CONFIG_RESOURCE_NAME,ChimaeraOpts.class);
             this.bind = (String)prop.get("bind");
             this.port = Integer.parseInt((String)prop.get("port"));
+            this.threads = Integer.parseInt((String)prop.get("threads"));
             String store = (String)prop.get("store");
             if(StringUtils.equalsIgnoreCase("file",store)){
                 this.storeInMemory = false;
@@ -94,5 +97,13 @@ public class ChimaeraOpts {
 
     public void setStoreCacheSize(int storeCacheSize) {
         this.storeCacheSize = storeCacheSize;
+    }
+
+    public int getThreads() {
+        return threads;
+    }
+
+    public void setThreads(int threads) {
+        this.threads = threads;
     }
 }

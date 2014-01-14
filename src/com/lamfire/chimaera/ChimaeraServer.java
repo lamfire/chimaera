@@ -14,15 +14,14 @@ import java.util.concurrent.Executors;
 
 public class ChimaeraServer extends Snake {
 	private static final Logger LOGGER = Logger.getLogger(ChimaeraServer.class);
-    private ExecutorService service ;
     private ServiceRegistry serviceRegistry = ServiceRegistry.getInstance();
 	public ChimaeraServer(String host, int port) {
 		super(host, port);
-        this.service = Executors.newFixedThreadPool(64, Threads.makeThreadFactory("ServiceTask"));
 	}
 
 	public static void startup(String host, int port) {
 		ChimaeraServer server = new ChimaeraServer(host, port);
+        server.setExecutorService(ThreadPools.get().getExecutorService());
 		server.bind();
         LOGGER.info("[startup] available memory = " + (Chimaera.getAvailableHeapMemory()/1024/1024) +"mb");
         LOGGER.info("[startup] startup on - " + host +":" + port);
@@ -72,7 +71,7 @@ public class ChimaeraServer extends Snake {
 
     private void submitTask(MessageContext context,Command command){
         ChimaeraServiceTask task = new ChimaeraServiceTask(context,command);
-        this.service.submit(task);
+        ThreadPools.get().submit(task);
     }
 
     private void executeCommand(MessageContext context,Command command){
