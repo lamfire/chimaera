@@ -2,14 +2,15 @@
   <library name="lib">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/hydra.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/lamfire-2.1.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/log4j-1.2.18.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/netty-3.7.0.Final.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jdbm.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/lamfire-2.1.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
       <root url="file://D:/android/workpace/jdbm3/src" />
+      <root url="file://$PROJECT_DIR$/../../MyEclipse.8.x/lamfire/src" />
     </SOURCES>
   </library>
 </component>

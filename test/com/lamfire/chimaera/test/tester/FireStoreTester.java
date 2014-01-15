@@ -19,12 +19,13 @@ public class FireStoreTester {
     }
 
     public void test() {
+        System.out.println("==>> startup : " + this.getClass().getName());
         store.clear();
         System.out.println("store.clear()");
 
         int size = store.size();
         System.out.println("store.size() = " + size);
         Asserts.assertEquals(size,0);
-
+        System.out.println("<<== finish : " + this.getClass().getName());
     }
 }

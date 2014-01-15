@@ -172,6 +172,7 @@ public class FireRankTester {
     }
 
     public void test() {
+        System.out.println("==>> startup : " + this.getClass().getName());
         System.out.println("================> clear()");
         clear();
         System.out.println("================> incr()");
@@ -192,6 +193,6 @@ public class FireRankTester {
         maxRange(2,20);
         System.out.println("================>  minRange(2,10)");
         minRange(0,10);
-        System.out.println("<<== finish.");
+        System.out.println("<<== finish : " + this.getClass().getName());
     }
 }

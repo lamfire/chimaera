@@ -19,6 +19,7 @@ public class FireIncrementTester {
     }
 
     public void test() {
+        System.out.println("==>> startup : " + this.getClass().getName());
         store.remove("INCREMENT_TEST");
         FireIncrement inc = store.getFireIncrement("INCREMENT_TEST");
         long startAt = System.currentTimeMillis();
@@ -69,5 +70,7 @@ public class FireIncrementTester {
         value =inc.get();
         System.out.println("final increment.get():"+value);
         Asserts.assertEquals(value,0);
+
+        System.out.println("<<== finish : " + this.getClass().getName());
     }
 }

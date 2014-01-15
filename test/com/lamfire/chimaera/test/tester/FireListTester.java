@@ -20,6 +20,7 @@ public class FireListTester {
         this.list = list;
     }
     public void test() {
+        System.out.println("==>> startup : " + this.getClass().getName());
         list.clear();
         System.out.println("list.clear()");
 
@@ -67,6 +68,6 @@ public class FireListTester {
         System.out.println("list.size():"+size);
         Asserts.assertEquals(size,99);
 
-        System.out.println("<<== finish.");
+        System.out.println("<<== finish : " + this.getClass().getName());
     }
 }

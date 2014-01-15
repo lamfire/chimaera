@@ -22,7 +22,7 @@ public class FireSetTester {
     }
 
     public  void test() {
-
+        System.out.println("==>> startup : " + this.getClass().getName());
         set.clear();
         System.out.println("set.clear()");
 
@@ -79,6 +79,7 @@ public class FireSetTester {
         System.out.println("set.get(98):"+value);
         Asserts.assertEquals("99",value);
 
+        System.out.println("<<== finish : " + this.getClass().getName());
     }
 
 }

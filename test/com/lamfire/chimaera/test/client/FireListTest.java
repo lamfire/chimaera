@@ -17,7 +17,8 @@ import java.util.List;
 public class FireListTest {
 
     public static void main(String[] args) {
-        FireListTester test = new FireListTester(Config.getFireStore(args).getFireList("TEST_LIST"));
+        FireList list = Config.getFireStore(args).getFireList("TEST_LIST");
+        FireListTester test = new FireListTester(list);
         test.test();
     }
 }

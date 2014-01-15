@@ -24,6 +24,7 @@ public class FireMapTester {
     }
 
     public void test() {
+        System.out.println("==>> startup : " + this.getClass().getName());
         map.clear();
         System.out.println("map.clear()");
 
@@ -85,7 +86,7 @@ public class FireMapTester {
         List<String> keys = map.keys();
         System.out.println(keys);
 
-        System.out.println("<<== finish.");
+        System.out.println("<<== finish : " + this.getClass().getName());
     }
 
 }

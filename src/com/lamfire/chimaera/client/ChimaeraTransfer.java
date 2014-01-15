@@ -115,7 +115,9 @@ public class ChimaeraTransfer extends Snake {
             return ;
         }
         Response response =Serializers.getResponseSerializer().decode(json,future.getResponseType());
-        future.onResponse(response);
+        if(response != null){
+            future.onResponse(response);
+        }
     }
 
 }

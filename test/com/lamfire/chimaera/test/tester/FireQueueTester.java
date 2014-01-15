@@ -19,6 +19,7 @@ public class FireQueueTester {
     }
 
     public void test() {
+        System.out.println("==>> startup : " + this.getClass().getName());
         queue.clear();
         System.out.println("queue.clear()");
 
@@ -48,6 +49,8 @@ public class FireQueueTester {
         size = queue.size();
         System.out.println("queue.size():"+size);
         Asserts.assertEquals(0, size);
+
+        System.out.println("<<== finish : " + this.getClass().getName());
     }
 
 }

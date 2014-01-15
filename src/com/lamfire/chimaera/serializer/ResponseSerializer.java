@@ -36,18 +36,23 @@ public class ResponseSerializer implements Serializer<Response>{
 
     @Override
     public Response decode(JSON json, Class< Response> type) {
-        Integer status = (Integer)json.get("status");
-        Response res;
-        if(status == 201){
-            res = json.toObject(PublishResponse.class);
-        } else if(status == 200){
-            res = (Response)json.toObject(type);
-        }  else{
-            res = (Response)json.toObject( ErrorResponse.class);
+        try{
+            Integer status = (Integer)json.get("status");
+            Response res;
+            if(status == 201){
+                res = json.toObject(PublishResponse.class);
+            } else if(status == 200){
+                res = (Response)json.toObject(type);
+            }  else{
+                res = (Response)json.toObject( ErrorResponse.class);
+            }
+            if(LOGGER.isDebugEnabled()){
+                LOGGER.debug("RESPONSE:" + type.getName() +"=" +json);
+            }
+            return res;
+        }catch (Throwable t){
+            LOGGER.error(t.getMessage(),t);
         }
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("RESPONSE:" + type.getName() +"=" +json);
-        }
-        return res;
+        return null;
     }
 }
