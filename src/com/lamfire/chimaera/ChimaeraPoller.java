@@ -121,7 +121,7 @@ public class ChimaeraPoller {
             //获得下个Session
             SessionGroup group = getSesionGroup(key);
             Session session = group.next();
-            if(session != null && session.isConnected()){
+            if(session != null){
                 Message msg = new Message();
                 msg.setBody(responseBytes);
                 sendResponse(session,msg);
@@ -140,7 +140,7 @@ public class ChimaeraPoller {
     private void sendResponse(Session session,Message message){
         try{
             session.send(message).sync();
-        }catch(Exception e){
+        }catch(Throwable e){
             LOGGER.error("error send response.",e);
         }
     }

@@ -27,10 +27,20 @@ public class ThreadPools {
     private ExecutorService service;
 
     private ThreadPools() {
-        int threads = ChimaeraOpts.get().getThreads();
+        int threads = -1;
+        try{
+            threads = ChimaeraOpts.get().getThreads();
+        }catch (Exception e){
+
+        }
         String name = "Chimaera Worker";
-        this.service = Executors.newFixedThreadPool(threads, Threads.makeThreadFactory(name));
-        LOGGER.info("Create thread pool[" +name +"],fixed size = " + threads);
+        if(threads > 0){
+            this.service = Executors.newFixedThreadPool(threads, Threads.makeThreadFactory(name));
+            LOGGER.info("Create thread pool[" +name +"],fixed thread pool,size = " + threads);
+        }else{
+            this.service = Executors.newCachedThreadPool(Threads.makeThreadFactory(name));
+            LOGGER.info("Create thread pool[" +name +"],cached thread pool.");
+        }
     }
 
     public void submit(Runnable run){

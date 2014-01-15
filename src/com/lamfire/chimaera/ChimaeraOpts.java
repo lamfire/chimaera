@@ -1,10 +1,12 @@
 package com.lamfire.chimaera;
 
 import com.lamfire.logger.Logger;
+import com.lamfire.utils.FileUtils;
 import com.lamfire.utils.NumberUtils;
 import com.lamfire.utils.PropertiesUtils;
 import com.lamfire.utils.StringUtils;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -47,15 +49,24 @@ public class ChimaeraOpts {
             }
             this.storeDir = (String)prop.get("store.dir");
             this.storeCacheSize = Integer.parseInt((String)prop.get("store.cache.size"));
-            LOGGER.info("bind:" + bind);
-            LOGGER.info("port:" +port);
-            LOGGER.info("store:" +(storeInMemory?"memory":"file"));
-            if(! storeInMemory){
-                LOGGER.info("storeDir:" +storeDir);
-                LOGGER.info("storeCacheSize:" +storeCacheSize);
-            }
         }catch (Exception e){
             LOGGER.warn("Parse '"+CONFIG_RESOURCE_NAME+"' file failed,use memory store.");
+        }
+
+        initOptions();
+    }
+
+    private void initOptions(){
+        LOGGER.info("bind:" + bind);
+        LOGGER.info("port:" +port);
+        LOGGER.info("store:" +(storeInMemory?"memory":"file"));
+        if(! storeInMemory){
+            LOGGER.info("storeDir:" +storeDir);
+            if(!FileUtils.exists(storeDir)){
+                FileUtils.makeDirs(storeDir);
+                LOGGER.info("The store dir not found,make " + this.storeDir);
+            }
+            LOGGER.info("storeCacheSize:" +storeCacheSize);
         }
     }
 

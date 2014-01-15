@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Time: 上午10:50
  * To change this template use File | Settings | File Templates.
  */
-public class ChimaeraSubscribe implements Runnable{
+public class ChimaeraSubscribe {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraSubscribe.class);
     private  final Map<String,SessionGroup> groups = Maps.newHashMap();
     private static final ChimaeraSubscribe instance = new ChimaeraSubscribe();
@@ -36,6 +36,15 @@ public class ChimaeraSubscribe implements Runnable{
         return   instance;
     }
 
+    private Runnable executor = new Runnable() {
+        @Override
+        public void run() {
+            while(true){
+                processNext();
+            }
+        }
+    };
+
     private FireStore store;   //store
     private ChimaeraBlockingQueue queue;   //消息队列
     private ExecutorService service; //消息分发服务
@@ -45,7 +54,7 @@ public class ChimaeraSubscribe implements Runnable{
         this.store = Chimaera.getFireStore(STORE_NAME);
         this.queue = new ChimaeraBlockingQueue(this.store.getFireQueue(QUEUE_NAME));
         this.service = Executors.newFixedThreadPool(1, Threads.makeThreadFactory(STORE_NAME));
-        this.service.submit(this);
+        this.service.submit(executor);
     }
 
     private synchronized SessionGroup newSessionGroup(String key){
@@ -88,7 +97,7 @@ public class ChimaeraSubscribe implements Runnable{
     private void sendResponse(Session session,Message message){
         try{
             session.send(message).sync();
-        }catch(Exception e){
+        }catch(Throwable e){
             LOGGER.error("error send response.",e);
         }
     }
@@ -122,12 +131,4 @@ public class ChimaeraSubscribe implements Runnable{
             LOGGER.warn(e.getMessage(),e);
         }
     }
-
-    @Override
-    public void run() {
-        while(true){
-            processNext();
-        }
-    }
-
 }
