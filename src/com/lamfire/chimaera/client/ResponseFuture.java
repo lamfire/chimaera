@@ -4,6 +4,7 @@ import com.lamfire.chimaera.ChimaeraException;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.response.ErrorResponse;
+import com.lamfire.hydra.net.Session;
 import com.lamfire.json.JSON;
 import com.lamfire.logger.Logger;
 
@@ -15,8 +16,10 @@ public class ResponseFuture<T extends Response> {
 	private T response;
 	private Class<?> responseType;
     private Command command;
+    private Session session;
 
-	public ResponseFuture( Command command,int messageId, ResponseWaitQueue waitQueue, Class<?> responseType) {
+	public ResponseFuture( Session session,Command command,int messageId, ResponseWaitQueue waitQueue, Class<?> responseType) {
+        this.session = session;
 		this.messageId = messageId;
 		this.waitQueue = waitQueue;
 		this.responseType = responseType;
@@ -27,6 +30,10 @@ public class ResponseFuture<T extends Response> {
 	public Class<?> getResponseType() {
 		return this.responseType;
 	}
+
+    public Session getSession(){
+        return this.session;
+    }
 
 	public long getReadTimeoutMillis() {
 		return readTimeoutMillis;

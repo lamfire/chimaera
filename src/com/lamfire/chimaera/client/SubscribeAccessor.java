@@ -7,6 +7,7 @@ import com.lamfire.chimaera.command.subscribe.SubscribeBindCommand;
 import com.lamfire.chimaera.command.subscribe.SubscribePublishCommand;
 import com.lamfire.chimaera.command.subscribe.SubscribeUnbindCommand;
 import com.lamfire.chimaera.response.EmptyResponse;
+import com.lamfire.hydra.net.Session;
 
 /**
  * 消息定阅器
@@ -15,12 +16,14 @@ import com.lamfire.chimaera.response.EmptyResponse;
  * Time: 上午11:13
  * To change this template use File | Settings | File Templates.
  */
-public class SubscribeAccessor implements Subscribe {
+public class SubscribeAccessor implements Subscribe ,Rebundleable {
     private ChimaeraTransfer transfer;
     private String store = "_SUBSCRIBE_";
+    private RebundleMonitor monitor;
 
     SubscribeAccessor(ChimaeraTransfer transfer){
         this.transfer = transfer;
+        this.monitor = new RebundleMonitor();
     }
 
     /**
@@ -30,16 +33,18 @@ public class SubscribeAccessor implements Subscribe {
      * @param listener
      */
     public void bind(String key,String clientId,OnMessageListener listener) {
-        SubscribeBindCommand cmd = new SubscribeBindCommand();
-        cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setCommand(Command.SUBSCRIBE_BIND);
-        cmd.setClientId(clientId);
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key,clientId), EmptyResponse.class);
         future.waitResponse();
         transfer.bindMessageListener(key, listener);
-    }
 
+        //add monitor
+        Rebundler bundler = new Rebundler(this);
+        bundler.setKey(key);
+        bundler.setClientId(clientId);
+        bundler.setListener(listener);
+        bundler.setSession(future.getSession());
+        monitor.add(bundler);
+    }
 
     /**
      * 取消对消息的绑定，取消绑定后，将不能再接收到发布的消息。
@@ -47,14 +52,10 @@ public class SubscribeAccessor implements Subscribe {
      * @param clientId
      */
     public void unbind(String key,String clientId) {
-        SubscribeUnbindCommand cmd = new SubscribeUnbindCommand();
-        cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setClientId(clientId);
-        cmd.setCommand(Command.SUBSCRIBE_UNBIND);
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getUnbindCommand(key,clientId), EmptyResponse.class);
         future.waitResponse();
         transfer.unbindMessageListener(key);
+        monitor.remove(key,clientId);
     }
 
     /**
@@ -64,13 +65,7 @@ public class SubscribeAccessor implements Subscribe {
      * @param bytes
      */
     public void publish(String key,String clientId,byte[] bytes) {
-        SubscribePublishCommand cmd = new SubscribePublishCommand();
-        cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setClientId(clientId);
-        cmd.setCommand(Command.SUBSCRIBE_PUBLISH);
-        cmd.setMessage(bytes);
-        transfer.sendCommand(cmd);
+        transfer.sendCommand(getPublishCommand(key,clientId,bytes,false));
     }
 
     /**
@@ -80,13 +75,46 @@ public class SubscribeAccessor implements Subscribe {
      * @param bytes
      */
     public void publishSync(String key,String clientId,byte[] bytes) {
+        transfer.sendCommand(getPublishCommand(key,clientId,bytes,true),EmptyResponse.class).await();
+    }
+
+    @Override
+    public Command getBindCommand(String key, String clientId) {
+        SubscribeBindCommand cmd = new SubscribeBindCommand();
+        cmd.setStore(this.store);
+        cmd.setKey(key);
+        cmd.setCommand(Command.SUBSCRIBE_BIND);
+        cmd.setClientId(clientId);
+        return cmd;
+    }
+
+    @Override
+    public Command getUnbindCommand(String key, String clientId) {
+        SubscribeUnbindCommand cmd = new SubscribeUnbindCommand();
+        cmd.setStore(this.store);
+        cmd.setKey(key);
+        cmd.setClientId(clientId);
+        cmd.setCommand(Command.SUBSCRIBE_UNBIND);
+        return cmd;
+    }
+
+    @Override
+    public Command getPublishCommand(String key, String clientId, byte[] bytes,boolean feedback) {
         SubscribePublishCommand cmd = new SubscribePublishCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setClientId(clientId);
-        cmd.setFeedback(true);
         cmd.setCommand(Command.SUBSCRIBE_PUBLISH);
         cmd.setMessage(bytes);
-        transfer.sendCommand(cmd,EmptyResponse.class).await();
+        cmd.setFeedback(feedback);
+        return cmd;
+    }
+
+    @Override
+    public Session rebind(String key, String clientId, OnMessageListener listener) {
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key,clientId), EmptyResponse.class);
+        future.waitResponse();
+        transfer.bindMessageListener(key, listener);
+        return future.getSession();
     }
 }

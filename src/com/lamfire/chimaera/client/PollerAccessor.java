@@ -7,6 +7,7 @@ import com.lamfire.chimaera.command.poller.PollerBindCommand;
 import com.lamfire.chimaera.command.poller.PollerPublishCommand;
 import com.lamfire.chimaera.command.poller.PollerUnbindCommand;
 import com.lamfire.chimaera.response.EmptyResponse;
+import com.lamfire.hydra.net.Session;
 
 /**
  * 消息定阅器
@@ -15,14 +16,24 @@ import com.lamfire.chimaera.response.EmptyResponse;
  * Time: 上午11:13
  * To change this template use File | Settings | File Templates.
  */
-public class PollerAccessor implements Poller {
+public class PollerAccessor implements Poller,Rebundleable {
     private ChimaeraTransfer transfer;
     private String store = "_POLLER_";
+    private RebundleMonitor monitor;
 
     PollerAccessor(ChimaeraTransfer transfer){
         this.transfer = transfer;
+        this.monitor = new RebundleMonitor();
     }
 
+    public Command getBindCommand(String key,String clientId){
+        PollerBindCommand cmd = new PollerBindCommand();
+        cmd.setStore(this.store);
+        cmd.setKey(key);
+        cmd.setCommand(Command.POLLER_BIND);
+        cmd.setClientId(clientId);
+        return cmd;
+    }
     /**
      * 将该对象绑定到指定的KEY上，绑定后方可收到来自其它发布者的消息。
      * @param key
@@ -30,16 +41,35 @@ public class PollerAccessor implements Poller {
      * @param listener
      */
     public void bind(String key,String clientId,OnMessageListener listener) {
-        PollerBindCommand cmd = new PollerBindCommand();
-        cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setCommand(Command.POLLER_BIND);
-        cmd.setClientId(clientId);
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key,clientId), EmptyResponse.class);
         future.waitResponse();
         transfer.bindMessageListener(key, listener);
+
+        //add monitor
+        Rebundler bundler = new Rebundler(this);
+        bundler.setKey(key);
+        bundler.setClientId(clientId);
+        bundler.setListener(listener);
+        bundler.setSession(future.getSession());
+        monitor.add(bundler);
     }
 
+    public Session rebind(String key,String clientId,OnMessageListener listener) {
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key,clientId), EmptyResponse.class);
+        future.waitResponse();
+        transfer.bindMessageListener(key, listener);
+        return future.getSession();
+    }
+
+
+    public Command getUnbindCommand(String key,String clientId){
+        PollerUnbindCommand cmd = new PollerUnbindCommand();
+        cmd.setStore(this.store);
+        cmd.setKey(key);
+        cmd.setClientId(clientId);
+        cmd.setCommand(Command.POLLER_UNBIND);
+        return cmd;
+    }
 
     /**
      * 取消对消息的绑定，取消绑定后，将不能再接收到发布的消息。
@@ -47,14 +77,21 @@ public class PollerAccessor implements Poller {
      * @param clientId
      */
     public void unbind(String key,String clientId) {
-        PollerUnbindCommand cmd = new PollerUnbindCommand();
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getUnbindCommand(key,clientId), EmptyResponse.class);
+        future.waitResponse();
+        transfer.unbindMessageListener(key);
+        monitor.remove(key,clientId);
+    }
+
+    public Command getPublishCommand(String key,String clientId,byte[] bytes,boolean  feedback){
+        PollerPublishCommand cmd = new PollerPublishCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setClientId(clientId);
-        cmd.setCommand(Command.POLLER_UNBIND);
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
-        future.waitResponse();
-        transfer.unbindMessageListener(key);
+        cmd.setCommand(Command.POLLER_PUBLISH);
+        cmd.setMessage(bytes);
+        cmd.setFeedback(feedback);
+        return cmd;
     }
 
     /**
@@ -64,13 +101,7 @@ public class PollerAccessor implements Poller {
      * @param bytes
      */
     public void publish(String key,String clientId,byte[] bytes) {
-        PollerPublishCommand cmd = new PollerPublishCommand();
-        cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setClientId(clientId);
-        cmd.setCommand(Command.POLLER_PUBLISH);
-        cmd.setMessage(bytes);
-        transfer.sendCommand(cmd);
+        transfer.sendCommand(getPublishCommand(key,clientId,bytes,false));
     }
 
     /**
@@ -80,13 +111,6 @@ public class PollerAccessor implements Poller {
      * @param bytes
      */
     public void publishSync(String key,String clientId,byte[] bytes) {
-        PollerPublishCommand cmd = new PollerPublishCommand();
-        cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setClientId(clientId);
-        cmd.setFeedback(true);
-        cmd.setCommand(Command.POLLER_PUBLISH);
-        cmd.setMessage(bytes);
-        transfer.sendCommand(cmd,EmptyResponse.class).await();
+        transfer.sendCommand(getPublishCommand(key,clientId,bytes,true),EmptyResponse.class).await();
     }
 }

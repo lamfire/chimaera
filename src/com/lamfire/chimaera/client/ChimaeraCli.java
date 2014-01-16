@@ -11,6 +11,8 @@ public class ChimaeraCli {
     private final ResponseWaitQueue waitQueue = new ResponseWaitQueue();
 	private ChimaeraTransfer transfer;
     private int poolSize = 4;
+    private Subscribe subscribe;
+    private Poller poller;
 
     public int getPoolSize(){
         return this.poolSize;
@@ -34,12 +36,18 @@ public class ChimaeraCli {
         return new FireStoreAccessor(transfer,storeName);
     }
 
-    public Subscribe getSubscribe(){
-        return new SubscribeAccessor(this.transfer);
+    public synchronized Subscribe getSubscribe(){
+        if(subscribe == null){
+            this.subscribe = new SubscribeAccessor(this.transfer);
+        }
+        return subscribe;
     }
 
-    public Poller getPoller(){
-        return new PollerAccessor(this.transfer);
+    public synchronized Poller getPoller(){
+        if(poller == null){
+            this.poller = new PollerAccessor(this.transfer);
+        }
+        return poller;
     }
 
     public void close(){

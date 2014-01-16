@@ -59,10 +59,7 @@ public class ChimaeraTransfer extends Snake {
          return MessageID.getAndIncrement();
     }
 
-    private void sendBytes(int messageId,byte[] bytes){
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("SEND_COMMAND:"+new String(bytes));
-        }
+    private Session getSession(){
         Collection<Session> sessions = super.getSessions();
         if(sessions == null){
             throw new ChimaeraException("not connection found.");
@@ -71,20 +68,28 @@ public class ChimaeraTransfer extends Snake {
         if(s == null){
             throw new ChimaeraException("not available sessions");
         }
-        s.send(new Message(messageId,bytes));
+        return s;
+    }
+
+    private void sendBytes(Session session,int messageId,byte[] bytes){
+        if(LOGGER.isDebugEnabled()){
+            LOGGER.debug("SEND_COMMAND:"+new String(bytes));
+        }
+        session.send(new Message(messageId,bytes));
     }
 
     public ResponseFuture sendCommand(Command command,Class<?> responseType){
         byte[] bytes = Serializers.getCommandSerializer().encode(command);
         int messageId = getMessageId();
-        ResponseFuture future = new ResponseFuture(command,messageId,waitQueue,responseType);
-        sendBytes(messageId,bytes);
+        Session session = getSession();
+        ResponseFuture future = new ResponseFuture(session,command,messageId,waitQueue,responseType);
+        sendBytes(session,messageId,bytes);
         return future;
     }
 
     public void sendCommand(Command command){
         byte[] bytes = Serializers.getCommandSerializer().encode(command);
-        sendBytes(getMessageId(),bytes);
+        sendBytes(getSession(),getMessageId(),bytes);
     }
 
     @Override
