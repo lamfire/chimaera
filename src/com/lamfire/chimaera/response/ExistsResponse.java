@@ -1,6 +1,6 @@
 package com.lamfire.chimaera.response;
 
-public class ExistsResponse extends Response{
+public class ExistsResponse extends Response {
     private boolean exists;
 
     public boolean isExists() {

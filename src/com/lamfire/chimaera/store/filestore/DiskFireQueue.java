@@ -14,67 +14,67 @@ public class DiskFireQueue implements FireQueue {
     private String name;
     private final Lock lock = new ReentrantLock();
 
-    public DiskFireQueue(StoreEngine engine, String name){
+    public DiskFireQueue(StoreEngine engine, String name) {
         this.engine = engine;
         this.name = name;
-        this.list = engine.getLinkedList(name,new BytesSerializer());
+        this.list = engine.getLinkedList(name, new BytesSerializer());
     }
 
-	@Override
-	public synchronized void push(byte[] value) {
+    @Override
+    public synchronized void push(byte[] value) {
         lock.lock();
-        try{
-		    list.add(value);
-        }finally{
+        try {
+            list.add(value);
+        } finally {
             lock.unlock();
             engine.cacheOrFlush();
         }
-	}
+    }
 
-    public Iterator<byte[]> iterator(){
+    public Iterator<byte[]> iterator() {
         return list.iterator();
     }
 
-	@Override
-	public synchronized byte[] pop() {
+    @Override
+    public synchronized byte[] pop() {
         lock.lock();
-        try{
-            if(list.isEmpty()){
+        try {
+            if (list.isEmpty()) {
                 return null;
             }
-		    return list.remove(0);
-        }finally{
+            return list.remove(0);
+        } finally {
             lock.unlock();
             engine.cacheOrFlush();
         }
-	}
+    }
 
-    public synchronized byte[] peek(){
+    public synchronized byte[] peek() {
         lock.lock();
-        try{
-            if(list.isEmpty()){
+        try {
+            if (list.isEmpty()) {
                 return null;
             }
             return list.get(0);
-        }finally{
+        } finally {
             lock.unlock();
         }
     }
 
-	@Override
-	public int size() {
-		return list.size();
-	}
+    @Override
+    public int size() {
+        return list.size();
+    }
 
-	@Override
-	public void clear() {
+    @Override
+    public void clear() {
         lock.lock();
-        try{
-		    list.clear();
-            engine.cacheOrFlush();
-        }finally{
+        try {
+            list.clear();
+        } finally {
             lock.unlock();
+            engine.cacheOrFlush();
         }
-	}
+    }
 
 }

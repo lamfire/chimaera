@@ -19,7 +19,7 @@ public class FireSetAccesser implements FireSet {
     private String key;
     private String store;
 
-    FireSetAccesser(ChimaeraTransfer transfer,String store, String key){
+    FireSetAccesser(ChimaeraTransfer transfer, String store, String key) {
         this.transfer = transfer;
         this.store = store;
         this.key = key;
@@ -33,7 +33,7 @@ public class FireSetAccesser implements FireSet {
         cmd.setKey(key);
         cmd.setCommand(Command.SET_ADD);
         cmd.setValue(value);
-        transfer.sendCommand(cmd,EmptyResponse.class).waitResponse();
+        transfer.sendCommand(cmd, EmptyResponse.class).waitResponse();
     }
 
     @Override
@@ -108,6 +108,6 @@ public class FireSetAccesser implements FireSet {
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setCommand(Command.SET_CLEAR);
-        transfer.sendCommand(cmd,EmptyResponse.class).waitResponse();
+        transfer.sendCommand(cmd, EmptyResponse.class).waitResponse();
     }
 }

@@ -12,9 +12,11 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { java.lang.annotation.ElementType.TYPE })
+@Target({java.lang.annotation.ElementType.TYPE})
 public @interface COMMAND {
     public abstract String name();
-    public abstract boolean  writeProtected() default false;
+
+    public abstract boolean writeProtected() default false;
+
     public abstract boolean keyRequired() default true;
 }

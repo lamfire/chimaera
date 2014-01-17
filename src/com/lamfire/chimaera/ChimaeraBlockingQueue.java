@@ -3,9 +3,6 @@ package com.lamfire.chimaera;
 import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.logger.Logger;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 /**
  * Created with IntelliJ IDEA.
  * User: lamfire
@@ -13,11 +10,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * Time: 上午10:20
  * To change this template use File | Settings | File Templates.
  */
-public class ChimaeraBlockingQueue implements FireQueue{
+public class ChimaeraBlockingQueue implements FireQueue {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraBlockingQueue.class);
     private FireQueue storeQueue;
 
-    public  ChimaeraBlockingQueue(FireQueue queue){
+    public ChimaeraBlockingQueue(FireQueue queue) {
         this.storeQueue = queue;
     }
 
@@ -29,39 +26,41 @@ public class ChimaeraBlockingQueue implements FireQueue{
 
     @Override
     public synchronized byte[] pop() {
-        try{
+        try {
             byte[] val = this.storeQueue.pop();
-            if(val != null){
+            if (val != null) {
                 return val;
             }
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
-        try{
-            if(LOGGER.isDebugEnabled()){
+        try {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("queue was empty,waiting.");
             }
             this.wait();
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         return pop();
     }
 
     @Override
     public synchronized byte[] peek() {
-        try{
+        try {
             byte[] val = this.storeQueue.peek();
-            if(val != null){
+            if (val != null) {
                 return val;
             }
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
-        try{
-            if(LOGGER.isDebugEnabled()){
+        try {
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("queue was empty,waiting...");
             }
             this.wait();
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         return peek();
     }
 
@@ -72,6 +71,6 @@ public class ChimaeraBlockingQueue implements FireQueue{
 
     @Override
     public void clear() {
-       this.storeQueue.clear();
+        this.storeQueue.clear();
     }
 }

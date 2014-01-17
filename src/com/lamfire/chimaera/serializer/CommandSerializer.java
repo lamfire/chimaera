@@ -3,9 +3,9 @@ package com.lamfire.chimaera.serializer;
 import com.lamfire.chimaera.ServiceRegistry;
 import com.lamfire.chimaera.command.Command;
 import com.lamfire.json.JSON;
+import com.lamfire.logger.Logger;
 
 import java.nio.charset.Charset;
-import com.lamfire.logger.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,13 +14,13 @@ import com.lamfire.logger.Logger;
  * Time: 下午2:38
  * To change this template use File | Settings | File Templates.
  */
-public class CommandSerializer implements Serializer<Command>{
+public class CommandSerializer implements Serializer<Command> {
     private static final Logger LOGGER = Logger.getLogger(CommandSerializer.class);
 
     @Override
     public byte[] encode(Command command) {
-        String js= JSON.toJSONString(command);
-        if(LOGGER.isDebugEnabled()){
+        String js = JSON.toJSONString(command);
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("COMMAND:" + js);
         }
         return js.getBytes(Charset.forName("UTF-8"));
@@ -30,15 +30,15 @@ public class CommandSerializer implements Serializer<Command>{
     public Command decode(byte[] bytes, Class<Command> type) {
         String js = new String(bytes);
         JSON json = new JSON(js);
-        return decode(json,type);
+        return decode(json, type);
     }
 
     @Override
     public Command decode(JSON json, Class<Command> type) {
-        String cmdName = (String)json.get("command");
-        Command cmd = (Command)json.toObject(ServiceRegistry.getInstance().getCommandType(cmdName));
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("COMMAND:" + json +" = " +cmd.getClass().getName());
+        String cmdName = (String) json.get("command");
+        Command cmd = (Command) json.toObject(ServiceRegistry.getInstance().getCommandType(cmdName));
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("COMMAND:" + json + " = " + cmd.getClass().getName());
         }
         return cmd;
     }

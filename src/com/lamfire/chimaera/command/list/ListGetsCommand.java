@@ -3,8 +3,8 @@ package com.lamfire.chimaera.command.list;
 import com.lamfire.chimaera.annotation.COMMAND;
 import com.lamfire.chimaera.command.Command;
 
-@COMMAND(name=Command.LIST_GETS)
-public class ListGetsCommand extends Command{
+@COMMAND(name = Command.LIST_GETS)
+public class ListGetsCommand extends Command {
     private int fromIndex;
     private int size;
 

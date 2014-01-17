@@ -1,6 +1,5 @@
 package com.lamfire.chimaera.client;
 
-import com.lamfire.chimaera.Bundler;
 import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.command.Command;
 import com.lamfire.hydra.net.Session;
@@ -13,8 +12,11 @@ import com.lamfire.hydra.net.Session;
  * To change this template use File | Settings | File Templates.
  */
 public interface Rebundleable {
-    public Command getBindCommand(String key,String clientId);
-    public Command getUnbindCommand(String key,String clientId);
-    public Command getPublishCommand(String key,String clientId,byte[] bytes,boolean feedback);
-    public Session rebind(String key,String clientId,OnMessageListener listener);
+    public Command getBindCommand(String key, String clientId);
+
+    public Command getUnbindCommand(String key, String clientId);
+
+    public Command getPublishCommand(String key, String clientId, byte[] bytes, boolean feedback);
+
+    public Session rebind(String key, String clientId, OnMessageListener listener);
 }

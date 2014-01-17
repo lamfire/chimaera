@@ -6,5 +6,5 @@ import com.lamfire.hydra.MessageContext;
 
 public interface Service<E extends Command> {
 
-	public Response execute(MessageContext context,E command);
+    public Response execute(MessageContext context, E command);
 }

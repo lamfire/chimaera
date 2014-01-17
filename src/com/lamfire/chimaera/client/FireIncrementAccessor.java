@@ -1,9 +1,9 @@
 package com.lamfire.chimaera.client;
 
-import com.lamfire.chimaera.command.increment.*;
-import com.lamfire.chimaera.response.increment.IncrGetResponse;
 import com.lamfire.chimaera.command.Command;
+import com.lamfire.chimaera.command.increment.*;
 import com.lamfire.chimaera.response.EmptyResponse;
+import com.lamfire.chimaera.response.increment.IncrGetResponse;
 import com.lamfire.chimaera.store.FireIncrement;
 
 /**
@@ -18,11 +18,12 @@ public class FireIncrementAccessor implements FireIncrement {
     private String store;
     private String key;
 
-    FireIncrementAccessor(ChimaeraTransfer transfer,String store,String key){
+    FireIncrementAccessor(ChimaeraTransfer transfer, String store, String key) {
         this.transfer = transfer;
         this.store = store;
         this.key = key;
     }
+
     @Override
     public void incr() {
         incr(1);
@@ -35,7 +36,7 @@ public class FireIncrementAccessor implements FireIncrement {
         cmd.setKey(key);
         cmd.setCommand(Command.INCREMENT_INCR);
         cmd.setStep(step);
-        transfer.sendCommand(cmd ,EmptyResponse.class).await();
+        transfer.sendCommand(cmd, EmptyResponse.class).await();
     }
 
     @Override
@@ -59,7 +60,7 @@ public class FireIncrementAccessor implements FireIncrement {
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setCommand(Command.INCREMENT_GET);
-        ResponseFuture<IncrGetResponse> future =  transfer.sendCommand(cmd, IncrGetResponse.class);
+        ResponseFuture<IncrGetResponse> future = transfer.sendCommand(cmd, IncrGetResponse.class);
         return future.getResponse().getValue();
     }
 
@@ -70,7 +71,7 @@ public class FireIncrementAccessor implements FireIncrement {
         cmd.setKey(key);
         cmd.setCommand(Command.INCREMENT_SET);
         cmd.setValue(value);
-        ResponseFuture<IncrGetResponse> future =  transfer.sendCommand(cmd, EmptyResponse.class);
+        ResponseFuture<IncrGetResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
         future.await();
     }
 
@@ -86,7 +87,7 @@ public class FireIncrementAccessor implements FireIncrement {
         cmd.setKey(key);
         cmd.setCommand(Command.INCREMENT_INCR_GET);
         cmd.setStep(step);
-        ResponseFuture<IncrGetResponse> future =  transfer.sendCommand(cmd, IncrGetResponse.class);
+        ResponseFuture<IncrGetResponse> future = transfer.sendCommand(cmd, IncrGetResponse.class);
         return future.getResponse().getValue();
     }
 
@@ -102,7 +103,7 @@ public class FireIncrementAccessor implements FireIncrement {
         cmd.setKey(key);
         cmd.setCommand(Command.INCREMENT_DECR_GET);
         cmd.setStep(step);
-        ResponseFuture<IncrGetResponse> future =  transfer.sendCommand(cmd, IncrGetResponse.class);
+        ResponseFuture<IncrGetResponse> future = transfer.sendCommand(cmd, IncrGetResponse.class);
         return future.getResponse().getValue();
     }
 }

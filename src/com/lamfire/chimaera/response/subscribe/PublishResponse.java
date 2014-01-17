@@ -5,9 +5,10 @@ import com.lamfire.chimaera.response.Response;
 public class PublishResponse extends Response {
     public static final int STATUS = 201;
 
-    public  PublishResponse(){
+    public PublishResponse() {
         super.setStatus(STATUS);
     }
+
     private String key;
 
     private byte[] message;

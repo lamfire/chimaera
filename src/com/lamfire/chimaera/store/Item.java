@@ -9,15 +9,15 @@ import java.util.concurrent.atomic.AtomicLong;
  * Time: 上午11:23
  * To change this template use File | Settings | File Templates.
  */
-public class Item{
+public class Item {
     private String name;
     private AtomicLong count = new AtomicLong();
 
-    public Item(){
+    public Item() {
 
     }
 
-    public Item(String name){
+    public Item(String name) {
         this.name = name;
     }
 
@@ -25,7 +25,7 @@ public class Item{
         return name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -33,15 +33,15 @@ public class Item{
         return count.get();
     }
 
-    public void setValue(long count){
+    public void setValue(long count) {
         this.count.set(count);
     }
 
-    public long increment(){
+    public long increment() {
         return count.incrementAndGet();
     }
 
-    public long increment(long step){
+    public long increment(long step) {
         return count.addAndGet(step);
     }
 
@@ -52,7 +52,7 @@ public class Item{
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null){
+        if (obj == null) {
             return false;
         }
         Item other = (Item) obj;

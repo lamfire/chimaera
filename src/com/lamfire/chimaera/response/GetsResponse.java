@@ -2,7 +2,7 @@ package com.lamfire.chimaera.response;
 
 import java.util.List;
 
-public class GetsResponse extends Response{
+public class GetsResponse extends Response {
 
     private List<byte[]> values;
 

@@ -15,7 +15,7 @@ import java.io.Serializable;
  * Time: 下午2:48
  * To change this template use File | Settings | File Templates.
  */
-public class ItemSerializer implements Serializer<Item> ,Serializable {
+public class ItemSerializer implements Serializer<Item>, Serializable {
 
     @Override
     public void serialize(DataOutput dataOutput, Item item) throws IOException {

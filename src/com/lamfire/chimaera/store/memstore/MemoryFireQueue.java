@@ -4,42 +4,59 @@ import com.lamfire.chimaera.store.FireQueue;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MemoryFireQueue implements FireQueue {
-	
-	private final LinkedList<byte[]> queue = new LinkedList<byte[]>();
+    private final Lock lock = new ReentrantLock();
+    private final LinkedList<byte[]> queue = new LinkedList<byte[]>();
 
-	public void push(byte[] value) {
-		queue.addLast(value);
-	}
+    public void push(byte[] value) {
+        try {
+            lock.lock();
+            queue.addLast(value);
+        } finally {
+            lock.unlock();
+        }
+    }
 
-    public Iterator<byte[]> iterator(){
+    public Iterator<byte[]> iterator() {
         return queue.iterator();
     }
 
-	@Override
-	public byte[] pop() {
-        if(queue.isEmpty()){
-            return null;
+    @Override
+    public byte[] pop() {
+        try {
+            lock.lock();
+            if (queue.isEmpty()) {
+                return null;
+            }
+            return queue.removeFirst();
+        } finally {
+            lock.unlock();
         }
-		return queue.removeFirst();
-	}
+    }
 
     public byte[] peek() {
-        if(queue.isEmpty()){
+        if (queue.isEmpty()) {
             return null;
         }
         return queue.peekFirst();
     }
 
-	@Override
-	public int size() {
-		return queue.size();
-	}
+    @Override
+    public int size() {
+        return queue.size();
+    }
 
-	@Override
-	public void clear() {
-		queue.clear();
-	}
+    @Override
+    public void clear() {
+        try {
+            lock.lock();
+            queue.clear();
+        } finally {
+            lock.unlock();
+        }
+    }
 
 }

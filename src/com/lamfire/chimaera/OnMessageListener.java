@@ -8,5 +8,5 @@ package com.lamfire.chimaera;
  * To change this template use File | Settings | File Templates.
  */
 public interface OnMessageListener {
-    public void onMessage(String key,byte[] message);
+    public void onMessage(String key, byte[] message);
 }

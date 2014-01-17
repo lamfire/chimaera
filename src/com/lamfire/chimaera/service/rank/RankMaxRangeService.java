@@ -9,25 +9,25 @@ import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.chimaera.store.Item;
-import com.lamfire.logger.Logger;
 import com.lamfire.hydra.MessageContext;
+import com.lamfire.logger.Logger;
 
 import java.util.List;
 
 @SERVICE(command = Command.RANK_MAX_RANGE)
-public class RankMaxRangeService implements Service <RankMaxRangeCommand>{
-	static final Logger LOGGER = Logger.getLogger(RankMaxRangeService.class);
+public class RankMaxRangeService implements Service<RankMaxRangeCommand> {
+    static final Logger LOGGER = Logger.getLogger(RankMaxRangeService.class);
 
-	@Override
-	public Response execute(MessageContext context, RankMaxRangeCommand command) {
-		RankMaxRangeCommand cmd = (RankMaxRangeCommand) command;
-		FireStore store = Chimaera.getFireStore(cmd.getStore());
+    @Override
+    public Response execute(MessageContext context, RankMaxRangeCommand command) {
+        RankMaxRangeCommand cmd = (RankMaxRangeCommand) command;
+        FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        List<Item> list = store.getFireRank(cmd.getKey()).maxRange(cmd.getFrom(),cmd.getSize());
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("[MAX] - " + cmd.getKey() + ":size(" +cmd.getSize() + ")");
+        List<Item> list = store.getFireRank(cmd.getKey()).maxRange(cmd.getFrom(), cmd.getSize());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("[MAX] - " + cmd.getKey() + ":size(" + cmd.getSize() + ")");
         }
-        return Responses.makeListResponseForCounter(cmd,list);
-	}
+        return Responses.makeListResponseForCounter(cmd, list);
+    }
 
 }

@@ -10,7 +10,9 @@ import com.lamfire.json.JSON;
  * To change this template use File | Settings | File Templates.
  */
 public interface Serializer<T> {
-       public  byte[] encode(T t);
-       public T decode(byte[] bytes,Class<T> type);
-       public T decode(JSON json,Class<T> type);
+    public byte[] encode(T t);
+
+    public T decode(byte[] bytes, Class<T> type);
+
+    public T decode(JSON json, Class<T> type);
 }

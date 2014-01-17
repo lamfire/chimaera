@@ -1,10 +1,9 @@
 package com.lamfire.chimaera.command;
 
 
-
 public class Command {
-	public static final String PUT = "PUT";
-	public static final String GET = "GET";
+    public static final String PUT = "PUT";
+    public static final String GET = "GET";
     public static final String REMOVE = "REMOVE";
     public static final String SIZE = "SIZE";
     public static final String CLEAR = "CLEAR";
@@ -69,27 +68,27 @@ public class Command {
     public static final String POLLER_BIND = "POLLER_BIND";
     public static final String POLLER_UNBIND = "POLLER_UNBIND";
     public static final String POLLER_PUBLISH = "POLLER_PUBLISH";
-	
-	private String store;
+
+    private String store;
     private String command;
-	private String key;
-	
+    private String key;
 
-	public String getKey() {
-		return key;
-	}
 
-	public void setKey(String key) {
-		this.key = key;
-	}
+    public String getKey() {
+        return key;
+    }
 
-	public String getCommand() {
-		return command;
-	}
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-	public void setCommand(String command) {
-		this.command = command;
-	}
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
 
     public String getStore() {
         return store;

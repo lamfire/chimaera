@@ -3,7 +3,7 @@ package com.lamfire.chimaera.command.map;
 import com.lamfire.chimaera.annotation.COMMAND;
 import com.lamfire.chimaera.command.Command;
 
-@COMMAND(name=Command.MAP_KEYS)
-public class MapKeysCommand extends Command{
+@COMMAND(name = Command.MAP_KEYS)
+public class MapKeysCommand extends Command {
 
 }

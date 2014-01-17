@@ -1,12 +1,11 @@
 package com.lamfire.chimaera;
 
-import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.hydra.Message;
-import com.lamfire.hydra.net.Future;
-import com.lamfire.hydra.net.Session;
-import com.lamfire.hydra.net.SessionGroup;
 import com.lamfire.chimaera.response.subscribe.PublishResponse;
 import com.lamfire.chimaera.serializer.Serializers;
+import com.lamfire.chimaera.store.FireStore;
+import com.lamfire.hydra.Message;
+import com.lamfire.hydra.net.Session;
+import com.lamfire.hydra.net.SessionGroup;
 import com.lamfire.json.JSON;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Maps;
@@ -27,19 +26,19 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class ChimaeraSubscribe {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraSubscribe.class);
-    private  final Map<String,SessionGroup> groups = Maps.newHashMap();
+    private final Map<String, SessionGroup> groups = Maps.newHashMap();
     private static final ChimaeraSubscribe instance = new ChimaeraSubscribe();
     public static final String STORE_NAME = "CHIMAERA_SUBSCRIBE";
     public static final String QUEUE_NAME = "CHIMAERA_SUBSCRIBE_QUEUE";
 
-    public static final ChimaeraSubscribe getInstance(){
-        return   instance;
+    public static final ChimaeraSubscribe getInstance() {
+        return instance;
     }
 
     private Runnable executor = new Runnable() {
         @Override
         public void run() {
-            while(true){
+            while (true) {
                 processNext();
             }
         }
@@ -50,85 +49,85 @@ public class ChimaeraSubscribe {
     private ExecutorService service; //消息分发服务
     private Lock lock = new ReentrantLock();
 
-    private ChimaeraSubscribe(){
+    private ChimaeraSubscribe() {
         this.store = Chimaera.getFireStore(STORE_NAME);
         this.queue = new ChimaeraBlockingQueue(this.store.getFireQueue(QUEUE_NAME));
         this.service = Executors.newFixedThreadPool(1, Threads.makeThreadFactory(STORE_NAME));
         this.service.submit(executor);
     }
 
-    private synchronized SessionGroup newSessionGroup(String key){
+    private synchronized SessionGroup newSessionGroup(String key) {
         SessionGroup group = groups.get(key);
-        if(group == null) {
+        if (group == null) {
             group = new SessionGroup();
-            groups.put(key,group);
+            groups.put(key, group);
         }
         return group;
     }
 
-    public SessionGroup getSesionGroup(String key){
+    public SessionGroup getSesionGroup(String key) {
         SessionGroup group = groups.get(key);
-        if(group == null){
+        if (group == null) {
             return newSessionGroup(key);
         }
         return group;
     }
 
-    public  void bind(String key,String clientId,Session session){
-        getSesionGroup(key).add(clientId,session);
-        synchronized (lock){
+    public void bind(String key, String clientId, Session session) {
+        getSesionGroup(key).add(clientId, session);
+        synchronized (lock) {
             lock.notifyAll();
         }
     }
 
-    public  void unbind(String key,String clientId){
+    public void unbind(String key, String clientId) {
         getSesionGroup(key).remove(clientId);
     }
 
-    public  void publish(String key,byte[] bytes){
+    public void publish(String key, byte[] bytes) {
         PublishResponse response = new PublishResponse();
         response.setKey(key);
         response.setMessage(bytes);
 
-        byte[] responseBytes =  Serializers.getResponseSerializer().encode(response);
+        byte[] responseBytes = Serializers.getResponseSerializer().encode(response);
         this.queue.push(responseBytes);
     }
 
-    private void sendResponse(Session session,Message message){
-        try{
+    private void sendResponse(Session session, Message message) {
+        try {
             session.send(message).sync();
-        }catch(Throwable e){
-            LOGGER.error("error send response.",e);
+        } catch (Throwable e) {
+            LOGGER.error("error send response.", e);
         }
     }
 
-    private void processNext(){
-        try{
+    private void processNext() {
+        try {
             byte[] responseBytes = this.queue.peek();
             String json = new String(responseBytes);
             JSON js = new JSON(json);
-            String key = (String)js.get("key");
+            String key = (String) js.get("key");
 
             Message msg = new Message();
             msg.setBody(responseBytes);
 
             //获得下个Session
             SessionGroup group = getSesionGroup(key);
-            if(group.isEmpty()){
+            if (group.isEmpty()) {
                 LOGGER.warn("Not found available subscribe session,waiting...");
-                synchronized (lock){
+                synchronized (lock) {
                     lock.wait();
                 }
             }
 
-            if(!group.isEmpty()){
+            if (!group.isEmpty()) {
                 this.queue.pop();
-                for(Session s :group.sessions()){
+                for (Session s : group.sessions()) {
                     sendResponse(s, msg);
                 }
             }
-        }catch(Throwable e){
-            LOGGER.warn(e.getMessage(),e);
+        } catch (Throwable e) {
+            LOGGER.warn(e.getMessage(), e);
         }
     }
 }

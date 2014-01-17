@@ -19,7 +19,7 @@ public class Rebundler {
     private Session session;
     private Rebundleable reBindable;
 
-    public Rebundler(Rebundleable reBindable){
+    public Rebundler(Rebundleable reBindable) {
         this.reBindable = reBindable;
     }
 
@@ -55,18 +55,18 @@ public class Rebundler {
         this.session = session;
     }
 
-    public boolean isAvailable(){
+    public boolean isAvailable() {
         return this.session.isConnected();
     }
 
-    public void rebind(){
-        try{
-            if(this.session.isClosed()){
-                this.session = this.reBindable.rebind(this.key,this.clientId,this.listener);
+    public void rebind() {
+        try {
+            if (this.session.isClosed()) {
+                this.session = this.reBindable.rebind(this.key, this.clientId, this.listener);
                 LOGGER.info("rebind successfully," + this);
             }
-        }catch(Throwable t){
-            LOGGER.warn("rebind failed," + t.getMessage(),t);
+        } catch (Throwable t) {
+            LOGGER.warn("rebind failed," + t.getMessage(), t);
         }
     }
 

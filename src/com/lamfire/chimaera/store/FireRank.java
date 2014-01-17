@@ -9,12 +9,12 @@ import java.util.List;
  * Time: 上午11:47
  * To change this template use File | Settings | File Templates.
  */
-public interface FireRank extends FireCollection{
+public interface FireRank extends FireCollection {
     public void put(String name);
 
-    public void incr(String name,long step);
+    public void incr(String name, long step);
 
-    public void set(String name,long score);
+    public void set(String name, long score);
 
     public long score(String name);
 
@@ -24,7 +24,7 @@ public interface FireRank extends FireCollection{
 
     public List<Item> min(int size);
 
-    public List<Item> maxRange(int from,int size);
+    public List<Item> maxRange(int from, int size);
 
-    public List<Item> minRange(int from,int size);
+    public List<Item> minRange(int from, int size);
 }

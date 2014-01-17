@@ -17,30 +17,30 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class MemoryFireRank implements FireRank {
     private final TreeSet<Item> set = new TreeSet<Item>(new ItemComparator());
-    private final HashMap<String,Item> items = new HashMap<String,Item>();
+    private final HashMap<String, Item> items = new HashMap<String, Item>();
     private final Lock lock = new ReentrantLock();
 
     @Override
     public synchronized void put(String name) {
-        incr(name,1);
+        incr(name, 1);
     }
 
     @Override
     public void incr(String name, long step) {
         lock.lock();
-        try{
+        try {
             Item item = items.get(name);
-            if(item == null){
+            if (item == null) {
                 item = new Item(name);
                 item.increment(step);
-                items.put(name,item);
+                items.put(name, item);
                 set.add(item);
                 return;
             }
             set.remove(item);
             item.increment(step);
             set.add(item);
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -48,32 +48,32 @@ public class MemoryFireRank implements FireRank {
     @Override
     public synchronized void set(String name, long count) {
         lock.lock();
-        try{
+        try {
             Item item = items.get(name);
-            if(item == null){
+            if (item == null) {
                 item = new Item();
                 item.setName(name);
                 item.setValue(count);
-                items.put(name,item);
+                items.put(name, item);
                 set.add(item);
                 return;
             }
             set.remove(item);
             item.setValue(count);
             set.add(item);
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
 
-    public Iterator<Item> iterator(){
+    public Iterator<Item> iterator() {
         return set.iterator();
     }
 
     @Override
     public long score(String name) {
         Item item = items.get(name);
-        if(item == null){
+        if (item == null) {
             return 0;
         }
         return item.getValue();
@@ -82,71 +82,92 @@ public class MemoryFireRank implements FireRank {
     @Override
     public synchronized long remove(String name) {
         lock.unlock();
-        try{
+        try {
             Item item = items.remove(name);
-            if(item == null){
+            if (item == null) {
                 return 0;
             }
             set.remove(item);
             return item.getValue();
-        }finally {
-                lock.unlock();
-        }
-    }
-
-    @Override
-    public List<Item> max(int size) {
-        if(set.isEmpty()){
-            return null;
-        }
-        return subList(set.iterator(),0, size);
-    }
-
-    private synchronized List<Item> subList(Iterator<Item> it,int from,int size){
-        lock.lock();
-        try{
-            List<Item> result = new ArrayList<Item>();
-            int count = 0;
-            int index = 0;
-            while(it.hasNext()){
-                Item item = it.next();
-                if(index >= from){
-                    result.add(item);
-                    count ++;
-                    if(count >= size){
-                        break;
-                    }
-                }
-                index ++;
-            }
-            return result;
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public  List<Item> min(int size) {
-        if(set.isEmpty()){
-            return null;
+    public List<Item> max(int size) {
+        try {
+            lock.lock();
+            if (set.isEmpty()) {
+                return null;
+            }
+            return subList(set.iterator(), 0, size);
+        } finally {
+            lock.unlock();
         }
-        return subList(set.descendingIterator(),0,size);
+    }
+
+    private synchronized List<Item> subList(Iterator<Item> it, int from, int size) {
+
+        try {
+            lock.lock();
+            List<Item> result = new ArrayList<Item>();
+            int count = 0;
+            int index = 0;
+            while (it.hasNext()) {
+                Item item = it.next();
+                if (index >= from) {
+                    result.add(item);
+                    count++;
+                    if (count >= size) {
+                        break;
+                    }
+                }
+                index++;
+            }
+            return result;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public List<Item> min(int size) {
+        try {
+            lock.lock();
+            if (set.isEmpty()) {
+                return null;
+            }
+            return subList(set.descendingIterator(), 0, size);
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public List<Item> maxRange(int from, int size) {
-        if(set.isEmpty()){
-            return null;
+        try {
+            lock.lock();
+            if (set.isEmpty()) {
+                return null;
+            }
+            return subList(set.iterator(), from, size);
+        } finally {
+            lock.unlock();
         }
-        return subList(set.iterator(),from,size);
     }
 
     @Override
     public List<Item> minRange(int from, int size) {
-        if(set.isEmpty()){
-            return null;
+        try {
+            lock.lock();
+            if (set.isEmpty()) {
+                return null;
+            }
+            return subList(set.descendingIterator(), from, size);
+        } finally {
+            lock.unlock();
         }
-        return subList(set.descendingIterator(),from,size);
     }
 
     @Override
@@ -157,10 +178,10 @@ public class MemoryFireRank implements FireRank {
     @Override
     public synchronized void clear() {
         lock.lock();
-        try{
+        try {
             this.set.clear();
             this.items.clear();
-        }finally {
+        } finally {
             lock.unlock();
         }
     }

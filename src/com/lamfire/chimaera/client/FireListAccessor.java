@@ -1,12 +1,12 @@
 package com.lamfire.chimaera.client;
 
-import com.lamfire.chimaera.command.list.*;
-import com.lamfire.chimaera.response.SizeResponse;
 import com.lamfire.chimaera.command.Command;
+import com.lamfire.chimaera.command.list.*;
 import com.lamfire.chimaera.response.EmptyResponse;
-import com.lamfire.chimaera.response.GetsResponse;
-import com.lamfire.chimaera.store.FireList;
 import com.lamfire.chimaera.response.GetResponse;
+import com.lamfire.chimaera.response.GetsResponse;
+import com.lamfire.chimaera.response.SizeResponse;
+import com.lamfire.chimaera.store.FireList;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class FireListAccessor implements FireList {
     private String key;
     private String store;
 
-    FireListAccessor(ChimaeraTransfer transfer,String store, String key){
+    FireListAccessor(ChimaeraTransfer transfer, String store, String key) {
         this.transfer = transfer;
         this.store = store;
         this.key = key;
@@ -35,7 +35,7 @@ public class FireListAccessor implements FireList {
         cmd.setKey(key);
         cmd.setCommand(Command.LIST_ADD);
         cmd.setValue(value);
-        transfer.sendCommand(cmd,EmptyResponse.class).waitResponse();
+        transfer.sendCommand(cmd, EmptyResponse.class).waitResponse();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class FireListAccessor implements FireList {
         cmd.setIndex(index);
         cmd.setCommand(Command.LIST_SET);
         cmd.setValue(value);
-        transfer.sendCommand(cmd,EmptyResponse.class).waitResponse();
+        transfer.sendCommand(cmd, EmptyResponse.class).waitResponse();
     }
 
     @Override
@@ -99,6 +99,6 @@ public class FireListAccessor implements FireList {
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setCommand(Command.LIST_CLEAR);
-        transfer.sendCommand(cmd,EmptyResponse.class).waitResponse();
+        transfer.sendCommand(cmd, EmptyResponse.class).waitResponse();
     }
 }

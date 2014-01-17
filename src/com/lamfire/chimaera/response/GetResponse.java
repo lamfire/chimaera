@@ -1,6 +1,6 @@
 package com.lamfire.chimaera.response;
 
-public class GetResponse extends Response{
+public class GetResponse extends Response {
 
     private byte[] value;
 

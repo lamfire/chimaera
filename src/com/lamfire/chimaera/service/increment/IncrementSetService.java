@@ -8,20 +8,20 @@ import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
 import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.logger.Logger;
 import com.lamfire.hydra.MessageContext;
+import com.lamfire.logger.Logger;
 
 @SERVICE(command = Command.INCREMENT_SET)
 public class IncrementSetService implements Service<IncrementSetCommand> {
-	static final Logger LOGGER = Logger.getLogger(IncrementSetService.class);
+    static final Logger LOGGER = Logger.getLogger(IncrementSetService.class);
 
-	@Override
-	public Response execute(MessageContext context, IncrementSetCommand cmd) {
-		FireStore store = Chimaera.getFireStore(cmd.getStore());
+    @Override
+    public Response execute(MessageContext context, IncrementSetCommand cmd) {
+        FireStore store = Chimaera.getFireStore(cmd.getStore());
 
         store.getFireIncrement(cmd.getKey()).set(cmd.getValue());
         return Responses.makeEmptyResponse(cmd);
 
-	}
+    }
 
 }

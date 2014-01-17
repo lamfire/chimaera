@@ -15,10 +15,10 @@ import java.util.concurrent.Executors;
  */
 public class ThreadPools {
     private static final Logger LOGGER = Logger.getLogger(ThreadPools.class);
-    private static ThreadPools pools ;
+    private static ThreadPools pools;
 
-    public synchronized static ThreadPools  get(){
-        if(pools == null){
+    public synchronized static ThreadPools get() {
+        if (pools == null) {
             pools = new ThreadPools();
         }
         return pools;
@@ -28,30 +28,30 @@ public class ThreadPools {
 
     private ThreadPools() {
         int threads = -1;
-        try{
+        try {
             threads = ChimaeraOpts.get().getThreads();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         String name = "Chimaera Worker";
-        if(threads > 0){
+        if (threads > 0) {
             this.service = Executors.newFixedThreadPool(threads, Threads.makeThreadFactory(name));
-            LOGGER.info("Create thread pool[" +name +"],fixed thread pool,size = " + threads);
-        }else{
+            LOGGER.info("Create thread pool[" + name + "],fixed thread pool,size = " + threads);
+        } else {
             this.service = Executors.newCachedThreadPool(Threads.makeThreadFactory(name));
-            LOGGER.info("Create thread pool[" +name +"],cached thread pool.");
+            LOGGER.info("Create thread pool[" + name + "],cached thread pool.");
         }
     }
 
-    public void submit(Runnable run){
+    public void submit(Runnable run) {
         this.service.submit(run);
     }
 
-    public ExecutorService getExecutorService(){
+    public ExecutorService getExecutorService() {
         return this.service;
     }
 
-    public void shutdown(){
+    public void shutdown() {
         this.service.shutdown();
     }
 }

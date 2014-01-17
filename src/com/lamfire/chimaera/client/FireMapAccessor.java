@@ -31,7 +31,7 @@ public class FireMapAccessor implements FireMap {
     private String key;
     private String store;
 
-    FireMapAccessor(ChimaeraTransfer transfer,String store, String key){
+    FireMapAccessor(ChimaeraTransfer transfer, String store, String key) {
         this.transfer = transfer;
         this.store = store;
         this.key = key;

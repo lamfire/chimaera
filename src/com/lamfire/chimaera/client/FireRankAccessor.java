@@ -1,13 +1,13 @@
 package com.lamfire.chimaera.client;
 
+import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.command.rank.*;
 import com.lamfire.chimaera.response.ClearResponse;
 import com.lamfire.chimaera.response.EmptyResponse;
 import com.lamfire.chimaera.response.SizeResponse;
-import com.lamfire.chimaera.store.FireRank;
-import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.response.rank.RankListResponse;
 import com.lamfire.chimaera.response.rank.RankScoreResponse;
+import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.Item;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class FireRankAccessor implements FireRank {
     private String key;
     private String store;
 
-    FireRankAccessor(ChimaeraTransfer transfer, String store, String key){
+    FireRankAccessor(ChimaeraTransfer transfer, String store, String key) {
         this.transfer = transfer;
         this.store = store;
         this.key = key;
@@ -33,7 +33,7 @@ public class FireRankAccessor implements FireRank {
 
     @Override
     public void put(String name) {
-        incr(name,1);
+        incr(name, 1);
     }
 
     @Override

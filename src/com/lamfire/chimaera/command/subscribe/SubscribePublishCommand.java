@@ -3,9 +3,9 @@ package com.lamfire.chimaera.command.subscribe;
 import com.lamfire.chimaera.annotation.COMMAND;
 import com.lamfire.chimaera.command.Command;
 
-@COMMAND(name=Command.SUBSCRIBE_PUBLISH)
-public class SubscribePublishCommand extends Command{
-	private byte[] message;
+@COMMAND(name = Command.SUBSCRIBE_PUBLISH)
+public class SubscribePublishCommand extends Command {
+    private byte[] message;
     private String clientId;
     private boolean feedback = false; //是否需要服务器发送一个回执，作为消息反馈，
 
@@ -17,13 +17,13 @@ public class SubscribePublishCommand extends Command{
         this.clientId = clientId;
     }
 
-	public byte[] getMessage() {
-		return message;
-	}
+    public byte[] getMessage() {
+        return message;
+    }
 
-	public void setMessage(byte[] message) {
-		this.message = message;
-	}
+    public void setMessage(byte[] message) {
+        this.message = message;
+    }
 
     public boolean isFeedback() {
         return feedback;

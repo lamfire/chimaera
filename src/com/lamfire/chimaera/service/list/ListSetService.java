@@ -8,19 +8,19 @@ import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
 import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.logger.Logger;
 import com.lamfire.hydra.MessageContext;
+import com.lamfire.logger.Logger;
 
 @SERVICE(command = Command.LIST_SET)
 public class ListSetService implements Service<ListSetCommand> {
-	static final Logger LOGGER = Logger.getLogger(ListSetService.class);
+    static final Logger LOGGER = Logger.getLogger(ListSetService.class);
 
-	@Override
-	public Response execute(MessageContext context, ListSetCommand cmd) {
-		FireStore store = Chimaera.getFireStore(cmd.getStore());
+    @Override
+    public Response execute(MessageContext context, ListSetCommand cmd) {
+        FireStore store = Chimaera.getFireStore(cmd.getStore());
 
         store.getFireList(cmd.getKey()).set(cmd.getIndex(), cmd.getValue());
-		return Responses.makeEmptyResponse(cmd);
-	}
+        return Responses.makeEmptyResponse(cmd);
+    }
 
 }

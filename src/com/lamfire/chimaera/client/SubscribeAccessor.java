@@ -16,24 +16,25 @@ import com.lamfire.hydra.net.Session;
  * Time: 上午11:13
  * To change this template use File | Settings | File Templates.
  */
-public class SubscribeAccessor implements Subscribe ,Rebundleable {
+public class SubscribeAccessor implements Subscribe, Rebundleable {
     private ChimaeraTransfer transfer;
     private String store = "_SUBSCRIBE_";
     private RebundleMonitor monitor;
 
-    SubscribeAccessor(ChimaeraTransfer transfer){
+    SubscribeAccessor(ChimaeraTransfer transfer) {
         this.transfer = transfer;
         this.monitor = new RebundleMonitor();
     }
 
     /**
      * 将该对象绑定到指定的KEY上，绑定后方可收到来自其它发布者的消息。
+     *
      * @param key
      * @param clientId
      * @param listener
      */
-    public void bind(String key,String clientId,OnMessageListener listener) {
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key,clientId), EmptyResponse.class);
+    public void bind(String key, String clientId, OnMessageListener listener) {
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
         transfer.bindMessageListener(key, listener);
 
@@ -48,34 +49,37 @@ public class SubscribeAccessor implements Subscribe ,Rebundleable {
 
     /**
      * 取消对消息的绑定，取消绑定后，将不能再接收到发布的消息。
+     *
      * @param key
      * @param clientId
      */
-    public void unbind(String key,String clientId) {
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getUnbindCommand(key,clientId), EmptyResponse.class);
+    public void unbind(String key, String clientId) {
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getUnbindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
         transfer.unbindMessageListener(key);
-        monitor.remove(key,clientId);
+        monitor.remove(key, clientId);
     }
 
     /**
      * 发布消息，将消息发送给绑定到该服务KEY上的所有人
+     *
      * @param key
      * @param clientId
      * @param bytes
      */
-    public void publish(String key,String clientId,byte[] bytes) {
-        transfer.sendCommand(getPublishCommand(key,clientId,bytes,false));
+    public void publish(String key, String clientId, byte[] bytes) {
+        transfer.sendCommand(getPublishCommand(key, clientId, bytes, false));
     }
 
     /**
      * 发布消息，将消息发送给绑定到该服务KEY上的所有人
+     *
      * @param key
      * @param clientId
      * @param bytes
      */
-    public void publishSync(String key,String clientId,byte[] bytes) {
-        transfer.sendCommand(getPublishCommand(key,clientId,bytes,true),EmptyResponse.class).await();
+    public void publishSync(String key, String clientId, byte[] bytes) {
+        transfer.sendCommand(getPublishCommand(key, clientId, bytes, true), EmptyResponse.class).await();
     }
 
     @Override
@@ -99,7 +103,7 @@ public class SubscribeAccessor implements Subscribe ,Rebundleable {
     }
 
     @Override
-    public Command getPublishCommand(String key, String clientId, byte[] bytes,boolean feedback) {
+    public Command getPublishCommand(String key, String clientId, byte[] bytes, boolean feedback) {
         SubscribePublishCommand cmd = new SubscribePublishCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
@@ -112,7 +116,7 @@ public class SubscribeAccessor implements Subscribe ,Rebundleable {
 
     @Override
     public Session rebind(String key, String clientId, OnMessageListener listener) {
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key,clientId), EmptyResponse.class);
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
         transfer.bindMessageListener(key, listener);
         return future.getSession();

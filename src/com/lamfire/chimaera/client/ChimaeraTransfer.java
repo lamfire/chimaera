@@ -2,12 +2,15 @@ package com.lamfire.chimaera.client;
 
 import com.lamfire.chimaera.ChimaeraException;
 import com.lamfire.chimaera.OnMessageListener;
-import com.lamfire.chimaera.response.Response;
-import com.lamfire.hydra.*;
 import com.lamfire.chimaera.command.Command;
-import com.lamfire.hydra.net.Session;
+import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.subscribe.PublishResponse;
 import com.lamfire.chimaera.serializer.Serializers;
+import com.lamfire.hydra.CycleSessionIterator;
+import com.lamfire.hydra.Message;
+import com.lamfire.hydra.MessageContext;
+import com.lamfire.hydra.Snake;
+import com.lamfire.hydra.net.Session;
 import com.lamfire.json.JSON;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Maps;
@@ -25,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ChimaeraTransfer extends Snake {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraTransfer.class);
-    private final Map<String,OnMessageListener> onMessageListeners = Maps.newHashMap();
+    private final Map<String, OnMessageListener> onMessageListeners = Maps.newHashMap();
     private static final AtomicInteger MessageID = new AtomicInteger();
     private ResponseWaitQueue waitQueue;
     private CycleSessionIterator sessionIt;
@@ -39,88 +42,88 @@ public class ChimaeraTransfer extends Snake {
     }
 
     public ChimaeraTransfer(String host, int port, int threads, ResponseWaitQueue waitQueue) {
-        this(host, port,waitQueue);
+        this(host, port, waitQueue);
         super.setKeepaliveConnsWithClient(threads);
     }
 
-    public void bindMessageListener(String key, OnMessageListener listener){
+    public void bindMessageListener(String key, OnMessageListener listener) {
         this.onMessageListeners.put(key, listener);
     }
 
-    public void unbindMessageListener(String key){
+    public void unbindMessageListener(String key) {
         this.onMessageListeners.remove(key);
     }
 
-    public OnMessageListener getMessageListener(String key){
+    public OnMessageListener getMessageListener(String key) {
         return this.onMessageListeners.get(key);
     }
 
-    private int getMessageId(){
-         return MessageID.getAndIncrement();
+    private int getMessageId() {
+        return MessageID.getAndIncrement();
     }
 
-    private Session getSession(){
+    private Session getSession() {
         Collection<Session> sessions = super.getSessions();
-        if(sessions == null){
+        if (sessions == null) {
             throw new ChimaeraException("not connection found.");
         }
         Session s = sessionIt.nextAvailableSession();
-        if(s == null){
+        if (s == null) {
             throw new ChimaeraException("not available sessions");
         }
         return s;
     }
 
-    private void sendBytes(Session session,int messageId,byte[] bytes){
-        if(LOGGER.isDebugEnabled()){
-            LOGGER.debug("SEND_COMMAND:"+new String(bytes));
+    private void sendBytes(Session session, int messageId, byte[] bytes) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("SEND_COMMAND:" + new String(bytes));
         }
-        session.send(new Message(messageId,bytes));
+        session.send(new Message(messageId, bytes));
     }
 
-    public ResponseFuture sendCommand(Command command,Class<?> responseType){
+    public ResponseFuture sendCommand(Command command, Class<?> responseType) {
         byte[] bytes = Serializers.getCommandSerializer().encode(command);
         int messageId = getMessageId();
         Session session = getSession();
-        ResponseFuture future = new ResponseFuture(session,command,messageId,waitQueue,responseType);
-        sendBytes(session,messageId,bytes);
+        ResponseFuture future = new ResponseFuture(session, command, messageId, waitQueue, responseType);
+        sendBytes(session, messageId, bytes);
         return future;
     }
 
-    public void sendCommand(Command command){
+    public void sendCommand(Command command) {
         byte[] bytes = Serializers.getCommandSerializer().encode(command);
-        sendBytes(getSession(),getMessageId(),bytes);
+        sendBytes(getSession(), getMessageId(), bytes);
     }
 
     @Override
     protected void handleMessage(MessageContext context, Message message) {
-        if(LOGGER.isDebugEnabled() ){
-            LOGGER.debug("handleMessage : "+message);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("handleMessage : " + message);
         }
         String js = new String(message.getBody());
         JSON json = new JSON(js);
-        Integer status = (Integer)json.get("status");
+        Integer status = (Integer) json.get("status");
 
         //subscribe response
-        if(status == PublishResponse.STATUS){
-            PublishResponse response =  (PublishResponse)Serializers.getResponseSerializer().decode(json,Response.class);
+        if (status == PublishResponse.STATUS) {
+            PublishResponse response = (PublishResponse) Serializers.getResponseSerializer().decode(json, Response.class);
             OnMessageListener listener = this.getMessageListener(response.getKey());
-            if(listener != null){
-                listener.onMessage(response.getKey(),response.getMessage());
+            if (listener != null) {
+                listener.onMessage(response.getKey(), response.getMessage());
             }
-            return ;
+            return;
         }
 
         //future response
         ResponseFuture future = waitQueue.remove(message.getId());
-        if(future == null){
-            if(LOGGER.isDebugEnabled() ){
-                LOGGER.debug("received message["+message.getId()+"],but not found the wait future.");
+        if (future == null) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("received message[" + message.getId() + "],but not found the wait future.");
             }
-            return ;
+            return;
         }
-        Response response =Serializers.getResponseSerializer().decode(json,future.getResponseType());
-        if(response != null){
+        Response response = Serializers.getResponseSerializer().decode(json, future.getResponseType());
+        if (response != null) {
             future.onResponse(response);
         }
     }

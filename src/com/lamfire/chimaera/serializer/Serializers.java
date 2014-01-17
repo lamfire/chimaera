@@ -11,11 +11,11 @@ public class Serializers {
     private static final CommandSerializer COMMAND_SERIALIZER = new CommandSerializer();
     private static final ResponseSerializer RESPONSE_SERIALIZER = new ResponseSerializer();
 
-    public static CommandSerializer getCommandSerializer(){
-           return COMMAND_SERIALIZER;
+    public static CommandSerializer getCommandSerializer() {
+        return COMMAND_SERIALIZER;
     }
 
-    public static ResponseSerializer getResponseSerializer(){
+    public static ResponseSerializer getResponseSerializer() {
         return RESPONSE_SERIALIZER;
     }
 }

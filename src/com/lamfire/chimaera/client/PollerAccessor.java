@@ -16,17 +16,17 @@ import com.lamfire.hydra.net.Session;
  * Time: 上午11:13
  * To change this template use File | Settings | File Templates.
  */
-public class PollerAccessor implements Poller,Rebundleable {
+public class PollerAccessor implements Poller, Rebundleable {
     private ChimaeraTransfer transfer;
     private String store = "_POLLER_";
     private RebundleMonitor monitor;
 
-    PollerAccessor(ChimaeraTransfer transfer){
+    PollerAccessor(ChimaeraTransfer transfer) {
         this.transfer = transfer;
         this.monitor = new RebundleMonitor();
     }
 
-    public Command getBindCommand(String key,String clientId){
+    public Command getBindCommand(String key, String clientId) {
         PollerBindCommand cmd = new PollerBindCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
@@ -34,14 +34,16 @@ public class PollerAccessor implements Poller,Rebundleable {
         cmd.setClientId(clientId);
         return cmd;
     }
+
     /**
      * 将该对象绑定到指定的KEY上，绑定后方可收到来自其它发布者的消息。
+     *
      * @param key
      * @param clientId
      * @param listener
      */
-    public void bind(String key,String clientId,OnMessageListener listener) {
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key,clientId), EmptyResponse.class);
+    public void bind(String key, String clientId, OnMessageListener listener) {
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
         transfer.bindMessageListener(key, listener);
 
@@ -54,15 +56,15 @@ public class PollerAccessor implements Poller,Rebundleable {
         monitor.add(bundler);
     }
 
-    public Session rebind(String key,String clientId,OnMessageListener listener) {
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key,clientId), EmptyResponse.class);
+    public Session rebind(String key, String clientId, OnMessageListener listener) {
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
         transfer.bindMessageListener(key, listener);
         return future.getSession();
     }
 
 
-    public Command getUnbindCommand(String key,String clientId){
+    public Command getUnbindCommand(String key, String clientId) {
         PollerUnbindCommand cmd = new PollerUnbindCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
@@ -73,17 +75,18 @@ public class PollerAccessor implements Poller,Rebundleable {
 
     /**
      * 取消对消息的绑定，取消绑定后，将不能再接收到发布的消息。
+     *
      * @param key
      * @param clientId
      */
-    public void unbind(String key,String clientId) {
-        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getUnbindCommand(key,clientId), EmptyResponse.class);
+    public void unbind(String key, String clientId) {
+        ResponseFuture<EmptyResponse> future = transfer.sendCommand(getUnbindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
         transfer.unbindMessageListener(key);
-        monitor.remove(key,clientId);
+        monitor.remove(key, clientId);
     }
 
-    public Command getPublishCommand(String key,String clientId,byte[] bytes,boolean  feedback){
+    public Command getPublishCommand(String key, String clientId, byte[] bytes, boolean feedback) {
         PollerPublishCommand cmd = new PollerPublishCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
@@ -96,21 +99,23 @@ public class PollerAccessor implements Poller,Rebundleable {
 
     /**
      * 发布消息，将消息发送给绑定到该服务KEY上的所有人
+     *
      * @param key
      * @param clientId
      * @param bytes
      */
-    public void publish(String key,String clientId,byte[] bytes) {
-        transfer.sendCommand(getPublishCommand(key,clientId,bytes,false));
+    public void publish(String key, String clientId, byte[] bytes) {
+        transfer.sendCommand(getPublishCommand(key, clientId, bytes, false));
     }
 
     /**
      * 发布消息，将消息发送给绑定到该服务KEY上的所有人
+     *
      * @param key
      * @param clientId
      * @param bytes
      */
-    public void publishSync(String key,String clientId,byte[] bytes) {
-        transfer.sendCommand(getPublishCommand(key,clientId,bytes,true),EmptyResponse.class).await();
+    public void publishSync(String key, String clientId, byte[] bytes) {
+        transfer.sendCommand(getPublishCommand(key, clientId, bytes, true), EmptyResponse.class).await();
     }
 }

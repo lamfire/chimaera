@@ -11,7 +11,7 @@ import com.lamfire.chimaera.test.tester.*;
  * To change this template use File | Settings | File Templates.
  */
 public class TestAll {
-    public static void main(String[] args) {
+    public static void test(String[] args){
         FireIncrementTester t1 = new FireIncrementTester(Config.getFireStore(args));
         t1.test();
 
@@ -33,6 +33,9 @@ public class TestAll {
         FireStoreTester t7 = new FireStoreTester(Config.getFireStore(args));
         t7.test();
 
+    }
+    public static void main(String[] args) {
+        test(args);
         Config.shutdown();
     }
 }

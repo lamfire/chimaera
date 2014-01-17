@@ -3,8 +3,8 @@ package com.lamfire.chimaera.command.rank;
 import com.lamfire.chimaera.annotation.COMMAND;
 import com.lamfire.chimaera.command.Command;
 
-@COMMAND(name= Command.RANK_MAX_RANGE)
-public class RankMaxRangeCommand extends Command{
+@COMMAND(name = Command.RANK_MAX_RANGE)
+public class RankMaxRangeCommand extends Command {
     private int from;
     private int size;
 

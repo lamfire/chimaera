@@ -18,7 +18,7 @@ public class FireStoreAccessor implements FireStore {
     private ChimaeraTransfer transfer;
     private String store;
 
-    FireStoreAccessor(ChimaeraTransfer transfer, String store){
+    FireStoreAccessor(ChimaeraTransfer transfer, String store) {
         this.transfer = transfer;
         this.store = store;
     }
@@ -76,33 +76,33 @@ public class FireStoreAccessor implements FireStore {
     }
 
     @Override
-    public FireIncrement getFireIncrement(String key)  {
-        return new FireIncrementAccessor(transfer,this.store,key);
+    public FireIncrement getFireIncrement(String key) {
+        return new FireIncrementAccessor(transfer, this.store, key);
     }
 
     @Override
-    public FireList getFireList(String key){
-        return new FireListAccessor(transfer,this.store,key);
+    public FireList getFireList(String key) {
+        return new FireListAccessor(transfer, this.store, key);
     }
 
     @Override
     public FireMap getFireMap(String key) {
-        return new FireMapAccessor(transfer,this.store,key);
+        return new FireMapAccessor(transfer, this.store, key);
     }
 
     @Override
     public FireQueue getFireQueue(String key) {
-        return new FireQueueAccessor(transfer,this.store,key);
+        return new FireQueueAccessor(transfer, this.store, key);
     }
 
     @Override
-    public FireSet getFireSet(String key){
-        return new FireSetAccesser(transfer,this.store,key);
+    public FireSet getFireSet(String key) {
+        return new FireSetAccesser(transfer, this.store, key);
     }
 
     @Override
     public FireRank getFireRank(String key) {
-        return new FireRankAccessor(transfer,this.store,key);
+        return new FireRankAccessor(transfer, this.store, key);
     }
 
 }

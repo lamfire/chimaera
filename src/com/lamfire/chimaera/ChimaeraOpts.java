@@ -2,11 +2,9 @@ package com.lamfire.chimaera;
 
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.FileUtils;
-import com.lamfire.utils.NumberUtils;
 import com.lamfire.utils.PropertiesUtils;
 import com.lamfire.utils.StringUtils;
 
-import java.io.File;
 import java.util.Properties;
 
 /**
@@ -28,45 +26,45 @@ public class ChimaeraOpts {
 
     static ChimaeraOpts instance;
 
-    public synchronized static ChimaeraOpts get(){
-        if(instance == null){
+    public synchronized static ChimaeraOpts get() {
+        if (instance == null) {
             instance = new ChimaeraOpts();
         }
         return instance;
     }
 
-    private  ChimaeraOpts(){
-        try{
-            Properties prop = PropertiesUtils.load(CONFIG_RESOURCE_NAME,ChimaeraOpts.class);
-            this.bind = (String)prop.get("bind");
-            this.port = Integer.parseInt((String)prop.get("port"));
-            this.threads = Integer.parseInt((String)prop.get("threads"));
-            String store = (String)prop.get("store");
-            if(StringUtils.equalsIgnoreCase("file",store)){
+    private ChimaeraOpts() {
+        try {
+            Properties prop = PropertiesUtils.load(CONFIG_RESOURCE_NAME, ChimaeraOpts.class);
+            this.bind = (String) prop.get("bind");
+            this.port = Integer.parseInt((String) prop.get("port"));
+            this.threads = Integer.parseInt((String) prop.get("threads"));
+            String store = (String) prop.get("store");
+            if (StringUtils.equalsIgnoreCase("file", store)) {
                 this.storeInMemory = false;
-            }else{
+            } else {
                 this.storeInMemory = true;
             }
-            this.storeDir = (String)prop.get("store.dir");
-            this.storeCacheSize = Integer.parseInt((String)prop.get("store.cache.size"));
-        }catch (Exception e){
-            LOGGER.warn("Parse '"+CONFIG_RESOURCE_NAME+"' file failed,use memory store.");
+            this.storeDir = (String) prop.get("store.dir");
+            this.storeCacheSize = Integer.parseInt((String) prop.get("store.cache.size"));
+        } catch (Exception e) {
+            LOGGER.warn("Parse '" + CONFIG_RESOURCE_NAME + "' file failed,use memory store.");
         }
 
         initOptions();
     }
 
-    private void initOptions(){
+    private void initOptions() {
         LOGGER.info("bind:" + bind);
-        LOGGER.info("port:" +port);
-        LOGGER.info("store:" +(storeInMemory?"memory":"file"));
-        if(! storeInMemory){
-            LOGGER.info("storeDir:" +storeDir);
-            if(!FileUtils.exists(storeDir)){
+        LOGGER.info("port:" + port);
+        LOGGER.info("store:" + (storeInMemory ? "memory" : "file"));
+        if (!storeInMemory) {
+            LOGGER.info("storeDir:" + storeDir);
+            if (!FileUtils.exists(storeDir)) {
                 FileUtils.makeDirs(storeDir);
                 LOGGER.info("The store dir not found,make " + this.storeDir);
             }
-            LOGGER.info("storeCacheSize:" +storeCacheSize);
+            LOGGER.info("storeCacheSize:" + storeCacheSize);
         }
     }
 

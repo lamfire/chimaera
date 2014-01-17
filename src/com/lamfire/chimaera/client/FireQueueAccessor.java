@@ -1,11 +1,11 @@
 package com.lamfire.chimaera.client;
 
-import com.lamfire.chimaera.command.queue.*;
-import com.lamfire.chimaera.response.SizeResponse;
 import com.lamfire.chimaera.command.Command;
+import com.lamfire.chimaera.command.queue.*;
 import com.lamfire.chimaera.response.EmptyResponse;
-import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.chimaera.response.GetResponse;
+import com.lamfire.chimaera.response.SizeResponse;
+import com.lamfire.chimaera.store.FireQueue;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,7 +20,7 @@ public class FireQueueAccessor implements FireQueue {
     private String key;
     private String store;
 
-    FireQueueAccessor(ChimaeraTransfer transfer,String store, String key){
+    FireQueueAccessor(ChimaeraTransfer transfer, String store, String key) {
         this.transfer = transfer;
         this.store = store;
         this.key = key;
@@ -33,7 +33,7 @@ public class FireQueueAccessor implements FireQueue {
         cmd.setKey(key);
         cmd.setCommand(Command.QUEUE_PUSH);
         cmd.setValue(value);
-        transfer.sendCommand(cmd,EmptyResponse.class).waitResponse();
+        transfer.sendCommand(cmd, EmptyResponse.class).waitResponse();
     }
 
     @Override
@@ -72,6 +72,6 @@ public class FireQueueAccessor implements FireQueue {
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setCommand(Command.QUEUE_CLEAR);
-        transfer.sendCommand(cmd,EmptyResponse.class).waitResponse();
+        transfer.sendCommand(cmd, EmptyResponse.class).waitResponse();
     }
 }

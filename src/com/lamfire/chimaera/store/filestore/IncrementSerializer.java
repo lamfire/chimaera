@@ -16,7 +16,7 @@ import java.io.Serializable;
  * Time: 下午2:48
  * To change this template use File | Settings | File Templates.
  */
-public class IncrementSerializer implements Serializer<FireIncrement>,Serializable {
+public class IncrementSerializer implements Serializer<FireIncrement>, Serializable {
 
     @Override
     public void serialize(DataOutput dataOutput, FireIncrement inc) throws IOException {

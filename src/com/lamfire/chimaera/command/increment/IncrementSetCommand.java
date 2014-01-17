@@ -3,8 +3,8 @@ package com.lamfire.chimaera.command.increment;
 import com.lamfire.chimaera.annotation.COMMAND;
 import com.lamfire.chimaera.command.Command;
 
-@COMMAND(name=Command.INCREMENT_SET)
-public class IncrementSetCommand extends Command{
+@COMMAND(name = Command.INCREMENT_SET)
+public class IncrementSetCommand extends Command {
     private long value;
 
     public long getValue() {
