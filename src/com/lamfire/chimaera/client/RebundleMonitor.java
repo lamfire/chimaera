@@ -20,6 +20,10 @@ public class RebundleMonitor {
     private static final Logger LOGGER = Logger.getLogger(RebundleMonitor.class);
     private static final ScheduledExecutorService service = Executors.newScheduledThreadPool(1, Threads.makeThreadFactory("RebundleMonitor"));
 
+    public static void shutdownMonitorThread(){
+        service.shutdown();
+    }
+
     private Map<String, Rebundler> map = new HashMap<String, Rebundler>();
 
     public RebundleMonitor() {

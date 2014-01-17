@@ -54,6 +54,7 @@ public class ChimaeraCli {
         if (this.transfer != null) {
             this.transfer.shutdown();
         }
+        RebundleMonitor.shutdownMonitorThread();
     }
 
 }

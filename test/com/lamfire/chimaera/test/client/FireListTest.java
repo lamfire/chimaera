@@ -20,5 +20,6 @@ public class FireListTest {
         FireList list = Config.getFireStore(args).getFireList("TEST_LIST");
         FireListTester test = new FireListTester(list);
         test.test();
+        Config.getChimaeraCli().close();
     }
 }
