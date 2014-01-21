@@ -1,11 +1,9 @@
 package com.lamfire.chimaera;
 
+import com.lamfire.chimaera.config.ChimaeraXmlParser;
+import com.lamfire.chimaera.config.ServerConfigure;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.FileUtils;
-import com.lamfire.utils.PropertiesUtils;
-import com.lamfire.utils.StringUtils;
-
-import java.util.Properties;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,13 +14,7 @@ import java.util.Properties;
  */
 public class ChimaeraOpts {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraOpts.class);
-    public static final String CONFIG_RESOURCE_NAME = "chimaera.properties";
-    private String bind = "0.0.0.0";
-    private int port = 19800;
-    private boolean storeInMemory = true;
-    private String storeDir;
-    private int storeCacheSize = -1;
-    private int threads = 16;
+    private ServerConfigure serverConfigure;
 
     static ChimaeraOpts instance;
 
@@ -35,84 +27,72 @@ public class ChimaeraOpts {
 
     private ChimaeraOpts() {
         try {
-            Properties prop = PropertiesUtils.load(CONFIG_RESOURCE_NAME, ChimaeraOpts.class);
-            this.bind = (String) prop.get("bind");
-            this.port = Integer.parseInt((String) prop.get("port"));
-            this.threads = Integer.parseInt((String) prop.get("threads"));
-            String store = (String) prop.get("store");
-            if (StringUtils.equalsIgnoreCase("file", store)) {
-                this.storeInMemory = false;
-            } else {
-                this.storeInMemory = true;
-            }
-            this.storeDir = (String) prop.get("store.dir");
-            this.storeCacheSize = Integer.parseInt((String) prop.get("store.cache.size"));
+            serverConfigure = ChimaeraXmlParser.get().getServerConfigure();
         } catch (Exception e) {
-            LOGGER.warn("Parse '" + CONFIG_RESOURCE_NAME + "' file failed,use memory store.");
+            LOGGER.warn("Parse '" + ChimaeraXmlParser.XML_RESOURCE + "' file failed,use memory store.");
         }
-
         initOptions();
     }
 
     private void initOptions() {
-        LOGGER.info("bind:" + bind);
-        LOGGER.info("port:" + port);
-        LOGGER.info("store:" + (storeInMemory ? "memory" : "file"));
-        if (!storeInMemory) {
-            LOGGER.info("storeDir:" + storeDir);
-            if (!FileUtils.exists(storeDir)) {
-                FileUtils.makeDirs(storeDir);
-                LOGGER.info("The store dir not found,make " + this.storeDir);
+        LOGGER.info("bind:" + serverConfigure.getBind());
+        LOGGER.info("port:" + serverConfigure.getPort());
+        LOGGER.info("store:" + (serverConfigure.isStoreInMemory() ? "memory" : "file"));
+        if (!serverConfigure.isStoreInMemory()) {
+            LOGGER.info("storeDir:" + serverConfigure.getStoreDir());
+            if (!FileUtils.exists(serverConfigure.getStoreDir())) {
+                FileUtils.makeDirs(serverConfigure.getStoreDir());
+                LOGGER.info("The store dir not found,make " + serverConfigure.getStoreDir());
             }
-            LOGGER.info("storeCacheSize:" + storeCacheSize);
+            LOGGER.info("storeCacheSize:" + serverConfigure.getFlushThresholdOps());
+            LOGGER.info("enableLocking:" + serverConfigure.isEnableLocking());
+            LOGGER.info("enableSoftCache:" + serverConfigure.isEnableSoftCache());
+            LOGGER.info("enableTransactions:" + serverConfigure.isEnableTransactions());
         }
     }
 
     public String getBind() {
-        return bind;
+        return serverConfigure.getBind();
     }
 
-    public void setBind(String bind) {
-        this.bind = bind;
-    }
 
     public int getPort() {
-        return port;
+        return serverConfigure.getPort();
     }
 
-    public void setPort(int port) {
-        this.port = port;
-    }
 
     public boolean isStoreInMemory() {
-        return storeInMemory;
+        return serverConfigure.isStoreInMemory();
     }
 
-    public void setStoreInMemory(boolean storeInMemory) {
-        this.storeInMemory = storeInMemory;
-    }
 
     public String getStoreDir() {
-        return storeDir;
+        return serverConfigure.getStoreDir();
     }
 
-    public void setStoreDir(String storeDir) {
-        this.storeDir = storeDir;
+
+    public int getFlushThresholdOps() {
+        return serverConfigure.getFlushThresholdOps();
     }
 
-    public int getStoreCacheSize() {
-        return storeCacheSize;
+    public int getFlushInterval(){
+        return serverConfigure.getFlushInterval();
     }
 
-    public void setStoreCacheSize(int storeCacheSize) {
-        this.storeCacheSize = storeCacheSize;
-    }
 
     public int getThreads() {
-        return threads;
+        return serverConfigure.getThreads();
     }
 
-    public void setThreads(int threads) {
-        this.threads = threads;
+    public boolean isEnableLocking() {
+        return serverConfigure.isEnableLocking();
+    }
+
+    public boolean isEnableSoftCache() {
+        return serverConfigure.isEnableSoftCache();
+    }
+
+    public boolean isEnableTransactions() {
+        return serverConfigure.isEnableTransactions();
     }
 }

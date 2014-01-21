@@ -1,5 +1,6 @@
 package com.lamfire.chimaera.store.filestore;
 
+import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.utils.Threads;
 import org.apache.jdbm.DB;
 import org.apache.jdbm.DBMaker;
@@ -24,15 +25,27 @@ public class StoreEngine {
     private String file; //文件路径
     private DB db;
 
-    private int maxCacheSize = -1;  //最大数据操作缓存次数，当达到该值时，刷新更改到文件。
+    private int flushThresholdOps = -1;  //最大数据操作缓存次数，当达到该值时，刷新更改到文件。
     private AtomicInteger cacheCount = new AtomicInteger(); //数据更改次数记录器
     private ScheduledExecutorService service;
 
     public StoreEngine(String file) throws IOException {
         this.file = file;
-        this.db = DBMaker.openFile(file).enableSoftCache().disableLocking().disableTransactions().make();
+        DBMaker marker = DBMaker.openFile(file);
+        if(ChimaeraOpts.get().isEnableSoftCache()){
+            marker.enableSoftCache();
+        }
+        if(!ChimaeraOpts.get().isEnableLocking()){
+            marker.disableLocking();
+        }
+        if(!ChimaeraOpts.get().isEnableTransactions()){
+            marker.disableTransactions();
+        }
+
+        this.flushThresholdOps = ChimaeraOpts.get().getFlushThresholdOps();
+        this.db = marker.make();
         this.service = Executors.newScheduledThreadPool(1, Threads.makeThreadFactory("StoreEngine"));
-        this.service.scheduleWithFixedDelay(flushStoreWorker, 30, 30, TimeUnit.SECONDS);
+        this.service.scheduleWithFixedDelay(flushStoreWorker, ChimaeraOpts.get().getFlushInterval(), ChimaeraOpts.get().getFlushInterval(), TimeUnit.SECONDS);
     }
 
     public DB getDB() {
@@ -95,15 +108,15 @@ public class StoreEngine {
         return set;
     }
 
-    public void setMaxCacheSize(int maxCacheSize) {
-        this.maxCacheSize = maxCacheSize;
+    public void setFlushThresholdOps(int flushThresholdOps) {
+        this.flushThresholdOps = flushThresholdOps;
     }
 
     /**
      * 检查数据更改缓冲次数，如果达到最大值，则写入到文件
      */
     protected synchronized void cacheOrFlush() {
-        if (cacheCount.getAndIncrement() >= maxCacheSize) {
+        if (cacheCount.getAndIncrement() >= flushThresholdOps) {
             //Threads.startup(flushStoreWorker);
             flush();
         }
