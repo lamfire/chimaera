@@ -1,9 +1,7 @@
 package com.lamfire.chimaera.test;
 
-import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.chimaera.client.ChimaeraCli;
 import com.lamfire.chimaera.store.*;
-import com.lamfire.utils.FilenameUtils;
 import com.lamfire.utils.PropertiesUtils;
 
 import java.util.Map;

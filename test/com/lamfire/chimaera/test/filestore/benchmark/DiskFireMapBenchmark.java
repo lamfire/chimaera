@@ -26,7 +26,7 @@ public class DiskFireMapBenchmark {
 
     public DiskFireMapBenchmark() throws IOException {
         StoreEngine store = new StoreEngine(FILE);
-        store.setMaxCacheSize(1000);
+        store.setFlushThresholdOps(1000);
         this.map  = new DiskFireMap(store,"TEST_MAP");
     }
 
