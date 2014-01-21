@@ -40,7 +40,7 @@ public class ChimaeraXmlParser {
     private ServerConfigure serverConfigure;
     private List<DrainageConfigure> drainages;
 
-    public ServerConfigure getServerConfigure() throws XPathExpressionException {
+    public synchronized ServerConfigure getServerConfigure() throws XPathExpressionException {
         if(serverConfigure != null){
             return serverConfigure;
         }
@@ -77,7 +77,7 @@ public class ChimaeraXmlParser {
     }
 
 
-    public List<DrainageConfigure> getDrainageConfigureList() throws XPathExpressionException {
+    public synchronized List<DrainageConfigure> getDrainageConfigureList() throws XPathExpressionException {
         if(drainages != null){
             return drainages;
         }
