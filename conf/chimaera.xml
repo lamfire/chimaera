@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chimaera>
+    <server bind="0.0.0.0" port="19800">
+        <threads>16</threads>
+        <store type="file">
+            <enableSoftCache>true</enableSoftCache>
+            <enableLocking>false</enableLocking>
+            <enableTransactions>false</enableTransactions>
+            <flushThresholdOps>10000</flushThresholdOps>
+            <flushInterval>60</flushInterval>
+            <fileDir>/data/chimaera/</fileDir>
+        </store>
+    </server>
+    <drainage host="192.168.9.126" port="19800">
+        <subscribe key="SUB_KEY_001">
+          <destination key="SUB_KEY_DEST" type="poller"/>
+        </subscribe>
+        <poller key="SUB_KEY_002">
+            <destination key="SUB_KEY_DEST" type="poller"/>
+        </poller>
+    </drainage>
+
+    <drainage host="192.168.9.126" port="19800">
+        <poller key="SUB_KEY_003">
+            <destination key="SUB_KEY_DEST" type="subscribe"/>
+        </poller>
+    </drainage>
+</chimaera>
