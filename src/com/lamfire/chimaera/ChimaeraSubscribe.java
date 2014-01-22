@@ -50,7 +50,7 @@ public class ChimaeraSubscribe {
     private Lock lock = new ReentrantLock();
 
     private ChimaeraSubscribe() {
-        this.store = Chimaera.getFireStore(STORE_NAME);
+        this.store = Chimaera.getFireStore(STORE_NAME,true);
         this.queue = new ChimaeraBlockingQueue(this.store.getFireQueue(QUEUE_NAME));
         this.service = Executors.newFixedThreadPool(1, Threads.makeThreadFactory(STORE_NAME));
         this.service.submit(executor);

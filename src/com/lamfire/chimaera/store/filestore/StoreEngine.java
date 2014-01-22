@@ -29,17 +29,24 @@ public class StoreEngine {
     private AtomicInteger cacheCount = new AtomicInteger(); //数据更改次数记录器
     private ScheduledExecutorService service;
 
-    public StoreEngine(String file) throws IOException {
+    public StoreEngine(String file,boolean deleteFilesAfterClose) throws IOException {
         this.file = file;
-        DBMaker marker = DBMaker.openFile(file);
-        if(ChimaeraOpts.get().isEnableSoftCache()){
+        DBMaker marker = DBMaker.openFile(file).closeOnExit();
+        if(ChimaeraOpts.get().isEnableCache()){
             marker.enableSoftCache();
+            marker.enableHardCache();
+            marker.enableWeakCache();
+            marker.enableMRUCache();
         }
         if(!ChimaeraOpts.get().isEnableLocking()){
             marker.disableLocking();
         }
         if(!ChimaeraOpts.get().isEnableTransactions()){
             marker.disableTransactions();
+        }
+
+        if(deleteFilesAfterClose){
+            marker.deleteFilesAfterClose();
         }
 
         this.flushThresholdOps = ChimaeraOpts.get().getFlushThresholdOps();

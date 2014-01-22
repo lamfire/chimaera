@@ -46,7 +46,7 @@ public class ChimaeraOpts {
             }
             LOGGER.info("storeCacheSize:" + serverConfigure.getFlushThresholdOps());
             LOGGER.info("enableLocking:" + serverConfigure.isEnableLocking());
-            LOGGER.info("enableSoftCache:" + serverConfigure.isEnableSoftCache());
+            LOGGER.info("enableSoftCache:" + serverConfigure.isEnableCache());
             LOGGER.info("enableTransactions:" + serverConfigure.isEnableTransactions());
         }
     }
@@ -88,8 +88,8 @@ public class ChimaeraOpts {
         return serverConfigure.isEnableLocking();
     }
 
-    public boolean isEnableSoftCache() {
-        return serverConfigure.isEnableSoftCache();
+    public boolean isEnableCache() {
+        return serverConfigure.isEnableCache();
     }
 
     public boolean isEnableTransactions() {

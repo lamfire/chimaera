@@ -28,10 +28,10 @@ public class DiskFireStore implements FireStore {
     private String storeName;
     private StoreEngine engine;
 
-    public DiskFireStore(String file, String storeName) {
+    public DiskFireStore(String file, String storeName,boolean deleteFilesAfterClose) {
         this.storeName = storeName;
         try {
-            this.engine = new StoreEngine(file);
+            this.engine = new StoreEngine(file,deleteFilesAfterClose);
             this.meta = this.engine.getHashMap(KEY_META);
             this.increments = this.engine.getHashMap(KEY_INCREMENT, new IncrementSerializer());
         } catch (IOException e) {

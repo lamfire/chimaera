@@ -39,10 +39,18 @@ public class Chimaera {
         if (store != null) {
             return store;
         }
-        return newFireStore(storeName);
+        return newFireStore(storeName,false);
     }
 
-    private synchronized static FireStore newFireStore(String storeName) {
+    public static final FireStore getFireStore(String storeName,boolean deleteFilesAfterClose) {
+        FireStore store = stores.get(storeName);
+        if (store != null) {
+            return store;
+        }
+        return newFireStore(storeName,deleteFilesAfterClose);
+    }
+
+    private synchronized static FireStore newFireStore(String storeName,boolean deleteFilesAfterClose) {
         FireStore store = stores.get(storeName);
         if (store == null) {
             ChimaeraOpts opts = ChimaeraOpts.get();
@@ -50,7 +58,7 @@ public class Chimaera {
                 store = new MemoryFireStore(storeName);
             } else {
                 String file = FilenameUtils.concat(opts.getStoreDir(), storeName);
-                store = new DiskFireStore(file, storeName);
+                store = new DiskFireStore(file, storeName,deleteFilesAfterClose);
                 LOGGER.info("create store file[" + storeName + "] :" + file);
             }
             stores.put(storeName, store);

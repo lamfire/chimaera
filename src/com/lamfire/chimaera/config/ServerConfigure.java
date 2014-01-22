@@ -17,7 +17,7 @@ public class ServerConfigure {
     private int threads = 16;
     private boolean enableLocking = false;
     private boolean enableTransactions = false;
-    private boolean enableSoftCache = true;
+    private boolean enableCache = true;
 
     public String getBind() {
         return bind;
@@ -83,12 +83,12 @@ public class ServerConfigure {
         this.enableTransactions = enableTransactions;
     }
 
-    public boolean isEnableSoftCache() {
-        return enableSoftCache;
+    public boolean isEnableCache() {
+        return enableCache;
     }
 
-    public void setEnableSoftCache(boolean enableSoftCache) {
-        this.enableSoftCache = enableSoftCache;
+    public void setEnableCache(boolean enableCache) {
+        this.enableCache = enableCache;
     }
 
     public int getFlushInterval() {
