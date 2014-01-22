@@ -19,7 +19,7 @@ public class DiskFireSetTest {
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args)throws Exception {
-        StoreEngine store = new StoreEngine(FILE);
+        StoreEngine store = new StoreEngine(FILE,true);
         FireSet set  = new DiskFireSet(store,"TEST_SET");
         FireSetTester test = new FireSetTester(set);
         test.test();

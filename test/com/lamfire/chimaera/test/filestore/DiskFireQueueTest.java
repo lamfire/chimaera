@@ -17,7 +17,7 @@ public class DiskFireQueueTest {
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args)throws Exception {
-        StoreEngine store = new StoreEngine(FILE);
+        StoreEngine store = new StoreEngine(FILE,true);
         FireQueue queue  = new DiskFireQueue(store,"TEST_SET");
         FireQueueTester test = new FireQueueTester(queue);
         test.test();

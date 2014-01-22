@@ -20,7 +20,7 @@ public class DiskFireMapTest {
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args)throws Exception {
-        StoreEngine store = new StoreEngine(FILE);
+        StoreEngine store = new StoreEngine(FILE,true);
         FireMap map  = new DiskFireMap(store,"TEST_MAP");
         FireMapTester test = new FireMapTester(map);
         test.test();

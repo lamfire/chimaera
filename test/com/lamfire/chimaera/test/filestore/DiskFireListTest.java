@@ -19,7 +19,7 @@ public class DiskFireListTest {
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args) throws Exception{
-        StoreEngine store = new StoreEngine(FILE);
+        StoreEngine store = new StoreEngine(FILE,true);
         FireList list  = new DiskFireList(store,"TEST_LIST");
         FireListTester test = new FireListTester(list);
         test.test();

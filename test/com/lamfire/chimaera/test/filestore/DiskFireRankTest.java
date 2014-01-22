@@ -23,7 +23,7 @@ public class DiskFireRankTest {
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args) throws IOException {
-        StoreEngine store = new StoreEngine(FILE);
+        StoreEngine store = new StoreEngine(FILE,true);
         FireRankTester test = new FireRankTester(new DiskFireRank(store,"TEST_RANK"));
         //test.test();
         test.incr();
