@@ -40,6 +40,7 @@ public class DrainageService {
              return ;
         }
         cli = new ChimaeraCli();
+        cli.setMaxConnections(1);
         cli.open(setting.getHost(), setting.getPort());
         LOGGER.info("connecting to:" +setting.getHost() +":" + setting.getPort());
     }
@@ -50,20 +51,20 @@ public class DrainageService {
             LOGGER.info("Setting drainage:" + JSON.toJSONString(conf));
             if(StringUtils.equals(DrainageConfigure.TYPE_SUBSCRIBE ,conf.getFromType())){
                 if(StringUtils.equals(DrainageConfigure.TYPE_SUBSCRIBE ,conf.getToType())){
-                    cli.getSubscribe().bind(conf.getFromKey(),clientId,new ToSubscribeDrainage());
+                    cli.getSubscribe().bind(conf.getFromKey(),clientId,new ToSubscribeDrainage(conf.getToKey()));
                     LOGGER.info("drainage subscribe["+conf.getFromKey()+"] to subscribe["+conf.getToKey()+"]");
                 }else if(StringUtils.equals(DrainageConfigure.TYPE_POLLER ,conf.getToType())){
-                    cli.getSubscribe().bind(conf.getFromKey(),clientId,new ToPollerDrainage());
+                    cli.getSubscribe().bind(conf.getFromKey(),clientId,new ToPollerDrainage(conf.getToKey()));
                     LOGGER.info("drainage subscribe["+conf.getFromKey()+"] to poller["+conf.getToKey()+"]");
                 }else{
                     LOGGER.warn("Failed to type["+conf.getToType()+"]:" + JSON.toJSONString(conf));
                 }
             }else if(StringUtils.equals(DrainageConfigure.TYPE_POLLER ,conf.getFromType())){
                 if(StringUtils.equals(DrainageConfigure.TYPE_SUBSCRIBE ,conf.getToType())){
-                    cli.getPoller().bind(conf.getFromKey(),clientId,new ToSubscribeDrainage());
+                    cli.getPoller().bind(conf.getFromKey(),clientId,new ToSubscribeDrainage(conf.getToKey()));
                     LOGGER.info("drainage poller["+conf.getFromKey()+"] to subscribe["+conf.getToKey()+"]");
                 }else if(StringUtils.equals(DrainageConfigure.TYPE_POLLER ,conf.getToType())){
-                    cli.getPoller().bind(conf.getFromKey(),clientId,new ToPollerDrainage());
+                    cli.getPoller().bind(conf.getFromKey(),clientId,new ToPollerDrainage(conf.getToKey()));
                     LOGGER.info("drainage poller["+conf.getFromKey()+"] to poller["+conf.getToKey()+"]");
                 }else{
                     LOGGER.warn("Failed to type["+conf.getToType()+"]:" + JSON.toJSONString(conf));

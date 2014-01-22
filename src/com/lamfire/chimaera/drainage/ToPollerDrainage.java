@@ -13,9 +13,14 @@ import com.lamfire.chimaera.Poller;
  * To change this template use File | Settings | File Templates.
  */
 public class ToPollerDrainage implements OnMessageListener {
+    private String toKey;
+
+    public ToPollerDrainage(String toKey){
+        this.toKey = toKey;
+    }
 
     @Override
     public void onMessage(String key, byte[] message) {
-        ChimaeraPoller.getInstance().publish(key,message);
+        ChimaeraPoller.getInstance().publish(this.toKey,message);
     }
 }

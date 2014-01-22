@@ -11,9 +11,13 @@ import com.lamfire.chimaera.OnMessageListener;
  * To change this template use File | Settings | File Templates.
  */
 public class ToSubscribeDrainage implements OnMessageListener {
+    private String toKey;
 
+    public ToSubscribeDrainage(String toKey){
+        this.toKey = toKey;
+    }
     @Override
     public void onMessage(String key, byte[] message) {
-        ChimaeraSubscribe.getInstance().publish(key,message);
+        ChimaeraSubscribe.getInstance().publish(this.toKey,message);
     }
 }

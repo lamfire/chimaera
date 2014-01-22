@@ -95,6 +95,9 @@ public class ChimaeraXmlParser {
             String host = node.getAttributes().getNamedItem("host").getNodeValue();
             int port = Integer.parseInt(node.getAttributes().getNamedItem("port").getNodeValue());
             DrainageSetting setting = new DrainageSetting();
+            setting.setHost(host);
+            setting.setPort(port);
+
             Node child = node.getFirstChild();
             while(child != null){
                 DrainageConfigure conf = parseDrainageConfigure(parser,child,host,port);
