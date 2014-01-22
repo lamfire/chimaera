@@ -16,5 +16,6 @@ public class TestChimaeraServer {
     private static final Logger LOGGER = Logger.getLogger(TestChimaeraServer.class);
     public static void main(String[] args) {
         ChimaeraServer.startup(ChimaeraOpts.get());
+        ChimaeraServer.startupDrainage();
     }
 }

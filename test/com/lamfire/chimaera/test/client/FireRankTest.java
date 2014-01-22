@@ -20,12 +20,12 @@ public class FireRankTest {
 
     public static void main(String[] args) {
         FireRankTester test = new FireRankTester(Config.getFireStore(args).getFireRank("TEST_RANK"));
-//        test.max(10);
-//        test.min(10);
-//        test.max(10);
-//        test.min(10);
-//        test.size();
-        test.putsRandom();
+        test.max(10);
+        test.min(10);
+        test.max(10);
+        test.min(10);
+        test.size();
+        //test.putsRandom(99999999);
         System.exit(0);
     }
 }

@@ -88,6 +88,7 @@ public class ChimaeraSubscribe {
         PublishResponse response = new PublishResponse();
         response.setKey(key);
         response.setMessage(bytes);
+        response.setType(PublishResponse.TYPE_SUBSCRIBE);
 
         byte[] responseBytes = Serializers.getResponseSerializer().encode(response);
         this.queue.push(responseBytes);

@@ -3,6 +3,7 @@ package com.lamfire.chimaera.test.tester;
 import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.Item;
 import com.lamfire.utils.Asserts;
+import com.lamfire.utils.RandomUtils;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -100,7 +101,24 @@ public class FireRankTester {
         }
     }
 
-    public void putsRandom(int count){
+    public void putsRandom(int maxItems){
+        long startAt = System.currentTimeMillis();
+        int i=0;
+        while(true){
+            i = count.getAndIncrement();
+            this.rank.put(String.valueOf(RandomUtils.nextInt(maxItems)));
+            if(i % 1000 == 0){
+                long timeUsed = System.currentTimeMillis() - startAt;
+                if(timeUsed > max_used_time){
+                    max_used_time =  timeUsed;
+                }
+                System.out.println("rank.put():"+i+ "pcs,time_millis:"+ timeUsed +" ms,max_time_used:" + max_used_time);
+                startAt = System.currentTimeMillis();
+            }
+        }
+    }
+
+    public void putsRandomFixTimes(int count){
         long startAt = System.currentTimeMillis();
         long begin = startAt;
         for(int i=0;i<count;i++){

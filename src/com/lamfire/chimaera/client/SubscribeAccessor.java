@@ -36,7 +36,7 @@ public class SubscribeAccessor implements Subscribe, Rebundleable {
     public void bind(String key, String clientId, OnMessageListener listener) {
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
-        transfer.bindMessageListener(key, listener);
+        transfer.setSubscribeMessageListener(key, listener);
 
         //add monitor
         Rebundler bundler = new Rebundler(this);
@@ -56,7 +56,7 @@ public class SubscribeAccessor implements Subscribe, Rebundleable {
     public void unbind(String key, String clientId) {
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(getUnbindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
-        transfer.unbindMessageListener(key);
+        transfer.removeSubscribeMessageListener(key);
         monitor.remove(key, clientId);
     }
 
@@ -118,7 +118,7 @@ public class SubscribeAccessor implements Subscribe, Rebundleable {
     public Session rebind(String key, String clientId, OnMessageListener listener) {
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
-        transfer.bindMessageListener(key, listener);
+        transfer.setSubscribeMessageListener(key, listener);
         return future.getSession();
     }
 }

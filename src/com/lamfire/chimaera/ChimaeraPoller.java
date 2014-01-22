@@ -102,6 +102,7 @@ public class ChimaeraPoller {
         PublishResponse response = new PublishResponse();
         response.setKey(key);
         response.setMessage(bytes);
+        response.setType(PublishResponse.TYPE_POLLER);
 
         byte[] responseBytes = Serializers.getResponseSerializer().encode(response);
         this.queue.push(responseBytes);

@@ -28,7 +28,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ChimaeraTransfer extends Snake {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraTransfer.class);
-    private final Map<String, OnMessageListener> onMessageListeners = Maps.newHashMap();
+    private final Map<String, OnMessageListener> subscribeMessageListeners = Maps.newHashMap();
+    private final Map<String, OnMessageListener> pollerMessageListeners = Maps.newHashMap();
     private static final AtomicInteger MessageID = new AtomicInteger();
     private ResponseWaitQueue waitQueue;
     private CycleSessionIterator sessionIt;
@@ -46,16 +47,28 @@ public class ChimaeraTransfer extends Snake {
         super.setKeepaliveConnsWithClient(threads);
     }
 
-    public void bindMessageListener(String key, OnMessageListener listener) {
-        this.onMessageListeners.put(key, listener);
+    public void setSubscribeMessageListener(String key, OnMessageListener listener) {
+        this.subscribeMessageListeners.put(key, listener);
     }
 
-    public void unbindMessageListener(String key) {
-        this.onMessageListeners.remove(key);
+    public void removeSubscribeMessageListener(String key) {
+        this.subscribeMessageListeners.remove(key);
     }
 
-    public OnMessageListener getMessageListener(String key) {
-        return this.onMessageListeners.get(key);
+    public OnMessageListener getSubscribeMessageListener(String key) {
+        return this.subscribeMessageListeners.get(key);
+    }
+
+    public void setPollerMessageListener(String key, OnMessageListener listener) {
+        this.pollerMessageListeners.put(key, listener);
+    }
+
+    public void removePollerMessageListener(String key) {
+        this.pollerMessageListeners.remove(key);
+    }
+
+    public OnMessageListener getPollerMessageListener(String key) {
+        return this.pollerMessageListeners.get(key);
     }
 
     private int getMessageId() {
@@ -107,10 +120,19 @@ public class ChimaeraTransfer extends Snake {
         //subscribe response
         if (status == PublishResponse.STATUS) {
             PublishResponse response = (PublishResponse) Serializers.getResponseSerializer().decode(json, Response.class);
-            OnMessageListener listener = this.getMessageListener(response.getKey());
-            if (listener != null) {
-                listener.onMessage(response.getKey(), response.getMessage());
+            OnMessageListener listener = null;
+            if(response.getType() == PublishResponse.TYPE_SUBSCRIBE){
+                listener = getSubscribeMessageListener(response.getKey());
+            }else if(response.getType() == PublishResponse.TYPE_POLLER){
+                listener = getPollerMessageListener(response.getKey());
+            } else{
+                LOGGER.warn("Not support publish response type:" + response.getType());
             }
+            if (listener == null) {
+                LOGGER.warn("Not found message listener :" +response.getKey()+"/" + response.getType());
+                return;
+            }
+            listener.onMessage(response.getKey(), response.getMessage());
             return;
         }
 

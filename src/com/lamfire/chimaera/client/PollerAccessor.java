@@ -45,7 +45,7 @@ public class PollerAccessor implements Poller, Rebundleable {
     public void bind(String key, String clientId, OnMessageListener listener) {
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
-        transfer.bindMessageListener(key, listener);
+        transfer.setPollerMessageListener(key, listener);
 
         //add monitor
         Rebundler bundler = new Rebundler(this);
@@ -59,7 +59,7 @@ public class PollerAccessor implements Poller, Rebundleable {
     public Session rebind(String key, String clientId, OnMessageListener listener) {
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
-        transfer.bindMessageListener(key, listener);
+        transfer.setPollerMessageListener(key, listener);
         return future.getSession();
     }
 
@@ -82,7 +82,7 @@ public class PollerAccessor implements Poller, Rebundleable {
     public void unbind(String key, String clientId) {
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(getUnbindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
-        transfer.unbindMessageListener(key);
+        transfer.removePollerMessageListener(key);
         monitor.remove(key, clientId);
     }
 

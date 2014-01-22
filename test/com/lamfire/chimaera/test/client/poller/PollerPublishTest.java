@@ -42,7 +42,7 @@ public class PollerPublishTest implements OnMessageListener {
     public static void main(String[] args) {
         PollerPublishTest test = new PollerPublishTest();
         while(true){
-            test.publish("linfan[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
+            test.publish("POLLER[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
             if (counter.get() % 10000 == 0) {
                 System.out.println(counter.get());
             }
