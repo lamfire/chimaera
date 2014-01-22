@@ -5,29 +5,42 @@ import com.lamfire.chimaera.Poller;
 import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
+import com.lamfire.utils.Threads;
+
+import java.util.concurrent.Executors;
 
 public class ChimaeraCli {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraCli.class);
     private final ResponseWaitQueue waitQueue = new ResponseWaitQueue();
     private ChimaeraTransfer transfer;
-    private int poolSize = 4;
+    private int maxConnections = 4;
+    private int maxThreads = 8;
     private Subscribe subscribe;
     private Poller poller;
 
-    public int getPoolSize() {
-        return this.poolSize;
+    public int getMaxConnections() {
+        return this.maxConnections;
     }
 
-    public void setPoolSize(int poolSize) {
-        this.poolSize = poolSize;
+    public void setMaxConnections(int maxConnections) {
+        this.maxConnections = maxConnections;
+    }
+
+    public int getMaxThreads() {
+        return maxThreads;
+    }
+
+    public void setMaxThreads(int maxThreads) {
+        this.maxThreads = maxThreads;
     }
 
     public synchronized void open(String host, int port) {
         if (this.transfer != null) {
             throw new ChimaeraException("The 'ChimaeraCli' already connected to " + transfer.getHost() + ":" + transfer.getPort());
         }
-        this.transfer = new ChimaeraTransfer(host, port, poolSize, waitQueue);
-        this.transfer.setKeepaliveConnsWithClient(poolSize);
+        this.transfer = new ChimaeraTransfer(host, port, maxConnections, waitQueue);
+        this.transfer.setExecutorService(Executors.newFixedThreadPool(maxThreads, Threads.makeThreadFactory("ChimaeraCli")));
+        this.transfer.setKeepaliveConnsWithClient(maxConnections);
         this.transfer.connect();
         LOGGER.info("ChimaeraCli connected to " + transfer.getHost() + ":" + transfer.getPort());
     }

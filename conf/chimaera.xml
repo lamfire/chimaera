@@ -27,4 +27,12 @@
         </poller>
     </drainage>
     -->
+    <drainage host="192.168.9.126" port="19800">
+        <subscribe key="TEST">
+            <destination key="TEST" type="poller"/>
+        </subscribe>
+        <poller key="TEST">
+            <destination key="TEST" type="subscribe"/>
+        </poller>
+    </drainage>
 </chimaera>
