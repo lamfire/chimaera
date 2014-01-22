@@ -31,26 +31,26 @@ public class StoreEngine {
 
     public StoreEngine(String file,boolean deleteFilesAfterClose) throws IOException {
         this.file = file;
-        DBMaker marker = DBMaker.openFile(file).closeOnExit();
+        DBMaker maker = DBMaker.openFile(file).closeOnExit();
         if(ChimaeraOpts.get().isEnableCache()){
-            marker.enableSoftCache();
-            marker.enableHardCache();
-            marker.enableWeakCache();
-            marker.enableMRUCache();
+            maker.enableSoftCache();
+            maker.enableHardCache();
+            maker.enableWeakCache();
+            maker.enableMRUCache();
         }
         if(!ChimaeraOpts.get().isEnableLocking()){
-            marker.disableLocking();
+            maker.disableLocking();
         }
         if(!ChimaeraOpts.get().isEnableTransactions()){
-            marker.disableTransactions();
+            maker.disableTransactions();
         }
 
         if(deleteFilesAfterClose){
-            marker.deleteFilesAfterClose();
+            maker.deleteFilesAfterClose();
         }
 
         this.flushThresholdOps = ChimaeraOpts.get().getFlushThresholdOps();
-        this.db = marker.make();
+        this.db = maker.make();
         this.service = Executors.newScheduledThreadPool(1, Threads.makeThreadFactory("StoreEngine"));
         this.service.scheduleWithFixedDelay(flushStoreWorker, ChimaeraOpts.get().getFlushInterval(), ChimaeraOpts.get().getFlushInterval(), TimeUnit.SECONDS);
     }
