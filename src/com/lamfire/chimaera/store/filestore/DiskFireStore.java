@@ -124,7 +124,7 @@ public class DiskFireStore implements FireStore {
     }
 
     @Override
-    public FireRank getFireRank(String key) {
+    public synchronized FireRank getFireRank(String key) {
         FireRank result = fireRankCache.get(key);
         if (result == null) {
             result = new DiskFireRank(this.engine, key);

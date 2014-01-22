@@ -57,4 +57,8 @@ public class ChimaeraCli {
         RebundleMonitor.shutdownMonitorThread();
     }
 
+    public boolean isConnected(){
+        return this.transfer.hasConnections();
+    }
+
 }

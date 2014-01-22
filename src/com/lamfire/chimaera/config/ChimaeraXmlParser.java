@@ -1,5 +1,6 @@
 package com.lamfire.chimaera.config;
 
+import com.lamfire.chimaera.drainage.DrainageSetting;
 import com.lamfire.json.JSON;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.StringUtils;
@@ -38,7 +39,7 @@ public class ChimaeraXmlParser {
     }
 
     private ServerConfigure serverConfigure;
-    private List<DrainageConfigure> drainages;
+    private List<DrainageSetting> drainages;
 
     public synchronized ServerConfigure getServerConfigure() throws XPathExpressionException {
         if(serverConfigure != null){
@@ -77,12 +78,12 @@ public class ChimaeraXmlParser {
     }
 
 
-    public synchronized List<DrainageConfigure> getDrainageConfigureList() throws XPathExpressionException {
+    public synchronized List<DrainageSetting> getDrainageConfigureList() throws XPathExpressionException {
         if(drainages != null){
             return drainages;
         }
 
-        drainages = new ArrayList<DrainageConfigure>();
+        drainages = new ArrayList<DrainageSetting>();
         XMLParser parser = XMLParser.load(XML_RESOURCE,ChimaeraXmlParser.class);
         NodeList list = parser.getNodeList("/chimaera/drainage");
         if(list.getLength() == 0){
@@ -93,15 +94,17 @@ public class ChimaeraXmlParser {
             Node node = list.item(i);
             String host = node.getAttributes().getNamedItem("host").getNodeValue();
             int port = Integer.parseInt(node.getAttributes().getNamedItem("port").getNodeValue());
+            DrainageSetting setting = new DrainageSetting();
             Node child = node.getFirstChild();
             while(child != null){
                 DrainageConfigure conf = parseDrainageConfigure(parser,child,host,port);
                 if(conf != null){
-                    drainages.add(conf);
-                    LOGGER.info("[DRAINAGE]:" + JSON.toJSONString(conf));
+                    setting.addDrainageConfigure(conf);
+                    LOGGER.info("[FOUND DRAINAGE]:" + JSON.toJSONString(conf));
                 }
                 child = child.getNextSibling();
             }
+            drainages.add(setting);
         }
 
         return drainages;
