@@ -135,9 +135,36 @@ public class StoreEngine {
 
     public synchronized void clear(){
         Map<String,Object> collections  = this.db.getCollections();
+        if(collections == null){
+            return;
+        }
         for(String name:collections.keySet()){
             remove(name);
         }
+    }
+
+    public int size(){
+        Map<String,Object> collections  = this.db.getCollections();
+        if(collections == null){
+            return 0;
+        }
+        return collections.size();
+    }
+
+    public Set<String> keys(){
+        Map<String,Object> collections  = this.db.getCollections();
+        if(collections == null){
+            return new HashSet<String>();
+        }
+        return collections.keySet();
+    }
+
+    public boolean exists(String key){
+        Map<String,Object> collections  = this.db.getCollections();
+        if(collections == null){
+            return false;
+        }
+        return collections.containsKey(key);
     }
 
     public synchronized void flush() {

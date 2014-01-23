@@ -18,14 +18,26 @@ public class FireStoreTester {
         this.store = store;
     }
 
+    public int size(){
+        int size = store.size();
+        System.out.println("store.size() = " + size);
+        return size;
+    }
+
     public void test() {
         System.out.println("==>> startup : " + this.getClass().getName());
         store.clear();
         System.out.println("store.clear()");
 
-        int size = store.size();
-        System.out.println("store.size() = " + size);
+        int size = size();
         Asserts.assertEquals(size,0);
+
+        store.getFireRank("RANK_TEST");
+        size = size();
+
+        store.getFireMap("MAP_TEST");
+        size();
+
         System.out.println("<<== finish : " + this.getClass().getName());
     }
 }

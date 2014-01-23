@@ -3,6 +3,7 @@ package com.lamfire.chimaera.store.filestore;
 import com.lamfire.chimaera.store.*;
 import com.lamfire.chimaera.store.memstore.MemoryFireIncrement;
 import com.lamfire.utils.Maps;
+import com.lamfire.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.Map;
@@ -15,9 +16,7 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class DiskFireStore implements FireStore {
-    private static final String KEY_META = "_META_";
     private static final String KEY_INCREMENT = "_INCREMENT_";
-    private Map<String, String> meta; //meta info as json
     private Map<String, FireIncrement> increments;
     private Map<String, DiskFireList> fireListCache = Maps.newHashMap();
     private Map<String, DiskFireMap> fireMapCache = Maps.newHashMap();
@@ -32,7 +31,6 @@ public class DiskFireStore implements FireStore {
         this.storeName = storeName;
         try {
             this.engine = new StoreEngine(file,deleteFilesAfterClose);
-            this.meta = this.engine.getHashMap(KEY_META);
             this.increments = this.engine.getHashMap(KEY_INCREMENT, new IncrementSerializer());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -60,17 +58,22 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public int size() {
-        return this.meta.size();
+        return -1;
     }
 
     @Override
-    public void clear() {
-        this.engine.clear();
+    public synchronized void clear() {
+        for(String key:this.engine.keys()){
+            if(!(StringUtils.equals(key,KEY_INCREMENT))){
+                this.engine.remove(key);
+            }
+        }
+        this.increments.clear();
     }
 
     @Override
     public boolean exists(String key) {
-        return this.meta.containsKey(key);  //To change body of implemented methods use File | Settings | File Templates.
+        return this.engine.exists(key);
     }
 
     @Override
