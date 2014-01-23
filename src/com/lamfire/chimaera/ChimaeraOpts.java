@@ -39,15 +39,16 @@ public class ChimaeraOpts {
         LOGGER.info("port:" + serverConfigure.getPort());
         LOGGER.info("store:" + (serverConfigure.isStoreInMemory() ? "memory" : "file"));
         if (!serverConfigure.isStoreInMemory()) {
-            LOGGER.info("storeDir:" + serverConfigure.getStoreDir());
+            LOGGER.info("StoreDir:" + serverConfigure.getStoreDir());
             if (!FileUtils.exists(serverConfigure.getStoreDir())) {
                 FileUtils.makeDirs(serverConfigure.getStoreDir());
                 LOGGER.info("The store dir not found,make " + serverConfigure.getStoreDir());
             }
-            LOGGER.info("storeCacheSize:" + serverConfigure.getFlushThresholdOps());
-            LOGGER.info("enableLocking:" + serverConfigure.isEnableLocking());
-            LOGGER.info("enableSoftCache:" + serverConfigure.isEnableCache());
-            LOGGER.info("enableTransactions:" + serverConfigure.isEnableTransactions());
+            LOGGER.info("FlushThresholdOps:" + serverConfigure.getFlushThresholdOps());
+            LOGGER.info("FlushInterval:" + serverConfigure.getFlushInterval());
+            LOGGER.info("EnableLocking:" + serverConfigure.isEnableLocking());
+            LOGGER.info("EnableCache:" + serverConfigure.isEnableCache());
+            LOGGER.info("EnableTransactions:" + serverConfigure.isEnableTransactions());
         }
     }
 
