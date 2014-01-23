@@ -49,10 +49,17 @@ public class StoreEngine {
             maker.deleteFilesAfterClose();
         }
 
-        this.flushThresholdOps = ChimaeraOpts.get().getFlushThresholdOps();
+
         this.db = maker.make();
-        this.service = Executors.newScheduledThreadPool(1, Threads.makeThreadFactory("StoreEngine"));
-        this.service.scheduleWithFixedDelay(flushStoreWorker, ChimaeraOpts.get().getFlushInterval(), ChimaeraOpts.get().getFlushInterval(), TimeUnit.SECONDS);
+
+
+        this.flushThresholdOps = ChimaeraOpts.get().getFlushThresholdOps();
+
+        int flushInterval =  ChimaeraOpts.get().getFlushInterval();
+        if(flushInterval > 0){
+            this.service = Executors.newScheduledThreadPool(1, Threads.makeThreadFactory("StoreEngine"));
+            this.service.scheduleWithFixedDelay(flushStoreWorker, ChimaeraOpts.get().getFlushInterval(), ChimaeraOpts.get().getFlushInterval(), TimeUnit.SECONDS);
+        }
     }
 
     public DB getDB() {
@@ -174,6 +181,14 @@ public class StoreEngine {
         } catch (Throwable e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    public synchronized void close(){
+        if(this.service != null){
+            this.service.shutdown();
+            this.service = null;
+        }
+        db.close();
     }
 
     Runnable flushStoreWorker = new Runnable() {
