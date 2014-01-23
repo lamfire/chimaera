@@ -129,6 +129,17 @@ public class StoreEngine {
         }
     }
 
+    public synchronized void remove(String name){
+        this.db.deleteCollection(name);
+    }
+
+    public synchronized void clear(){
+        Map<String,Object> collections  = this.db.getCollections();
+        for(String name:collections.keySet()){
+            remove(name);
+        }
+    }
+
     public synchronized void flush() {
         try {
             db.commit();
@@ -144,4 +155,6 @@ public class StoreEngine {
             flush();
         }
     };
+
+
 }

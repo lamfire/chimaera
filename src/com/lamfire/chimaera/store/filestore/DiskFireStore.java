@@ -45,7 +45,7 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public void remove(String key) {
-
+         this.engine.remove(key);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public void clear(String key) {
-
+        remove(key);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public void clear() {
-
+        this.engine.clear();
     }
 
     @Override
