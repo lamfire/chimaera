@@ -23,10 +23,8 @@ public class DiskFireMapBenchmark {
 
     private static final String FILE = "/data/chimaera/store";
     private FireMap map ;
-
     public DiskFireMapBenchmark() throws IOException {
         StoreEngine store = new StoreEngine(FILE,true);
-        store.setFlushThresholdOps(1000);
         this.map  = new DiskFireMap(store,"TEST_MAP");
     }
 
@@ -102,12 +100,17 @@ public class DiskFireMapBenchmark {
     };
 
 
-	public static void main(String[] args) throws Exception{
+	public static void startupWriteThreads(int threads) throws Exception{
         DiskFireMapBenchmark test = new DiskFireMapBenchmark();
-		Threads.startup(new Writer(test));
-        Threads.startup(new Writer(test));
-        Threads.startup(new Writer(test));
-        Threads.startup(new Writer(test));
+        for(int i=0;i<threads;i++){
+            Threads.startup(new Writer(test));
+        }
+    }
 
-	}
+    public static void startupReadThreads(int threads) throws Exception{
+        DiskFireMapBenchmark test = new DiskFireMapBenchmark();
+        for(int i=0;i<threads;i++){
+            Threads.startup(new Reader(test));
+        }
+    }
 }
