@@ -188,6 +188,7 @@ public class StoreEngine {
             this.service.shutdown();
             this.service = null;
         }
+        db.commit();
         db.close();
     }
 
