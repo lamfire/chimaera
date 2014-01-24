@@ -34,9 +34,7 @@ public class StoreEngine {
         DBMaker maker = DBMaker.openFile(file).closeOnExit();
         if(ChimaeraOpts.get().isEnableCache()){
             maker.enableSoftCache();
-            maker.enableHardCache();
-            maker.enableWeakCache();
-            maker.enableMRUCache();
+            //maker.enableHardCache();
         }
         if(!ChimaeraOpts.get().isEnableLocking()){
             maker.disableLocking();

@@ -43,7 +43,7 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public void remove(String key) {
-         this.engine.remove(key);
+         //no supported
     }
 
     @Override
