@@ -2,16 +2,20 @@
 <chimaera>
     <server bind="0.0.0.0" port="19800">
         <threads>16</threads>
+        <store type="memory"></store>
+
+        <!--  file store sample
         <store type="file">
             <enableCache>true</enableCache>
-            <enableLocking>false</enableLocking>
+            <enableLocking>true</enableLocking>
             <enableTransactions>false</enableTransactions>
-            <flushThresholdOps>100</flushThresholdOps>
-            <flushInterval>60</flushInterval>
+            <flushThresholdOps>-1</flushThresholdOps>
+            <flushInterval>-1</flushInterval>
             <fileDir>/data/chimaera/</fileDir>
         </store>
+        -->
     </server>
-    <!--
+    <!--  drainage sample
     <drainage host="192.168.9.126" port="19800">
         <subscribe key="SUB_KEY_001">
           <destination key="SUB_KEY_DEST" type="poller"/>
@@ -27,6 +31,8 @@
         </poller>
     </drainage>
     -->
+
+    <!--
     <drainage host="192.168.9.125" port="19800">
         <subscribe key="TEST">
             <destination key="TEST" type="poller"/>
@@ -35,4 +41,5 @@
             <destination key="TEST" type="subscribe"/>
         </poller>
     </drainage>
+    -->
 </chimaera>
