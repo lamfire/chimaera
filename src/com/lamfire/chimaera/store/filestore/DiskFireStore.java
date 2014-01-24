@@ -18,11 +18,9 @@ import java.util.Map;
 public class DiskFireStore implements FireStore {
     private static final String KEY_INCREMENT = "_INCREMENT_";
     private Map<String, FireIncrement> increments;
-    private Map<String, DiskFireList> fireListCache = Maps.newHashMap();
-    private Map<String, DiskFireMap> fireMapCache = Maps.newHashMap();
-    private Map<String, DiskFireQueue> fireQueueCache = Maps.newHashMap();
-    private Map<String, DiskFireSet> fireSetCache = Maps.newHashMap();
-    private Map<String, FireRank> fireRankCache = Maps.newHashMap();
+
+    //key collection caches
+    private final Map<String, Object> keyCaches = Maps.newHashMap();
 
     private String storeName;
     private StoreEngine engine;
@@ -54,7 +52,7 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public int size(String key) {
-        return -1;  //To change body of implemented methods use File | Settings | File Templates.
+        return -1; //no supported
     }
 
     @Override
@@ -64,80 +62,79 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public int size() {
-        return -1;
+        return this.keyCaches.size();
     }
 
     @Override
     public synchronized void clear() {
-        for(String key:this.engine.keys()){
-            if(!(StringUtils.equals(key,KEY_INCREMENT))){
-                this.engine.remove(key);
-            }
-        }
-        this.increments.clear();
+        //not supported
     }
 
     @Override
     public boolean exists(String key) {
+        if(increments.containsKey(key)){
+            return true;
+        }
         return this.engine.exists(key);
     }
 
     @Override
     public synchronized FireIncrement getFireIncrement(String key) {
-        FireIncrement result = increments.get(key);
+        FireIncrement result = (FireIncrement)keyCaches.get(key);
         if (result == null) {
             result = new MemoryFireIncrement();
             increments.put(key, result);
+            keyCaches.put(key, result);
         }
         return result;
     }
 
     @Override
     public synchronized FireList getFireList(String key) {
-        DiskFireList result = fireListCache.get(key);
+        DiskFireList result = (DiskFireList)keyCaches.get(key);
         if (result == null) {
             result = new DiskFireList(this.engine, key);
-            fireListCache.put(key, result);
+            keyCaches.put(key, result);
         }
         return result;
     }
 
     @Override
     public synchronized FireMap getFireMap(String key) {
-        DiskFireMap result = fireMapCache.get(key);
+        DiskFireMap result = (DiskFireMap)keyCaches.get(key);
         if (result == null) {
             result = new DiskFireMap(this.engine, key);
-            fireMapCache.put(key, result);
+            keyCaches.put(key, result);
         }
         return result;
     }
 
     @Override
     public synchronized FireQueue getFireQueue(String key) {
-        DiskFireQueue result = fireQueueCache.get(key);
+        DiskFireQueue result = (DiskFireQueue)keyCaches.get(key);
         if (result == null) {
             result = new DiskFireQueue(this.engine, key);
-            fireQueueCache.put(key, result);
+            keyCaches.put(key, result);
         }
         return result;
     }
 
     @Override
     public synchronized FireSet getFireSet(String key) {
-        DiskFireSet result = fireSetCache.get(key);
+        DiskFireSet result = (DiskFireSet)keyCaches.get(key);
         if (result == null) {
             result = new DiskFireSet(this.engine, key);
-            fireSetCache.put(key, result);
+            keyCaches.put(key, result);
         }
         return result;
     }
 
     @Override
     public synchronized FireRank getFireRank(String key) {
-        FireRank result = fireRankCache.get(key);
+        FireRank result = (FireRank)keyCaches.get(key);
         if (result == null) {
             result = new DiskFireRank(this.engine, key);
-            fireRankCache.put(key, result);
+            keyCaches.put(key, result);
         }
         return result;
     }

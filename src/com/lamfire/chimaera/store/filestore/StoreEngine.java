@@ -131,6 +131,7 @@ public class StoreEngine {
 
     public synchronized void remove(String name){
         this.db.deleteCollection(name);
+        this.db.commit();
     }
 
     public synchronized void clear(){
