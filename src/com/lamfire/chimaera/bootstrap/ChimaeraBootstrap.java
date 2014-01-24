@@ -11,9 +11,13 @@ import com.lamfire.chimaera.ChimaeraServer;
  * To change this template use File | Settings | File Templates.
  */
 public class ChimaeraBootstrap {
-    public static void main(String[] args) {
+    public static void startup(){
         ChimaeraOpts opts = ChimaeraOpts.get();
         ChimaeraServer.startup(opts.getBind(), opts.getPort());
         ChimaeraServer.startupDrainage();
+    }
+
+    public static void main(String[] args) {
+        startup();
     }
 }
