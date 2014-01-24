@@ -16,11 +16,9 @@ import java.util.List;
  * Time: 下午1:54
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireMapTest {
-    private static final String FILE = "/data/chimaera/store";
-
+public class DiskFireMapTest  extends DiskStore{
     public static void main(String[] args)throws Exception {
-        StoreEngine store = new StoreEngine(FILE,true);
+        StoreEngine store = getStoreEngine();
         FireMap map  = new DiskFireMap(store,"TEST_MAP");
         FireMapTester test = new FireMapTester(map);
         test.test();

@@ -15,13 +15,15 @@ import java.util.List;
  * Time: 上午10:28
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireListTest {
-    private static final String FILE = "/data/chimaera/store";
+public class DiskFireListTest extends DiskStore{
 
     public static void main(String[] args) throws Exception{
-        StoreEngine store = new StoreEngine(FILE,true);
+        StoreEngine store = getStoreEngine();
         FireList list  = new DiskFireList(store,"TEST_LIST");
         FireListTester test = new FireListTester(list);
-        test.test();
+        for(int i=0;i<1000;i++){
+            test.test();
+        }
+        store.close();
     }
 }

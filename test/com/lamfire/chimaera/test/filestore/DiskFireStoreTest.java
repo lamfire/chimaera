@@ -15,11 +15,10 @@ import com.lamfire.chimaera.test.tester.FireStoreTester;
  * Time: 上午10:38
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireStoreTest {
-    private static final String FILE = "/data/chimaera/store";
+public class DiskFireStoreTest  extends DiskStore{
 
     public static void main(String[] args)throws Exception {
-        FireStore store  = new DiskFireStore(FILE,"TEST_STORE",true);
+        FireStore store  =getDiskFireStore();
         FireStoreTester test = new FireStoreTester(store);
         test.test();
     }

@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SubscribeBindTest implements OnMessageListener {
     private static AtomicInteger counter = new AtomicInteger();
     private Subscribe subscribe;
-    private String clientId = RandomUtils.randomText(3, 9);;
+    private String clientId = RandomUtils.randomText(3, 9);
 
     public SubscribeBindTest(){
         subscribe = Config.getChimaeraCli().getSubscribe();

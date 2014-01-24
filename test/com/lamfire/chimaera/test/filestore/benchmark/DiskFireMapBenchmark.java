@@ -3,6 +3,7 @@ package com.lamfire.chimaera.test.filestore.benchmark;
 import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.chimaera.store.filestore.DiskFireMap;
 import com.lamfire.chimaera.store.filestore.StoreEngine;
+import com.lamfire.chimaera.test.filestore.DiskStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.Threads;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DiskFireMapBenchmark {
+public class DiskFireMapBenchmark extends DiskStore{
     static final Logger logger = Logger.getLogger(DiskFireMapBenchmark.class);
     static AtomicInteger atomic = new AtomicInteger();
     static AtomicInteger errorAtomic =   new AtomicInteger();
@@ -20,11 +21,9 @@ public class DiskFireMapBenchmark {
     static TreeSet<Long> times = new TreeSet<Long>();
     static long timeMillisCount = 0;
     static long timeMillisAvg = 0;
-
-    private static final String FILE = "/data/chimaera/store";
     private FireMap map ;
     public DiskFireMapBenchmark() throws IOException {
-        StoreEngine store = new StoreEngine(FILE,true);
+        StoreEngine store = getStoreEngine();
         this.map  = new DiskFireMap(store,"TEST_MAP");
     }
 

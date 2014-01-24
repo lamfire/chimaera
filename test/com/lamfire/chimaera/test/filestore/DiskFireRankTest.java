@@ -19,11 +19,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Time: 下午2:02
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireRankTest {
+public class DiskFireRankTest  extends DiskStore{
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args) throws IOException {
-        StoreEngine store = new StoreEngine(FILE,true);
+        StoreEngine store = getStoreEngine();
         FireRankTester test = new FireRankTester(new DiskFireRank(store,"TEST_RANK"));
         test.size();
         //test.test();

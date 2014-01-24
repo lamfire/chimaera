@@ -15,11 +15,11 @@ import java.util.List;
  * Time: 上午10:38
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireSetTest {
+public class DiskFireSetTest  extends DiskStore{
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args)throws Exception {
-        StoreEngine store = new StoreEngine(FILE,true);
+        StoreEngine store = getStoreEngine();
         FireSet set  = new DiskFireSet(store,"TEST_SET");
         FireSetTester test = new FireSetTester(set);
         test.test();
