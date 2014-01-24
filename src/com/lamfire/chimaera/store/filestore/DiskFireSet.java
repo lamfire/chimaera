@@ -104,7 +104,7 @@ public class DiskFireSet implements FireSet {
         try {
             map.clear();
             index.clear();
-            engine.cacheOrFlush();
+            engine.flush();
         } finally {
             lock.unlock();
         }

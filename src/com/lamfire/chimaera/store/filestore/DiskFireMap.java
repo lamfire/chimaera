@@ -87,9 +87,10 @@ public class DiskFireMap implements FireMap {
         try {
             lock.lock();
             map.clear();
+            engine.flush();
         } finally {
             lock.unlock();
-            engine.cacheOrFlush();
+
         }
     }
 

@@ -215,7 +215,7 @@ public class DiskFireRank implements FireRank {
             this.tree.clear();
             this.map.clear();
             this.descending.clear();
-            engine.cacheOrFlush();
+            engine.flush();
         } finally {
             lock.unlock();
         }

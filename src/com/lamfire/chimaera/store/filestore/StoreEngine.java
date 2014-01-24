@@ -30,16 +30,17 @@ public class StoreEngine {
     private int flushInterval = 15;
     private int cacheSize = -1;
 
-    public StoreEngine(String file,boolean enableLocking,boolean enableTransactions,boolean deleteFilesAfterClose,int flushThresholdOps,int flushInterval, int cacheSize) throws IOException {
+    public StoreEngine(String file,boolean enableLocking,boolean enableTransactions,boolean deleteFilesAfterClose,int flushThresholdOps,int flushInterval,boolean enableCache, int cacheSize) throws IOException {
         this.file = file;
         this.flushThresholdOps = flushThresholdOps;
         this.flushInterval = flushInterval;
         this.cacheSize =  cacheSize;
 
         DBMaker maker = DBMaker.openFile(file).closeOnExit();
-        if(this.cacheSize > 0){
-            maker.enableMRUCache();
-            maker.setMRUCacheSize(cacheSize);
+        if(enableCache){
+            //maker.enableMRUCache();
+            //maker.setMRUCacheSize(cacheSize);
+            maker.enableSoftCache();
         }
         if(!enableLocking){
             maker.disableLocking();

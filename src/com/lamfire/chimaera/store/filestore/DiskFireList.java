@@ -86,10 +86,11 @@ public class DiskFireList implements FireList {
             lock.lock();
             if(size() > 0){
                 list.clear();
+                engine.flush();
             }
         } finally {
             lock.unlock();
-            engine.cacheOrFlush();
+
         }
     }
 

@@ -71,9 +71,10 @@ public class DiskFireQueue implements FireQueue {
         lock.lock();
         try {
             list.clear();
+            engine.flush();
         } finally {
             lock.unlock();
-            engine.cacheOrFlush();
+
         }
     }
 
