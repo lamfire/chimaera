@@ -7,14 +7,15 @@
             <store type="memory"></store>
         -->
 
-        <!--  file store sample  -->
+        <!--  file store sample -->
         <store type="file">
+            <renew>true</renew>
             <enableCache>true</enableCache>
-            <cacheSize>100000</cacheSize>
+            <cacheSize>100</cacheSize>
             <enableLocking>false</enableLocking>
             <enableTransactions>false</enableTransactions>
-            <flushThresholdOps>-1</flushThresholdOps>
-            <flushInterval>-1</flushInterval>
+            <flushThresholdOps>1000</flushThresholdOps>
+            <flushInterval>60</flushInterval>
             <fileDir>/data/chimaera/</fileDir>
         </store>
 

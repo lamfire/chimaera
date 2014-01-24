@@ -22,7 +22,7 @@ public class DiskStore {
         if(engine != null){
             return engine;
         }
-        engine = new StoreEngine(FILE,true,false,true,0,0,0);
+        engine = new StoreEngine(FILE,true,false,true,0,0,false,0);
         return engine;
     }
 

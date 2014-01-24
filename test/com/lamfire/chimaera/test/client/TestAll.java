@@ -32,10 +32,11 @@ public class TestAll {
 
         FireStoreTester t7 = new FireStoreTester(Config.getFireStore(args));
         t7.test();
-
     }
     public static void main(String[] args) {
-        test(args);
+        for(int i=0;i<100;i++){
+            test(args);
+        }
         Config.shutdown();
     }
 }

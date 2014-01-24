@@ -32,10 +32,10 @@ public class FireStoreTester {
         int size = size();
         //Asserts.assertEquals(size,0);
 
-        store.getFireRank("RANK_TEST");
+        store.getFireRank("STORE_RANK_TEST");
         size = size();
 
-        store.getFireMap("MAP_TEST");
+        store.getFireMap("STORE_MAP_TEST");
         size();
 
         System.out.println("<<== finish : " + this.getClass().getName());

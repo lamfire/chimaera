@@ -22,6 +22,7 @@ public class FireIncrementTester {
         System.out.println("==>> startup : " + this.getClass().getName());
         store.remove("INCREMENT_TEST");
         FireIncrement inc = store.getFireIncrement("INCREMENT_TEST");
+        inc.set(0);
         long startAt = System.currentTimeMillis();
         int count = 1000;
         int seed = 10;
