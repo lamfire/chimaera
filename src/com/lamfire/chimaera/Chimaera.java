@@ -58,8 +58,8 @@ public class Chimaera {
                 store = new MemoryFireStore(storeName);
             } else {
                 String file = FilenameUtils.concat(opts.getStoreDir(), storeName);
-                store = new DiskFireStore(file, storeName,deleteFilesAfterClose);
-                LOGGER.info("create store file[" + storeName + "] :" + file);
+                store = new DiskFireStore(file, storeName,opts.isEnableLocking(),opts.isEnableTransactions(),deleteFilesAfterClose,opts.getFlushThresholdOps(),opts.getFlushInterval(),opts.getCacheSize());
+                LOGGER.info("MAKE STORE[" + storeName + "] :" + file);
             }
             stores.put(storeName, store);
         }

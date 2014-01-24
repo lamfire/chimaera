@@ -27,14 +27,20 @@ public class DiskFireStore implements FireStore {
     private String storeName;
     private StoreEngine engine;
 
-    public DiskFireStore(String file, String storeName,boolean deleteFilesAfterClose) {
+    public DiskFireStore(String file, String storeName,boolean enableLocking,boolean enableTransactions,boolean deleteFilesAfterClose,int flushThresholdOps,int flushInterval, int cacheSize) {
         this.storeName = storeName;
         try {
-            this.engine = new StoreEngine(file,deleteFilesAfterClose);
+            this.engine = new StoreEngine(file,enableLocking,enableTransactions,deleteFilesAfterClose,flushThresholdOps,flushInterval,cacheSize);
             this.increments = this.engine.getHashMap(KEY_INCREMENT, new IncrementSerializer());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public DiskFireStore(StoreEngine engine,String storeName) {
+        this.storeName = storeName;
+        this.engine = engine;
+        this.increments = this.engine.getHashMap(KEY_INCREMENT, new IncrementSerializer());
     }
 
     public String getStoreName() {

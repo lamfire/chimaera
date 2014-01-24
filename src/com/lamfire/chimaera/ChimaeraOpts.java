@@ -31,10 +31,10 @@ public class ChimaeraOpts {
         } catch (Exception e) {
             LOGGER.warn("Parse '" + ChimaeraXmlParser.XML_RESOURCE + "' file failed,use memory store.");
         }
-        initOptions();
+        printOptions();
     }
 
-    private void initOptions() {
+    private void printOptions() {
         LOGGER.info("bind:" + serverConfigure.getBind());
         LOGGER.info("port:" + serverConfigure.getPort());
         LOGGER.info("store:" + (serverConfigure.isStoreInMemory() ? "memory" : "file"));
@@ -48,6 +48,7 @@ public class ChimaeraOpts {
             LOGGER.info("FlushInterval:" + serverConfigure.getFlushInterval());
             LOGGER.info("EnableLocking:" + serverConfigure.isEnableLocking());
             LOGGER.info("EnableCache:" + serverConfigure.isEnableCache());
+            LOGGER.info("CacheSize:" + serverConfigure.getCacheSize());
             LOGGER.info("EnableTransactions:" + serverConfigure.isEnableTransactions());
         }
     }
