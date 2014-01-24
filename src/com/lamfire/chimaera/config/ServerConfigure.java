@@ -18,6 +18,7 @@ public class ServerConfigure {
     private boolean enableLocking = false;
     private boolean enableTransactions = false;
     private boolean enableCache = true;
+    private int cacheSize = 10000;
 
     public String getBind() {
         return bind;
@@ -97,5 +98,13 @@ public class ServerConfigure {
 
     public void setFlushInterval(int flushInterval) {
         this.flushInterval = flushInterval;
+    }
+
+    public int getCacheSize() {
+        return cacheSize;
+    }
+
+    public void setCacheSize(int cacheSize) {
+        this.cacheSize = cacheSize;
     }
 }

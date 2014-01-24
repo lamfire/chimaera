@@ -80,6 +80,9 @@ public class ChimaeraOpts {
         return serverConfigure.getFlushInterval();
     }
 
+    public int getCacheSize(){
+        return serverConfigure.getCacheSize();
+    }
 
     public int getThreads() {
         return serverConfigure.getThreads();

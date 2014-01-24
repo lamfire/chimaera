@@ -62,6 +62,7 @@ public class ChimaeraXmlParser {
             boolean enableSoftCache =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableCache"));
             boolean enableLocking =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableLocking"));
             boolean enableTransactions =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableTransactions"));
+            int cacheSize = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/cacheSize"));
             int flushThresholdOps = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/flushThresholdOps"));
             int flushInterval = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/flushInterval"));
             String storeDir = parser.getNodeValue("/chimaera/server/store/fileDir");
@@ -72,6 +73,7 @@ public class ChimaeraXmlParser {
             serverConfigure.setFlushThresholdOps(flushThresholdOps);
             serverConfigure.setFlushInterval(flushInterval);
             serverConfigure.setStoreDir(storeDir);
+            serverConfigure.setCacheSize(cacheSize);
         }
         LOGGER.info("[SERVER]:" + JSON.toJSONString(serverConfigure));
         return serverConfigure;
