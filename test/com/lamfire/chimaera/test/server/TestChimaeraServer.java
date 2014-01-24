@@ -2,6 +2,7 @@ package com.lamfire.chimaera.test.server;
 
 import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.chimaera.ChimaeraServer;
+import com.lamfire.chimaera.bootstrap.ChimaeraBootstrap;
 import com.lamfire.logger.Logger;
 
 
@@ -15,7 +16,6 @@ import com.lamfire.logger.Logger;
 public class TestChimaeraServer {
     private static final Logger LOGGER = Logger.getLogger(TestChimaeraServer.class);
     public static void main(String[] args) {
-        ChimaeraServer.startup(ChimaeraOpts.get());
-        ChimaeraServer.startupDrainage();
+        ChimaeraBootstrap.startup();
     }
 }
