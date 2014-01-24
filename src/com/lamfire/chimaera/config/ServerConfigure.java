@@ -19,6 +19,7 @@ public class ServerConfigure {
     private boolean enableTransactions = false;
     private boolean enableCache = true;
     private int cacheSize = 10000;
+    private boolean renew = false;
 
     public String getBind() {
         return bind;
@@ -106,5 +107,13 @@ public class ServerConfigure {
 
     public void setCacheSize(int cacheSize) {
         this.cacheSize = cacheSize;
+    }
+
+    public boolean isRenew() {
+        return renew;
+    }
+
+    public void setRenew(boolean renew) {
+        this.renew = renew;
     }
 }

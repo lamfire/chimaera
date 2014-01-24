@@ -59,6 +59,7 @@ public class ChimaeraXmlParser {
         serverConfigure.setThreads(threads);
         serverConfigure.setStoreInMemory(true);
         if(!StringUtils.equalsIgnoreCase("memory",type)){
+            boolean renew =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/renew"));
             boolean enableSoftCache =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableCache"));
             boolean enableLocking =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableLocking"));
             boolean enableTransactions =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableTransactions"));
@@ -67,6 +68,7 @@ public class ChimaeraXmlParser {
             int flushInterval = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/flushInterval"));
             String storeDir = parser.getNodeValue("/chimaera/server/store/fileDir");
             serverConfigure.setStoreInMemory(false);
+            serverConfigure.setRenew(renew);
             serverConfigure.setEnableLocking(enableLocking);
             serverConfigure.setEnableCache(enableSoftCache);
             serverConfigure.setEnableTransactions(enableTransactions);
