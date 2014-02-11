@@ -30,5 +30,6 @@ public class MutilQueueReadTest {
                 startAt = System.currentTimeMillis();
             }
         }
+        Config.shutdown();
     }
 }

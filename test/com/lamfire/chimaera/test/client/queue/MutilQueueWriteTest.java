@@ -23,5 +23,6 @@ public class MutilQueueWriteTest {
                 startAt = System.currentTimeMillis();
             }
         }
+        Config.shutdown();
     }
 }
