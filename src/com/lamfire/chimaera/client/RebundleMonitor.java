@@ -50,12 +50,16 @@ public class RebundleMonitor {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("[RebundleMonitor]:check bundles [" + map.size() + "]");
             }
-            for (Map.Entry<String, Rebundler> e : map.entrySet()) {
-                Rebundler rebundler = e.getValue();
-                if (!rebundler.isAvailable()) {
-                    LOGGER.info("[RebundleMonitor]: the bundle was unavailable :" + rebundler);
-                    rebundler.rebind();
+            try{
+                for (Map.Entry<String, Rebundler> e : map.entrySet()) {
+                    Rebundler rebundler = e.getValue();
+                    if (!rebundler.isAvailable()) {
+                        LOGGER.info("[RebundleMonitor]: the bundle was unavailable :" + rebundler);
+                        rebundler.rebind();
+                    }
                 }
+            }catch (Throwable t){
+
             }
         }
     };
