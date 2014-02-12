@@ -64,7 +64,7 @@ public class RandomAccessTest {
             randmodWrite();
             i++;
             if(i % 1000 == 0){
-                System.out.println("[WRITE] "+i +" -> " +(System.currentTimeMillis() - startAt) +"ms,[READ] - > " + readCount.get() +"/" +readFailedCount.get());
+                LOGGER.info("[WRITE] "+i +" -> " +(System.currentTimeMillis() - startAt) +"ms,[READ] - > " + readCount.get() +"/" +readFailedCount.get());
                 startAt = System.currentTimeMillis();
             }
         }
