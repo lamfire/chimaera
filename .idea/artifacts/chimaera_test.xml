@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="chimaera-test">
+    <output-path>$PROJECT_DIR$/out/artifacts/chimaera_test</output-path>
+    <root id="archive" name="chimaera-test.jar">
+      <element id="module-test-output" name="chimaera" />
+    </root>
+  </artifact>
+</component>

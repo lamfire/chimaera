@@ -1,6 +1,6 @@
 package com.lamfire.chimaera.config;
 
-import com.lamfire.chimaera.drainage.DrainageSetting;
+import com.lamfire.chimaera.tunnel.TunnelSetting;
 import com.lamfire.json.JSON;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.StringUtils;
@@ -32,14 +32,14 @@ public class ChimaeraXmlParser {
     private ChimaeraXmlParser(){
         try{
             getServerConfigure();
-            getDrainageConfigureList();
+            getTunnelConfigureList();
         }catch (Exception e){
             LOGGER.error("[ERROR]:" + e.getMessage(),e);
         }
     }
 
     private ServerConfigure serverConfigure;
-    private List<DrainageSetting> drainages;
+    private List<TunnelSetting> tunnels;
 
     public synchronized ServerConfigure getServerConfigure() throws XPathExpressionException {
         if(serverConfigure != null){
@@ -82,43 +82,43 @@ public class ChimaeraXmlParser {
     }
 
 
-    public synchronized List<DrainageSetting> getDrainageConfigureList() throws XPathExpressionException {
-        if(drainages != null){
-            return drainages;
+    public synchronized List<TunnelSetting> getTunnelConfigureList() throws XPathExpressionException {
+        if(tunnels != null){
+            return tunnels;
         }
 
-        drainages = new ArrayList<DrainageSetting>();
+        tunnels = new ArrayList<TunnelSetting>();
         XMLParser parser = XMLParser.load(XML_RESOURCE,ChimaeraXmlParser.class);
-        NodeList list = parser.getNodeList("/chimaera/drainage");
+        NodeList list = parser.getNodeList("/chimaera/tunnel");
         if(list.getLength() == 0){
-            return  drainages;
+            return tunnels;
         }
 
         for(int i=0;i< list.getLength();i++){
             Node node = list.item(i);
             String host = node.getAttributes().getNamedItem("host").getNodeValue();
             int port = Integer.parseInt(node.getAttributes().getNamedItem("port").getNodeValue());
-            DrainageSetting setting = new DrainageSetting();
+            TunnelSetting setting = new TunnelSetting();
             setting.setHost(host);
             setting.setPort(port);
 
             Node child = node.getFirstChild();
             while(child != null){
-                DrainageConfigure conf = parseDrainageConfigure(parser,child,host,port);
+                TunnelConfigure conf = parseTunnelConfigure(parser,child,host,port);
                 if(conf != null){
-                    setting.addDrainageConfigure(conf);
+                    setting.addTunnelConfigure(conf);
                     LOGGER.info("[FOUND DRAINAGE]:" + JSON.toJSONString(conf));
                 }
                 child = child.getNextSibling();
             }
-            drainages.add(setting);
+            tunnels.add(setting);
         }
 
-        return drainages;
+        return tunnels;
     }
 
-    private DrainageConfigure parseDrainageConfigure(XMLParser parser,Node node,String host,int port){
-        DrainageConfigure conf = new DrainageConfigure();
+    private TunnelConfigure parseTunnelConfigure(XMLParser parser,Node node,String host,int port){
+        TunnelConfigure conf = new TunnelConfigure();
 
         String fromType = null;
         if(StringUtils.equals(node.getNodeName(),"subscribe")){

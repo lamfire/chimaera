@@ -34,7 +34,7 @@ public class TestAll {
         t7.test();
     }
     public static void main(String[] args) {
-        for(int i=0;i<100;i++){
+        for(int i=0;i<1000000000;i++){
             test(args);
         }
         Config.shutdown();

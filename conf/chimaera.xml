@@ -20,31 +20,32 @@
         </store>
 
     </server>
-    <!--  drainage sample
-    <drainage host="192.168.9.126" port="19800">
+    <!--  tunnel sample
+    <tunnel host="192.168.9.126" port="19800">
         <subscribe key="SUB_KEY_001">
           <destination key="SUB_KEY_DEST" type="poller"/>
         </subscribe>
         <poller key="SUB_KEY_002">
             <destination key="SUB_KEY_DEST" type="poller"/>
         </poller>
-    </drainage>
+    </tunnel>
 
-    <drainage host="192.168.9.126" port="19800">
+    <tunnel host="192.168.9.126" port="19800">
         <poller key="SUB_KEY_003">
             <destination key="SUB_KEY_DEST" type="subscribe"/>
         </poller>
-    </drainage>
+    </tunnel>
     -->
 
     <!--
-    <drainage host="192.168.9.125" port="19800">
+    <tunnel host="192.168.9.126" port="19800">
         <subscribe key="TEST">
             <destination key="TEST" type="poller"/>
         </subscribe>
         <poller key="TEST">
             <destination key="TEST" type="subscribe"/>
         </poller>
-    </drainage>
+    </tunnel>
     -->
+
 </chimaera>

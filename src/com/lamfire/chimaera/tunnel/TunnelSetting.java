@@ -1,6 +1,6 @@
-package com.lamfire.chimaera.drainage;
+package com.lamfire.chimaera.tunnel;
 
-import com.lamfire.chimaera.config.DrainageConfigure;
+import com.lamfire.chimaera.config.TunnelConfigure;
 import com.lamfire.utils.Lists;
 
 import java.util.List;
@@ -12,10 +12,10 @@ import java.util.List;
  * Time: 上午10:18
  * To change this template use File | Settings | File Templates.
  */
-public class DrainageSetting {
+public class TunnelSetting {
     private String host;
     private int port;
-    private final List<DrainageConfigure> drainageList = Lists.newArrayList();
+    private final List<TunnelConfigure> tunnelList = Lists.newArrayList();
 
     public String getHost() {
         return host;
@@ -25,8 +25,8 @@ public class DrainageSetting {
         this.host = host;
     }
 
-    public void addDrainageConfigure(DrainageConfigure configure){
-        this.drainageList.add(configure);
+    public void addTunnelConfigure(TunnelConfigure configure){
+        this.tunnelList.add(configure);
     }
 
     public int getPort() {
@@ -37,7 +37,7 @@ public class DrainageSetting {
         this.port = port;
     }
 
-    public List<DrainageConfigure> getDrainageList() {
-        return drainageList;
+    public List<TunnelConfigure> getTunnelList() {
+        return tunnelList;
     }
 }

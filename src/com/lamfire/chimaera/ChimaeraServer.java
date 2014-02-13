@@ -2,8 +2,8 @@ package com.lamfire.chimaera;
 
 import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.config.ChimaeraXmlParser;
-import com.lamfire.chimaera.drainage.DrainageService;
-import com.lamfire.chimaera.drainage.DrainageSetting;
+import com.lamfire.chimaera.tunnel.TunnelService;
+import com.lamfire.chimaera.tunnel.TunnelSetting;
 import com.lamfire.chimaera.response.ErrorResponse;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.serializer.Serializers;
@@ -13,7 +13,6 @@ import com.lamfire.hydra.MessageContext;
 import com.lamfire.hydra.Snake;
 import com.lamfire.logger.Logger;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.util.List;
 
 public class ChimaeraServer extends Snake {
@@ -38,9 +37,9 @@ public class ChimaeraServer extends Snake {
 
     public static void startupDrainage(){
         try {
-            List<DrainageSetting> list = ChimaeraXmlParser.get().getDrainageConfigureList();
-            for(DrainageSetting setting : list){
-                DrainageService service = new DrainageService(setting);
+            List<TunnelSetting> list = ChimaeraXmlParser.get().getTunnelConfigureList();
+            for(TunnelSetting setting : list){
+                TunnelService service = new TunnelService(setting);
                 service.startup();
             }
         } catch (Exception e) {

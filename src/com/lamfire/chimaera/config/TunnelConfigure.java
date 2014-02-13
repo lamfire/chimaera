@@ -7,7 +7,7 @@ package com.lamfire.chimaera.config;
  * Time: 下午2:35
  * To change this template use File | Settings | File Templates.
  */
-public class DrainageConfigure {
+public class TunnelConfigure {
     public static final String TYPE_SUBSCRIBE = "subscribe";
     public static final String TYPE_POLLER = "poller";
 
