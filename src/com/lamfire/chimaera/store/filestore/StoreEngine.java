@@ -100,6 +100,14 @@ public class StoreEngine {
         return set;
     }
 
+    public synchronized <E> Set<E> getHashSet(String name,Serializer<E> serializer) {
+        Set<E> set = this.db.getHashSet(name);
+        if (set == null) {
+            set = this.db.createHashSet(name,serializer);
+        }
+        return set;
+    }
+
     public synchronized <E> NavigableSet<E> getTreeSet(String name) {
         NavigableSet<E> set = this.db.getTreeSet(name);
         if (set == null) {

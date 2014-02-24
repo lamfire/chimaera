@@ -9,13 +9,13 @@
 
         <!--  file store sample -->
         <store type="file">
-            <renew>true</renew>
+            <renew>false</renew>
             <enableCache>true</enableCache>
             <cacheSize>100</cacheSize>
             <enableLocking>false</enableLocking>
             <enableTransactions>false</enableTransactions>
-            <flushThresholdOps>1000</flushThresholdOps>
-            <flushInterval>60</flushInterval>
+            <flushThresholdOps>-1</flushThresholdOps>
+            <flushInterval>5</flushInterval>
             <fileDir>/data/chimaera/</fileDir>
         </store>
 
