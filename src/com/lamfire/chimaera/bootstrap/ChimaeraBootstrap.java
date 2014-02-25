@@ -14,7 +14,7 @@ public class ChimaeraBootstrap {
     public static void startup(){
         ChimaeraOpts opts = ChimaeraOpts.get();
         ChimaeraServer.startup(opts.getBind(), opts.getPort());
-        ChimaeraServer.startupDrainage();
+        ChimaeraServer.startupTunnels();
     }
 
     public static void main(String[] args) {

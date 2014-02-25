@@ -43,7 +43,7 @@ public class ChimaeraServiceTask implements Runnable {
             checkMemory();
             Service<Command> service = ServiceRegistry.getInstance().getService(command.getCommand());
             response = service.execute(context, command);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOGGER.warn(e.getMessage(), e);
             ErrorResponse err = new ErrorResponse();
             err.setError(e.getMessage());
@@ -60,7 +60,7 @@ public class ChimaeraServiceTask implements Runnable {
             byte[] bytes = Serializers.getResponseSerializer().encode(response);
             int mid = context.getMessage().getId();
             context.send(mid, bytes);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOGGER.error("error send response.", e);
         }
     }

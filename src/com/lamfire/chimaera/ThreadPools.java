@@ -1,13 +1,13 @@
 package com.lamfire.chimaera;
 
 import com.lamfire.logger.Logger;
+import com.lamfire.utils.ThreadFactory;
 import com.lamfire.utils.Threads;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
- * Created with IntelliJ IDEA.
+ * 线程池
  * User: lamfire
  * Date: 14-1-14
  * Time: 上午10:19
@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 public class ThreadPools {
     private static final Logger LOGGER = Logger.getLogger(ThreadPools.class);
     private static ThreadPools pools;
+    private static final ScheduledExecutorService chimaeraScheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory("Chimaera.Scheduler"));
 
     public synchronized static ThreadPools get() {
         if (pools == null) {
@@ -49,6 +50,14 @@ public class ThreadPools {
 
     public ExecutorService getExecutorService() {
         return this.service;
+    }
+
+    public ScheduledExecutorService getScheduledExecutorService(){
+        return chimaeraScheduler;
+    }
+
+    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay,  long delay, TimeUnit unit){
+        return  chimaeraScheduler.scheduleWithFixedDelay(command,initialDelay,delay,unit);
     }
 
     public void shutdown() {

@@ -35,7 +35,7 @@ public class ChimaeraServer extends Snake {
         startup(opts.getBind(), opts.getPort());
     }
 
-    public static void startupDrainage(){
+    public static void startupTunnels(){
         try {
             List<TunnelSetting> list = ChimaeraXmlParser.get().getTunnelConfigureList();
             for(TunnelSetting setting : list){
@@ -47,29 +47,6 @@ public class ChimaeraServer extends Snake {
         }
     }
 
-    static void usage() {
-        LOGGER.info(ChimaeraServer.class.getName() + " [host] [port]");
-    }
-
-    public static void main(String[] args) {
-        String host = "0.0.0.0";
-        int port = 8090;
-
-        if (args.length > 0 && "?".equals(args[0])) {
-            usage();
-            return;
-        }
-
-        if (args.length == 2) {
-            host = args[0];
-            port = Integer.valueOf(args[1]);
-        }
-
-
-        startup(host, port);
-        startupDrainage();
-    }
-
     @Override
     protected void handleMessage(MessageContext context, Message message) {
         byte[] bytes = message.getBody();
@@ -79,7 +56,7 @@ public class ChimaeraServer extends Snake {
                 //executeCommand(context, cmd);
                 submitTask(context, cmd);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             ErrorResponse err = new ErrorResponse();
             err.setError(e.getMessage());
             sendResponse(context, err);
@@ -96,7 +73,7 @@ public class ChimaeraServer extends Snake {
         try {
             Service<Command> service = serviceRegistry.getService(command.getCommand());
             response = service.execute(context, command);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOGGER.warn(e.getMessage(), e);
             ErrorResponse err = new ErrorResponse();
             err.setError(e.getMessage());
@@ -113,7 +90,7 @@ public class ChimaeraServer extends Snake {
             byte[] bytes = Serializers.getResponseSerializer().encode(response);
             int mid = context.getMessage().getId();
             context.send(mid, bytes);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LOGGER.error("error send response.", e);
         }
     }

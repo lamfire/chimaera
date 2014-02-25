@@ -1,5 +1,6 @@
 package com.lamfire.chimaera.test.filestore;
 
+import com.lamfire.chimaera.ThreadPools;
 import com.lamfire.chimaera.store.filestore.DiskFireStore;
 import com.lamfire.chimaera.store.filestore.StoreEngine;
 
@@ -22,7 +23,7 @@ public class DiskStore {
         if(engine != null){
             return engine;
         }
-        engine = new StoreEngine(FILE,true,false,true,0,0,false,0);
+        engine = new StoreEngine(FILE,true,true,0,0,false,0, ThreadPools.get().getScheduledExecutorService());
         return engine;
     }
 

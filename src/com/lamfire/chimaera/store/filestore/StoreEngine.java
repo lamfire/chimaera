@@ -30,11 +30,12 @@ public class StoreEngine {
     private int flushInterval = 15;
     private int cacheSize = -1;
 
-    public StoreEngine(String file,boolean enableLocking,boolean enableTransactions,boolean deleteFilesAfterClose,int flushThresholdOps,int flushInterval,boolean enableCache, int cacheSize) throws IOException {
+    public StoreEngine(String file,boolean enableLocking,boolean enableTransactions,int flushThresholdOps,int flushInterval,boolean enableCache, int cacheSize,ScheduledExecutorService service) throws IOException {
         this.file = file;
         this.flushThresholdOps = flushThresholdOps;
         this.flushInterval = flushInterval;
         this.cacheSize =  cacheSize;
+        this.service = service;
 
         DBMaker maker = DBMaker.openFile(file).closeOnExit();
         if(enableCache){
@@ -48,14 +49,10 @@ public class StoreEngine {
         if(!enableTransactions){
             maker.disableTransactions();
         }
-        if(deleteFilesAfterClose){
-            maker.deleteFilesAfterClose();
-        }
 
         this.db = maker.make();
 
         if(flushInterval > 0){
-            this.service = Executors.newScheduledThreadPool(1, Threads.makeThreadFactory("StoreEngine"));
             this.service.scheduleWithFixedDelay(flushStoreWorker,flushInterval,flushInterval, TimeUnit.SECONDS);
         }
     }
