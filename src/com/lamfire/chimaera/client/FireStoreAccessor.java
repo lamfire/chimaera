@@ -105,4 +105,12 @@ public class FireStoreAccessor implements FireStore {
         return new FireRankAccessor(transfer, this.store, key);
     }
 
+    @Override
+    public void defrag() {
+        DefragCommand cmd = new DefragCommand();
+        cmd.setStore(this.store);
+        cmd.setCommand(Command.DEFRAGE);
+        transfer.sendCommand(cmd);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.lamfire.chimaera.store.filestore;
 
+import com.lamfire.logger.Logger;
 import com.lamfire.utils.Threads;
 import org.apache.jdbm.DB;
 import org.apache.jdbm.DBMaker;
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * To change this template use File | Settings | File Templates.
  */
 public class StoreEngine {
+    private static final Logger LOGGER = Logger.getLogger(StoreEngine.class);
     private String file; //文件路径
     private DB db;
 
@@ -181,6 +183,13 @@ public class StoreEngine {
         } catch (Throwable e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    public void defrag(){
+        long startAt = System.currentTimeMillis();
+        LOGGER.info("[DEFRAG]: startup defrag file '" + this.file +"'");
+        db.defrag(true);
+        LOGGER.info("[DEFRAG]: completed defrag file '" + this.file +"',Time-consuming " + (System.currentTimeMillis() - startAt) +"ms");
     }
 
     public synchronized void close(){

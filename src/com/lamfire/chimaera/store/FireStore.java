@@ -25,4 +25,6 @@ public interface FireStore {
 
     public FireRank getFireRank(String key);
 
+    public void defrag();
+
 }

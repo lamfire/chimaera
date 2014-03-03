@@ -107,6 +107,11 @@ public class MemoryFireStore implements FireStore {
     }
 
     @Override
+    public void defrag() {
+        //数据在内存中,无需整理
+    }
+
+    @Override
     public void remove(String key) {
         store.remove(key);
     }

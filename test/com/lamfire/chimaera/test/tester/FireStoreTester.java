@@ -24,6 +24,10 @@ public class FireStoreTester {
         return size;
     }
 
+    public void defrag(){
+        this.store.defrag();
+    }
+
     public void test() {
         System.out.println("==>> startup : " + this.getClass().getName());
         store.clear();

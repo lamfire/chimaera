@@ -128,4 +128,9 @@ public class DiskFireStore implements FireStore {
         }
         return result;
     }
+
+    @Override
+    public void defrag() {
+        this.engine.defrag();
+    }
 }
