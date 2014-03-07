@@ -112,7 +112,7 @@ public class ChimaeraPoller {
         try {
             byte[] responseBytes = this.queue.peek();
             String json = new String(responseBytes);
-            JSON js = new JSON(json);
+            JSON js = JSON.fromJSONString(json);
             String key = (String) js.get("key");
 
             //获得下个Session

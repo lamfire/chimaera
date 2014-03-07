@@ -10,6 +10,7 @@ import com.lamfire.hydra.CycleSessionIterator;
 import com.lamfire.hydra.Message;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.hydra.Snake;
+import com.lamfire.hydra.net.Future;
 import com.lamfire.hydra.net.Session;
 import com.lamfire.json.JSON;
 import com.lamfire.logger.Logger;
@@ -114,7 +115,7 @@ public class ChimaeraTransfer extends Snake {
             LOGGER.debug("handleMessage : " + message);
         }
         String js = new String(message.getBody());
-        JSON json = new JSON(js);
+        JSON json = JSON.fromJSONString(js);
         Integer status = (Integer) json.get("status");
 
         //subscribe response

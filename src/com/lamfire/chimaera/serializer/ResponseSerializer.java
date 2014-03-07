@@ -30,7 +30,7 @@ public class ResponseSerializer implements Serializer<Response> {
     @Override
     public Response decode(byte[] bytes, Class<Response> type) {
         String js = new String(bytes);
-        JSON json = new JSON(js);
+        JSON json = JSON.fromJSONString(js);
         return decode(json, type);
     }
 
@@ -40,11 +40,11 @@ public class ResponseSerializer implements Serializer<Response> {
             Integer status = (Integer) json.get("status");
             Response res;
             if (status == 201) {
-                res = json.toObject(PublishResponse.class);
+                res = json.toJavaObject(PublishResponse.class);
             } else if (status == 200) {
-                res = (Response) json.toObject(type);
+                res = (Response) json.toJavaObject(type);
             } else {
-                res = (Response) json.toObject(ErrorResponse.class);
+                res = (Response) json.toJavaObject(ErrorResponse.class);
             }
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("RESPONSE:" + type.getName() + "=" + json);

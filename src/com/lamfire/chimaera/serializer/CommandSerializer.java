@@ -29,14 +29,14 @@ public class CommandSerializer implements Serializer<Command> {
     @Override
     public Command decode(byte[] bytes, Class<Command> type) {
         String js = new String(bytes);
-        JSON json = new JSON(js);
+        JSON json =JSON.fromJSONString(js);
         return decode(json, type);
     }
 
     @Override
     public Command decode(JSON json, Class<Command> type) {
         String cmdName = (String) json.get("command");
-        Command cmd = (Command) json.toObject(ServiceRegistry.getInstance().getCommandType(cmdName));
+        Command cmd = (Command) json.toJavaObject(ServiceRegistry.getInstance().getCommandType(cmdName));
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("COMMAND:" + json + " = " + cmd.getClass().getName());
         }
