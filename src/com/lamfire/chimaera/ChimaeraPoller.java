@@ -40,7 +40,7 @@ public class ChimaeraPoller {
         @Override
         public void run() {
             while (true) {
-                processNext();
+                dispatchNextMessage();
             }
         }
     };
@@ -77,7 +77,7 @@ public class ChimaeraPoller {
     public void bind(String key, String clientId, Session session) {
         try {
             SessionGroup group = getSesionGroup(key);
-            if (group.existsKey(clientId)) {
+            if (group.exists(clientId)) {
                 Session old = group.remove(clientId);
                 LOGGER.info("[" + clientId + "] change[" + old + "] to[" + session + "]");
             }
@@ -108,7 +108,7 @@ public class ChimaeraPoller {
         this.queue.push(responseBytes);
     }
 
-    private void processNext() {
+    private void dispatchNextMessage() {
         try {
             byte[] responseBytes = this.queue.peek();
             String json = new String(responseBytes);
@@ -117,11 +117,11 @@ public class ChimaeraPoller {
 
             //获得下个Session
             SessionGroup group = getSesionGroup(key);
-            Session session = group.next();
+            Session session = group.getPollingNextSession();
             if (session != null) {
                 Message msg = new Message();
                 msg.setBody(responseBytes);
-                sendResponse(session, msg);
+                session.send(msg).sync();
                 this.queue.pop();
             } else {
                 LOGGER.warn("Not found available poller session,waiting...");
@@ -130,17 +130,8 @@ public class ChimaeraPoller {
                 }
             }
         } catch (Throwable e) {
-            LOGGER.warn(e.getMessage(), e);
+            LOGGER.warn("[Dispatch Message Failed]:"+e.getMessage());
         }
     }
-
-    private void sendResponse(Session session, Message message) {
-        try {
-            session.send(message).sync();
-        } catch (Throwable e) {
-            LOGGER.error("error send response.", e);
-        }
-    }
-
 
 }

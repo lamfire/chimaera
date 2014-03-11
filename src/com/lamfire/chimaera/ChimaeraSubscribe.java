@@ -39,7 +39,7 @@ public class ChimaeraSubscribe {
         @Override
         public void run() {
             while (true) {
-                processNext();
+                dispatchNextMessage();
             }
         }
     };
@@ -98,11 +98,11 @@ public class ChimaeraSubscribe {
         try {
             session.send(message).sync();
         } catch (Throwable e) {
-            LOGGER.error("error send response.", e);
+            LOGGER.error("error send response:"+ session);
         }
     }
 
-    private void processNext() {
+    private void dispatchNextMessage() {
         try {
             byte[] responseBytes = this.queue.peek();
             String json = new String(responseBytes);
@@ -128,7 +128,7 @@ public class ChimaeraSubscribe {
                 }
             }
         } catch (Throwable e) {
-            LOGGER.warn(e.getMessage(), e);
+            LOGGER.warn("[Dispatch Message Failed]:"+e.getMessage());
         }
     }
 }
