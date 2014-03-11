@@ -3,7 +3,7 @@ package com.lamfire.chimaera.command.subscribe;
 import com.lamfire.chimaera.annotation.COMMAND;
 import com.lamfire.chimaera.command.Command;
 
-@COMMAND(name = Command.SUBSCRIBE_PUBLISH)
+@COMMAND(name = Command.SUBSCRIBE_PUBLISH,writeProtected = true)
 public class SubscribePublishCommand extends Command {
     private byte[] message;
     private String clientId;

@@ -3,7 +3,7 @@ package com.lamfire.chimaera.command.poller;
 import com.lamfire.chimaera.annotation.COMMAND;
 import com.lamfire.chimaera.command.Command;
 
-@COMMAND(name = Command.POLLER_PUBLISH)
+@COMMAND(name = Command.POLLER_PUBLISH,writeProtected = true)
 public class PollerPublishCommand extends Command {
     private byte[] message;
     private String clientId;

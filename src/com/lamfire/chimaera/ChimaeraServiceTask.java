@@ -26,9 +26,6 @@ public class ChimaeraServiceTask implements Runnable {
     }
 
     private void checkMemory() {
-        if (!ChimaeraOpts.get().isStoreInMemory()) {
-            return;
-        }
         if (ServiceRegistry.getInstance().isWriteProtectedCommand(command.getCommand())) { //如果为写入操作，则检查剩余内存
             if (Chimaera.isLackOfMemory()) { //内存缺乏
                 throw new ChimaeraException("Lack of memory,available less " + Chimaera.getAvailableHeapMemory() / 1024 / 1024 + "mb");

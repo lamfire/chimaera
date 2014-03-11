@@ -4,7 +4,7 @@ import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.logger.Logger;
 
 /**
- * Created with IntelliJ IDEA.
+ * 阻塞对例
  * User: lamfire
  * Date: 14-1-8
  * Time: 上午10:20
@@ -26,42 +26,34 @@ public class ChimaeraBlockingQueue implements FireQueue {
 
     @Override
     public synchronized byte[] pop() {
-        try {
-            byte[] val = this.storeQueue.pop();
-            if (val != null) {
-                return val;
+        byte[] result = null;
+        do{
+            try {
+                result = this.storeQueue.pop();
+                if(result == null){
+                    this.wait();
+                }
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(),e);
             }
-        } catch (Exception e) {
-
-        }
-        try {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("queue was empty,waiting.");
-            }
-            this.wait();
-        } catch (Exception e) {
-        }
-        return pop();
+        } while(result == null);
+        return result;
     }
 
     @Override
     public synchronized byte[] peek() {
-        try {
-            byte[] val = this.storeQueue.peek();
-            if (val != null) {
-                return val;
+        byte[] result = null;
+        do{
+            try {
+                result = this.storeQueue.peek();
+                if(result == null){
+                    this.wait();
+                }
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(),e);
             }
-        } catch (Exception e) {
-
-        }
-        try {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("queue was empty,waiting...");
-            }
-            this.wait();
-        } catch (Exception e) {
-        }
-        return peek();
+        } while(result == null);
+        return result;
     }
 
     @Override

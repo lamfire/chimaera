@@ -92,7 +92,11 @@ public class ChimaeraTransfer extends Snake {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("SEND_COMMAND:" + new String(bytes));
         }
-        session.send(new Message(messageId, bytes));
+        try{
+            session.send(new Message(messageId, bytes)).sync();
+        }catch (Throwable e){
+            LOGGER.error(e.getMessage(),e);
+        }
     }
 
     public ResponseFuture sendCommand(Command command, Class<?> responseType) {
