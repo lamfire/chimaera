@@ -12,8 +12,9 @@ public class Command {
 
     public static final String INCREMENT_INCR = "INCREMENT_INCR";
     public static final String INCREMENT_INCR_GET = "INCREMENT_INCR_GET";
-    public static final String INCREMENT_DECR = "INCREMENT_DECR";
-    public static final String INCREMENT_DECR_GET = "INCREMENT_DECR_GET";
+    public static final String INCREMENT_SIZE = "INCREMENT_SIZE";
+    public static final String INCREMENT_CLEAR = "INCREMENT_CLEAR";
+    public static final String INCREMENT_REMOVE = "INCREMENT_REMOVE";
     public static final String INCREMENT_GET = "INCREMENT_GET";
     public static final String INCREMENT_SET = "INCREMENT_SET";
 

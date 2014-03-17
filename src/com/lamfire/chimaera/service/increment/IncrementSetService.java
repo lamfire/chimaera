@@ -18,8 +18,7 @@ public class IncrementSetService implements Service<IncrementSetCommand> {
     @Override
     public Response execute(MessageContext context, IncrementSetCommand cmd) {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
-
-        store.getFireIncrement(cmd.getKey()).set(cmd.getValue());
+        store.getFireIncrement(cmd.getKey()).set(cmd.getName(),cmd.getValue());
         return Responses.makeEmptyResponse(cmd);
 
     }

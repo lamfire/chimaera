@@ -19,7 +19,7 @@ public class IncrementGetService implements Service<IncrementGetCommand> {
     public Response execute(MessageContext context, IncrementGetCommand cmd) {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        long val = store.getFireIncrement(cmd.getKey()).get();
+        long val = store.getFireIncrement(cmd.getKey()).get(cmd.getName());
         return Responses.makeIncrGetResponse(cmd, val);
 
     }

@@ -14,4 +14,14 @@ public class IncrementIncrCommand extends Command {
     public void setStep(long step) {
         this.step = step;
     }
+
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

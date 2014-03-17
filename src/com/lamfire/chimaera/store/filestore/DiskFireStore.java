@@ -3,9 +3,7 @@ package com.lamfire.chimaera.store.filestore;
 import com.lamfire.chimaera.store.*;
 import com.lamfire.chimaera.store.memstore.MemoryFireIncrement;
 import com.lamfire.utils.Maps;
-import com.lamfire.utils.StringUtils;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -16,9 +14,6 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class DiskFireStore implements FireStore {
-    private static final String KEY_INCREMENT = "_INCREMENT_";
-    private Map<String, FireIncrement> increments;
-
     //key collection caches
     private final Map<String, Object> keyCaches = Maps.newHashMap();
 
@@ -28,7 +23,6 @@ public class DiskFireStore implements FireStore {
     public DiskFireStore(StoreEngine engine,String storeName) {
         this.storeName = storeName;
         this.engine = engine;
-        this.increments = this.engine.getHashMap(KEY_INCREMENT, new IncrementSerializer());
     }
 
     public String getStoreName() {
@@ -62,9 +56,6 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public boolean exists(String key) {
-        if(increments.containsKey(key)){
-            return true;
-        }
         return this.engine.exists(key);
     }
 
@@ -72,8 +63,7 @@ public class DiskFireStore implements FireStore {
     public synchronized FireIncrement getFireIncrement(String key) {
         FireIncrement result = (FireIncrement)keyCaches.get(key);
         if (result == null) {
-            result = new MemoryFireIncrement();
-            increments.put(key, result);
+            result = new DiskFireIncrement(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;

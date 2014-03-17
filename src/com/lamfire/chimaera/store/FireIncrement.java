@@ -1,24 +1,18 @@
 package com.lamfire.chimaera.store;
 
-public interface FireIncrement {
+public interface FireIncrement extends FireCollection{
 
-    public void incr();
+    public void incr(String name);
 
-    public void incr(long step);
+    public void incr(String name,long step);
 
-    public void decr();
+    public long get(String name);
 
-    public void decr(long step);
+    public void set(String name,long value);
 
-    public long get();
+    public long incrGet(String name);
 
-    public void set(long value);
+    public long incrGet(String name,long step);
 
-    public long incrGet();
-
-    public long incrGet(long step);
-
-    public long decrGet();
-
-    public long decrGet(long step);
+    public long remove(String name);
 }

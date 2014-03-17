@@ -1,73 +1,69 @@
 package com.lamfire.chimaera.store.memstore;
 
 import com.lamfire.chimaera.store.FireIncrement;
+import com.lamfire.utils.Maps;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MemoryFireIncrement implements FireIncrement {
 
-    private final AtomicLong atomic = new AtomicLong();
+    private final Map<String,AtomicLong> map = Maps.newHashMap();
 
-    @Override
-    public void incr() {
-        atomic.incrementAndGet();
-    }
-
-    @Override
-    public void incr(long step) {
-        if (step < 0) {
-            step = Math.abs(step);
+    synchronized AtomicLong atomic(String name){
+        AtomicLong atomic = map.get(name);
+        if(atomic == null ){
+            atomic = new AtomicLong();
+            map.put(name,atomic);
         }
-        atomic.addAndGet(step);
+        return atomic;
+    }
+    @Override
+    public void incr(String name) {
+        atomic(name).incrementAndGet();
     }
 
     @Override
-    public void decr() {
-        atomic.decrementAndGet();
+    public void incr(String name,long step) {
+        atomic(name).addAndGet(step);
     }
 
     @Override
-    public void decr(long step) {
-        if (step < 0) {
-            step = Math.abs(step);
+    public long get(String name) {
+        return atomic(name).get();
+    }
+
+    @Override
+    public void set(String name,long value) {
+        atomic(name).set(value);
+    }
+
+    @Override
+    public long incrGet(String name) {
+        return atomic(name).incrementAndGet();
+    }
+
+    @Override
+    public long incrGet(String name,long step) {
+        return atomic(name).addAndGet(step);
+    }
+
+    @Override
+    public long remove(String name) {
+        AtomicLong item =  map.remove(name);
+        if(item != null){
+            return item.longValue();
         }
-        atomic.addAndGet(0 - step);
+        return 0;
     }
 
     @Override
-    public long get() {
-        return atomic.get();
+    public int size() {
+        return map.size();
     }
 
     @Override
-    public void set(long value) {
-        atomic.set(value);
+    public void clear() {
+        map.clear();
     }
-
-    @Override
-    public long incrGet() {
-        return atomic.incrementAndGet();
-    }
-
-    @Override
-    public long incrGet(long step) {
-        if (step < 0) {
-            step = Math.abs(step);
-        }
-        return atomic.addAndGet(step);
-    }
-
-    @Override
-    public long decrGet() {
-        return atomic.decrementAndGet();
-    }
-
-    @Override
-    public long decrGet(long step) {
-        if (step < 0) {
-            step = Math.abs(step);
-        }
-        return atomic.addAndGet(0 - step);
-    }
-
 }

@@ -14,4 +14,14 @@ public class IncrementSetCommand extends Command {
     public void setValue(long value) {
         this.value = value;
     }
+
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

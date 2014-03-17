@@ -12,7 +12,7 @@ import com.lamfire.chimaera.test.tester.*;
  */
 public class TestAll {
     public static void test(String[] args){
-        FireIncrementTester t1 = new FireIncrementTester(Config.getFireStore(args));
+        FireIncrementTester t1 = new FireIncrementTester(Config.getFireStore(args).getFireIncrement("TEST_INCR"));
         t1.test();
 
         FireListTester t2 = new FireListTester(Config.getFireStore(args).getFireList("TEST_LIST"));

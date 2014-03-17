@@ -12,63 +12,62 @@ import com.lamfire.utils.Asserts;
  * To change this template use File | Settings | File Templates.
  */
 public class FireIncrementTester {
-    FireStore store;
+    FireIncrement inc;
 
-    public FireIncrementTester(FireStore store){
-       this.store =store ;
+    public FireIncrementTester( FireIncrement inc){
+       this.inc =inc ;
     }
 
     public void test() {
         System.out.println("==>> startup : " + this.getClass().getName());
-        store.remove("INCREMENT_TEST");
-        FireIncrement inc = store.getFireIncrement("INCREMENT_TEST");
-        inc.set(0);
+        String name = "INC_001";
+        inc.set(name,0);
         long startAt = System.currentTimeMillis();
         int count = 1000;
         int seed = 10;
         for(int i=0;i<count;i++){
-            inc.incrGet(seed);
+            inc.incrGet(name,seed);
         }
         long timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("increment.incrGet() times:"+count+",time_millis:" + timeUsed+ " ms");
 
-        long value = inc.get();
+        long value = inc.get(name);
         System.out.println("increment.get() : " +value);
 
         Asserts.assertEquals(value, count * seed);
 
         startAt = System.currentTimeMillis();
         for(int i=0;i<count;i++){
-            inc.decrGet(seed);
+            inc.incr(name,0-seed);
         }
 
         timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("increment.decrGet() times:"+count+",time_millis:" + timeUsed+ " ms");
 
-        value = inc.get();
+        value = inc.get(name);
         System.out.println("increment.get() : " +value);
 
         Asserts.assertEquals(value,0);
 
         startAt = System.currentTimeMillis();
         for(int i=0;i<count;i++){
-            inc.incr(seed);
+            inc.incr(name,seed);
         }
         timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("increment.incr() times:"+count+" time_millis:" + timeUsed+ " ms");
 
-        value = inc.get();
+        value = inc.get(name);
         System.out.println("increment.get() : " +value);
 
         startAt = System.currentTimeMillis();
         for(int i=0;i<count;i++){
-            inc.decr(seed);
+            inc.incr(name,0-seed);
         }
 
         timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("increment.decr() times:"+count+" time_millis:" + timeUsed+ " ms");
 
-        value =inc.get();
+        value =inc.get(name);
         System.out.println("final increment.get():"+value);
         Asserts.assertEquals(value,0);
 
