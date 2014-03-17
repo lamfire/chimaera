@@ -60,8 +60,7 @@ public class FireIncrementAccessor implements FireIncrement {
         cmd.setName(name);
         cmd.setCommand(Command.INCREMENT_SET);
         cmd.setValue(value);
-        ResponseFuture<IncrGetResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
-        future.await();
+        transfer.sendCommand(cmd, EmptyResponse.class).await();
     }
 
     @Override
@@ -109,7 +108,6 @@ public class FireIncrementAccessor implements FireIncrement {
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setCommand(Command.INCREMENT_CLEAR);
-        ResponseFuture<IncrGetResponse> future = transfer.sendCommand(cmd, EmptyResponse.class);
-        future.await();
+        transfer.sendCommand(cmd, EmptyResponse.class).await();
     }
 }

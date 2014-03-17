@@ -21,7 +21,17 @@ public class FireIncrementTester {
     public void test() {
         System.out.println("==>> startup : " + this.getClass().getName());
         String name = "INC_001";
+
+        inc.clear();
+        Asserts.assertEquals(0, inc.size());
+
         inc.set(name,0);
+        Asserts.assertEquals(1, inc.size());
+
+        inc.remove(name);
+        Asserts.assertEquals(0, inc.size());
+
+
         long startAt = System.currentTimeMillis();
         int count = 1000;
         int seed = 10;
@@ -38,7 +48,7 @@ public class FireIncrementTester {
 
         startAt = System.currentTimeMillis();
         for(int i=0;i<count;i++){
-            inc.incr(name,0-seed);
+            inc.incr(name, 0 - seed);
         }
 
         timeUsed = System.currentTimeMillis() - startAt;
@@ -61,7 +71,7 @@ public class FireIncrementTester {
 
         startAt = System.currentTimeMillis();
         for(int i=0;i<count;i++){
-            inc.incr(name,0-seed);
+            inc.incr(name, 0 - seed);
         }
 
         timeUsed = System.currentTimeMillis() - startAt;

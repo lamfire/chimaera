@@ -33,10 +33,11 @@ public class DiskFireIncrement implements FireIncrement {
         incr(name,1);
     }
 
-    private synchronized void newItem(String name,long value){
+    private synchronized Item newItem(String name,long value){
         Item item = new Item(name);
         item.increment(value);
         map.put(name,item);
+        return item;
     }
 
     @Override
@@ -82,7 +83,7 @@ public class DiskFireIncrement implements FireIncrement {
         try {
             Item item = map.get(name);
             if (item == null) {
-                newItem(name,step);
+                item = newItem(name,step);
             }else{
                 item.increment(step);
             }
@@ -104,7 +105,7 @@ public class DiskFireIncrement implements FireIncrement {
 
     @Override
     public synchronized long remove(String name) {
-        lock.unlock();
+        lock.lock();
         try {
             Item item = map.remove(name);
             if (item == null) {

@@ -20,7 +20,6 @@ public class IncrementClearService implements Service<IncrementClearCommand> {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
         store.getFireIncrement(cmd.getKey()).clear();
         return Responses.makeEmptyResponse(cmd);
-
     }
 
 }
