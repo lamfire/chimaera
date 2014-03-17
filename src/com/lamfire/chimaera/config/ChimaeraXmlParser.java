@@ -57,7 +57,7 @@ public class ChimaeraXmlParser {
         serverConfigure.setBind(bind);
         serverConfigure.setPort(port);
         serverConfigure.setThreads(threads);
-        serverConfigure.setStoreInMemory(true);
+        serverConfigure.setStoreOnDisk(false);
         if(!StringUtils.equalsIgnoreCase("memory",type)){
             boolean renew =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/renew"));
             boolean enableSoftCache =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableCache"));
@@ -67,7 +67,7 @@ public class ChimaeraXmlParser {
             int flushThresholdOps = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/flushThresholdOps"));
             int flushInterval = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/flushInterval"));
             String storeDir = parser.getNodeValue("/chimaera/server/store/fileDir");
-            serverConfigure.setStoreInMemory(false);
+            serverConfigure.setStoreOnDisk(true);
             serverConfigure.setRenew(renew);
             serverConfigure.setEnableLocking(enableLocking);
             serverConfigure.setEnableCache(enableSoftCache);
@@ -77,6 +77,7 @@ public class ChimaeraXmlParser {
             serverConfigure.setStoreDir(storeDir);
             serverConfigure.setCacheSize(cacheSize);
         }
+        serverConfigure.setTunnelSettings(getTunnelConfigureList());
         LOGGER.info("[SERVER]:" + JSON.toJSONString(serverConfigure));
         return serverConfigure;
     }

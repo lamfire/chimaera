@@ -30,7 +30,7 @@ public class ThreadPools {
     private ThreadPools() {
         int threads = -1;
         try {
-            threads = ChimaeraOpts.get().getThreads();
+            threads = 16;
         } catch (Exception e) {
 
         }
@@ -60,7 +60,4 @@ public class ThreadPools {
         return  chimaeraScheduler.scheduleWithFixedDelay(command,initialDelay,delay,unit);
     }
 
-    public void shutdown() {
-        this.service.shutdown();
-    }
 }

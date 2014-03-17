@@ -6,11 +6,8 @@ import com.lamfire.chimaera.store.filestore.StoreEngine;
 import com.lamfire.chimaera.store.memstore.MemoryFireStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.FilenameUtils;
-import com.lamfire.utils.ThreadFactory;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,16 +16,20 @@ import java.util.concurrent.ScheduledExecutorService;
  * Time: 上午10:18
  * To change this template use File | Settings | File Templates.
  */
-public class FireStoreFactory {
+class FireStoreFactory {
     private static final Logger LOGGER = Logger.getLogger(FireStoreFactory.class);
+    private static ChimaeraOpts opts;
 
-    public static FireStore makeFireStore(String name)throws IOException{
+    static void setFireStoreOpts(ChimaeraOpts opts){
+        FireStoreFactory.opts = opts;
+    }
+
+    synchronized static FireStore makeFireStore(String name)throws IOException{
         FireStore store = null;
-        ChimaeraOpts opts = ChimaeraOpts.get();
-        if (opts.isStoreInMemory()) {
-            store = new MemoryFireStore(name);
-        } else {
+        if (opts != null && opts.isStoreOnDisk()) {
             store = makeDiskFireStore(name,opts);
+        } else {
+            store = new MemoryFireStore(name);
         }
         return store;
     }

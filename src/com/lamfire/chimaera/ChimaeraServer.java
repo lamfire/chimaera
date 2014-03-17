@@ -2,6 +2,7 @@ package com.lamfire.chimaera;
 
 import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.config.ChimaeraXmlParser;
+import com.lamfire.chimaera.config.ServerConfigure;
 import com.lamfire.chimaera.tunnel.TunnelService;
 import com.lamfire.chimaera.tunnel.TunnelSetting;
 import com.lamfire.chimaera.response.ErrorResponse;
@@ -12,32 +13,35 @@ import com.lamfire.hydra.Message;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.hydra.Snake;
 import com.lamfire.logger.Logger;
+import com.lamfire.utils.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class ChimaeraServer extends Snake {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraServer.class);
     private ServiceRegistry serviceRegistry = ServiceRegistry.getInstance();
+    private ServerConfigure serverConfigure;
 
-    public ChimaeraServer(String host, int port) {
-        super(host, port);
+    public ChimaeraServer(ServerConfigure serverConfigure) {
+        super(serverConfigure.getBind(), serverConfigure.getPort());
+        this.serverConfigure = serverConfigure;
+        Chimaera.setChimaeraOpts(serverConfigure);
     }
 
-    public static void startup(String host, int port) {
-        ChimaeraServer server = new ChimaeraServer(host, port);
-        server.setExecutorService(ThreadPools.get().getExecutorService());
-        server.bind();
+    public void startup() {
+        this.setExecutorService(ThreadPools.get().getExecutorService());
+        this.bind();
         LOGGER.info("[startup] available memory = " + (Chimaera.getAvailableHeapMemory() / 1024 / 1024) + "mb");
-        LOGGER.info("[startup] startup on - " + host + ":" + port);
+        LOGGER.info("[startup] startup on - " + serverConfigure.getBind() + ":" + serverConfigure.getPort());
     }
 
-    public static void startup(ChimaeraOpts opts) {
-        startup(opts.getBind(), opts.getPort());
-    }
 
-    public static void startupTunnels(){
+
+    public void startupTunnels(){
         try {
-            List<TunnelSetting> list = ChimaeraXmlParser.get().getTunnelConfigureList();
+            List<TunnelSetting> list = serverConfigure.getTunnelSettings();
             for(TunnelSetting setting : list){
                 TunnelService service = new TunnelService(setting);
                 service.startup();

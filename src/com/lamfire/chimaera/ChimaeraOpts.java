@@ -19,101 +19,76 @@ import java.io.IOException;
  */
 public class ChimaeraOpts {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraOpts.class);
-    private ServerConfigure serverConfigure;
+    private boolean storeOnDisk = false;
+    private String storeDir;
+    private int flushThresholdOps = -1;
+    private int flushInterval = 60;
+    private boolean enableLocking = false;
+    private boolean enableTransactions = false;
+    private boolean enableCache = true;
+    private int cacheSize = 10000;
 
-    static ChimaeraOpts instance;
-
-    public synchronized static ChimaeraOpts get() {
-        if (instance == null) {
-            instance = new ChimaeraOpts();
-        }
-        return instance;
+    public boolean isStoreOnDisk() {
+        return storeOnDisk;
     }
 
-    private void renewStoreDir(String dir) throws IOException {
-        File sourceDir = new File(dir);
-        //File renameDir = new File(dir+"_" + DateFormatUtils.format(System.currentTimeMillis(),"yyyyMMddhhmmss"));
-        FileUtils.cleanDirectory(sourceDir);
+    public void setStoreOnDisk(boolean storeOnDisk) {
+        this.storeOnDisk = storeOnDisk;
     }
-
-    private ChimaeraOpts() {
-        try {
-            serverConfigure = ChimaeraXmlParser.get().getServerConfigure();
-            if((!serverConfigure.isStoreInMemory()) && serverConfigure.isRenew()){
-                String storeDir = serverConfigure.getStoreDir();
-                LOGGER.info("Configure store in file,setting 'renew' is true,clean store directory : " +storeDir );
-                renewStoreDir(storeDir);
-            }
-        } catch (Exception e) {
-            LOGGER.warn("Parse '" + ChimaeraXmlParser.XML_RESOURCE + "' file failed,use memory store.");
-        }
-        printOptions();
-    }
-
-    private void printOptions() {
-        LOGGER.info("bind:" + serverConfigure.getBind());
-        LOGGER.info("port:" + serverConfigure.getPort());
-        LOGGER.info("store:" + (serverConfigure.isStoreInMemory() ? "memory" : "file"));
-        if (!serverConfigure.isStoreInMemory()) {
-            LOGGER.info("StoreDir:" + serverConfigure.getStoreDir());
-            if (!FileUtils.exists(serverConfigure.getStoreDir())) {
-                FileUtils.makeDirs(serverConfigure.getStoreDir());
-                LOGGER.info("The store dir not found,make " + serverConfigure.getStoreDir());
-            }
-            LOGGER.info("FlushThresholdOps:" + serverConfigure.getFlushThresholdOps());
-            LOGGER.info("FlushInterval:" + serverConfigure.getFlushInterval());
-            LOGGER.info("EnableLocking:" + serverConfigure.isEnableLocking());
-            LOGGER.info("EnableCache:" + serverConfigure.isEnableCache());
-            LOGGER.info("CacheSize:" + serverConfigure.getCacheSize());
-            LOGGER.info("EnableTransactions:" + serverConfigure.isEnableTransactions());
-        }
-    }
-
-    public String getBind() {
-        return serverConfigure.getBind();
-    }
-
-
-    public int getPort() {
-        return serverConfigure.getPort();
-    }
-
-
-    public boolean isStoreInMemory() {
-        return serverConfigure.isStoreInMemory();
-    }
-
 
     public String getStoreDir() {
-        return serverConfigure.getStoreDir();
+        return storeDir;
     }
 
+    public void setStoreDir(String storeDir) {
+        this.storeDir = storeDir;
+    }
 
     public int getFlushThresholdOps() {
-        return serverConfigure.getFlushThresholdOps();
+        return flushThresholdOps;
     }
 
-    public int getFlushInterval(){
-        return serverConfigure.getFlushInterval();
+    public void setFlushThresholdOps(int flushThresholdOps) {
+        this.flushThresholdOps = flushThresholdOps;
     }
 
-    public int getCacheSize(){
-        return serverConfigure.getCacheSize();
+    public int getFlushInterval() {
+        return flushInterval;
     }
 
-    public int getThreads() {
-        return serverConfigure.getThreads();
+    public void setFlushInterval(int flushInterval) {
+        this.flushInterval = flushInterval;
     }
 
     public boolean isEnableLocking() {
-        return serverConfigure.isEnableLocking();
+        return enableLocking;
     }
 
-    public boolean isEnableCache() {
-        return serverConfigure.isEnableCache();
+    public void setEnableLocking(boolean enableLocking) {
+        this.enableLocking = enableLocking;
     }
 
     public boolean isEnableTransactions() {
-        return serverConfigure.isEnableTransactions();
+        return enableTransactions;
+    }
+
+    public void setEnableTransactions(boolean enableTransactions) {
+        this.enableTransactions = enableTransactions;
+    }
+
+    public boolean isEnableCache() {
+        return enableCache;
+    }
+
+    public void setEnableCache(boolean enableCache) {
+        this.enableCache = enableCache;
+    }
+
+    public int getCacheSize() {
+        return cacheSize;
+    }
+
+    public void setCacheSize(int cacheSize) {
+        this.cacheSize = cacheSize;
     }
 }
