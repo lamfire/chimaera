@@ -74,6 +74,10 @@ public class Config {
          return getChimaeraCli().getFireStore("DEFAULT");
     }
 
+    public static  FireStore  getFireStore(String name){
+        return getChimaeraCli().getFireStore(name);
+    }
+
     public static FireStore getFireStore(String[] args){
         return getChimaeraCli(args).getFireStore("DEFAULT");
     }
