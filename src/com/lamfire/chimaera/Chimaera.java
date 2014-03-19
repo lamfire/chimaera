@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Chimaera {
     private static final Logger LOGGER = Logger.getLogger(Chimaera.class);
-    private static final float FREE_MEMORY_THRESHOLD = 0.2f;
+    private static final float FREE_MEMORY_THRESHOLD = 0.1f;
     private static final Map<String, FireStore> stores = Maps.newConcurrentMap();
     private static boolean lackOfMemory = false;
 
