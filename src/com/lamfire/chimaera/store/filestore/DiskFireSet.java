@@ -39,9 +39,11 @@ public class DiskFireSet implements FireSet {
         try {
             lock.lock();
             String hash = hash(value);
-            map.put(hash, value);
-            index.add(hash);
-            engine.cacheOrFlush();
+            if(! map.containsKey(hash)){
+                map.put(hash, value);
+                index.add(hash);
+                engine.cacheOrFlush();
+            }
         } finally {
             lock.unlock();
         }
@@ -115,9 +117,10 @@ public class DiskFireSet implements FireSet {
         lock.lock();
         try {
             String hash = hash(value);
-            map.remove(hash);
-            index.remove(hash);
-            engine.cacheOrFlush();
+            if(map.remove(hash)!=null){
+                index.remove(hash);
+                engine.cacheOrFlush();
+            }
             return value;
         } finally {
             lock.unlock();
