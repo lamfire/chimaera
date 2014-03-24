@@ -18,26 +18,25 @@ import java.io.IOException;
  */
 class FireStoreFactory {
     private static final Logger LOGGER = Logger.getLogger(FireStoreFactory.class);
-    private static ChimaeraOpts opts;
 
-    static void setFireStoreOpts(ChimaeraOpts opts){
-        FireStoreFactory.opts = opts;
-    }
-
-    synchronized static FireStore makeFireStore(String name)throws IOException{
+    public synchronized static FireStore makeFireStore(String name,ChimaeraOpts opts)throws IOException{
         FireStore store = null;
         if (opts != null && opts.isStoreOnDisk()) {
             store = makeDiskFireStore(name,opts);
         } else {
-            store = new MemoryFireStore(name);
+            store = makeMemoryFireStore(name);
         }
         return store;
     }
 
-    private static FireStore makeDiskFireStore(String name,ChimaeraOpts opts) throws IOException {
+    public static MemoryFireStore makeMemoryFireStore(String name){
+        return new MemoryFireStore(name);
+    }
+
+    public static DiskFireStore makeDiskFireStore(String name,ChimaeraOpts opts) throws IOException {
         String file = FilenameUtils.concat(opts.getStoreDir(), name);
         StoreEngine engine = new StoreEngine(file,opts.isEnableLocking(),opts.isEnableTransactions(),opts.getFlushThresholdOps(),opts.getFlushInterval(),opts.isEnableCache(),opts.getCacheSize(),ThreadPools.get().getScheduledExecutorService()) ;
-        FireStore store = new DiskFireStore(engine,name);
+        DiskFireStore store = new DiskFireStore(engine,name);
         LOGGER.info("MAKE STORE[" + name + "] :" + file);
         return store;
     }

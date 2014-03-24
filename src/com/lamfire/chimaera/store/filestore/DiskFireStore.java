@@ -123,4 +123,9 @@ public class DiskFireStore implements FireStore {
     public void defrag() {
         this.engine.defrag();
     }
+
+    public void close(){
+        this.engine.flush();
+        this.engine.close();
+    }
 }

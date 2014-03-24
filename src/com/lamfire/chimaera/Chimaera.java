@@ -12,6 +12,7 @@ public class Chimaera {
     private static final float FREE_MEMORY_THRESHOLD = 0.1f;
     private static final Map<String, FireStore> stores = Maps.newConcurrentMap();
     private static boolean lackOfMemory = false;
+    private static  ChimaeraOpts opts;
 
     static {
         ThreadPools.get().scheduleWithFixedDelay(new Runnable() {
@@ -27,7 +28,7 @@ public class Chimaera {
     }
 
     public static void setChimaeraOpts(ChimaeraOpts opts){
-        FireStoreFactory.setFireStoreOpts(opts);
+        Chimaera.opts = opts;
     }
 
     public static final FireStore getFireStore(String storeName) {
@@ -43,7 +44,11 @@ public class Chimaera {
         FireStore store = stores.get(storeName);
         if (store == null) {
             try{
-                store = FireStoreFactory.makeFireStore(storeName);
+                if(Chimaera.opts != null){
+                store = FireStoreFactory.makeFireStore(storeName,Chimaera.opts);
+                }else{
+                    store = FireStoreFactory.makeMemoryFireStore(storeName);
+                }
                 stores.put(storeName, store);
             }catch (IOException e){
                 LOGGER.error(e.getMessage(),e);
