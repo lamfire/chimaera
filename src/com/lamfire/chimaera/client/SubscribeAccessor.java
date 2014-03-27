@@ -34,9 +34,10 @@ public class SubscribeAccessor implements Subscribe, Rebundleable {
      * @param listener
      */
     public void bind(String key, String clientId, OnMessageListener listener) {
+        transfer.setSubscribeMessageListener(key, listener);
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
-        transfer.setSubscribeMessageListener(key, listener);
+
 
         //add monitor
         Rebundler bundler = new Rebundler(this);
@@ -116,9 +117,9 @@ public class SubscribeAccessor implements Subscribe, Rebundleable {
 
     @Override
     public Session rebind(String key, String clientId, OnMessageListener listener) {
+        transfer.setSubscribeMessageListener(key, listener);
         ResponseFuture<EmptyResponse> future = transfer.sendCommand(getBindCommand(key, clientId), EmptyResponse.class);
         future.waitResponse();
-        transfer.setSubscribeMessageListener(key, listener);
         return future.getSession();
     }
 }
