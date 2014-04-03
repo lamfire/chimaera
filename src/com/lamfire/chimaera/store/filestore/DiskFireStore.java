@@ -7,7 +7,7 @@ import com.lamfire.utils.Maps;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
+ * 磁盘文件持久STORE
  * User: lamfire
  * Date: 14-1-3
  * Time: 下午4:47
@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class DiskFireStore implements FireStore {
     //key collection caches
-    private final Map<String, Object> keyCaches = Maps.newHashMap();
+    private final Map<String, FireCollection> keyCaches = Maps.newHashMap();
 
     private String storeName;
     private StoreEngine engine;
@@ -31,17 +31,28 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public void remove(String key) {
-         //no supported
+        FireCollection col = keyCaches.get(key);
+        if(col != null){
+            col.clear();
+            keyCaches.remove(key);
+        }
     }
 
     @Override
     public int size(String key) {
-        return -1; //no supported
+        FireCollection col = keyCaches.get(key);
+        if(col != null){
+            return col.size();
+        }
+        return 0;
     }
 
     @Override
     public void clear(String key) {
-        remove(key);
+        FireCollection col = keyCaches.get(key);
+        if(col != null){
+            col.clear();
+        }
     }
 
     @Override
