@@ -113,7 +113,7 @@ public class DiskFireRank implements FireRank {
 
     @Override
     public synchronized long remove(String name) {
-        lock.unlock();
+        lock.lock();
         try {
             Item item = map.remove(name);
             if (item == null) {
