@@ -33,7 +33,7 @@ public class RandomIPAddrTest {
                 long now = atomic.get();
                 long request = atomic.get();
                 System.out.print("incrementing : " + now + " , " + (now - pre) +"/s , count=" +addrCount +" >>> ");
-                printSize();
+                //printSize();
                 System.out.println();
                 pre = now;
             }
@@ -100,11 +100,16 @@ public class RandomIPAddrTest {
 		}
 	};
 
+    static void startup(int threads){
+        for(int i=0;i<threads;i++){
+            Threads.startup(task);
+        }
+    }
+
 	public static void main(String[] args) {
-		Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
+        for(int i=0;i<255;i++){
+            System.out.println(store.getFireIncrement(String.valueOf(i)).size());
+        }
+        startup(10);
 	}
 }

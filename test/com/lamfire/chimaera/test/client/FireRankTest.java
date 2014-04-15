@@ -31,11 +31,13 @@ public class FireRankTest {
         //System.exit(0);
 
         ChimaeraCli cli = new ChimaeraCli();
-        cli.open("192.168.9.126", 19800);
+        cli.open("127.0.0.1", 19800);
         FireRank rank = cli.getFireStore("AK_IP").getFireRank("520Test");
         System.out.println(rank.size());
         rank.incr("11233",1);
         System.out.println(cli.getFireStore("AK_IP").getFireRank("520Test").size());
+
+        rank.remove("11233");
 
         List<Item> list = rank.max(10);
         for(Item item : list){

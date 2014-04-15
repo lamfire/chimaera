@@ -74,6 +74,22 @@ public class FireRankTester {
         Asserts.assertEquals(score,11);
     }
 
+    public void remove(){
+        String name = "RANK_INCR_NAME_REMOVE";
+        this.rank.set(name,0);
+        long startAt = System.currentTimeMillis();
+        this.rank.incr(name,1);
+        this.rank.incr(name,10);
+        long score = this.rank.score(name);
+        long timeUsed = System.currentTimeMillis() - startAt;
+        System.out.println("rank.incr("+name+"):"+score+ " time_millis:" + timeUsed +" ms");
+        Asserts.assertEquals(score,11);
+
+        this.rank.remove(name);
+        score = this.rank.score(name);
+        System.out.println("rank.remove("+name+"):"+score+ " time_millis:" + timeUsed +" ms");
+    }
+
     public void set(){
         long startAt = System.currentTimeMillis();
         this.rank.set("TEST", 99);
@@ -193,6 +209,8 @@ public class FireRankTester {
         System.out.println("==>> startup : " + this.getClass().getName());
         System.out.println("================> clear()");
         clear();
+        System.out.println("================> remove()");
+        remove();
         System.out.println("================> incr()");
         incr();
         System.out.println("================> set()");
