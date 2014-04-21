@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.*;
-import com.lamfire.chimaera.store.memstore.MemoryFireIncrement;
+import com.lamfire.thalia.ThaliaDatabase;
 import com.lamfire.utils.Maps;
 
 import java.util.Map;
@@ -18,9 +18,9 @@ public class DiskFireStore implements FireStore {
     private final Map<String, FireCollection> keyCaches = Maps.newHashMap();
 
     private String storeName;
-    private StoreEngine engine;
+    private ThaliaDatabase engine;
 
-    public DiskFireStore(StoreEngine engine,String storeName) {
+    public DiskFireStore(ThaliaDatabase engine,String storeName) {
         this.storeName = storeName;
         this.engine = engine;
     }

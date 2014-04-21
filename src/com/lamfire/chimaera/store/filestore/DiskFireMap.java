@@ -1,6 +1,7 @@
 package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.FireMap;
+import com.lamfire.thalia.ThaliaDatabase;
 import com.lamfire.utils.Lists;
 
 import java.util.Collection;
@@ -14,12 +15,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * 持久化的FireMap类，该对象中的数据将会被持久化到文件中。
  */
 public class DiskFireMap implements FireMap {
-    private StoreEngine engine;
+    private ThaliaDatabase engine;
     private String name;
     private Map<String, byte[]> map;
     private final Lock lock = new ReentrantLock();
 
-    public DiskFireMap(StoreEngine engine, String name) {
+    public DiskFireMap(ThaliaDatabase engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(this.name);
@@ -32,7 +33,7 @@ public class DiskFireMap implements FireMap {
             map.put(key, value);
         } finally {
             lock.unlock();
-            engine.cacheOrFlush();
+            engine.flush();
         }
     }
 
@@ -73,7 +74,7 @@ public class DiskFireMap implements FireMap {
             map.remove(key);
         } finally {
             lock.unlock();
-            engine.cacheOrFlush();
+            engine.flush();
         }
     }
 

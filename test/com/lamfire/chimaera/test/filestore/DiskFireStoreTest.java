@@ -1,11 +1,6 @@
 package com.lamfire.chimaera.test.filestore;
 
-import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.chimaera.store.filestore.DiskFireSet;
-import com.lamfire.chimaera.store.filestore.DiskFireStore;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
-import com.lamfire.chimaera.test.tester.FireSetTester;
 import com.lamfire.chimaera.test.tester.FireStoreTester;
 
 /**

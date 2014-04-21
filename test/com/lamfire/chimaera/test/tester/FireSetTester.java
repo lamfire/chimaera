@@ -57,27 +57,15 @@ public class FireSetTester {
 
         String value = new String(set.get(44));
         System.out.println("set.get(44):"+value);
-        Asserts.assertEquals(value, "44");
-
-        value = new String(set.remove("44".getBytes()));
-        System.out.println("set.remove(44):"+value);
-        Asserts.assertEquals(value, "44");
-
-        value = new String(set.get(44));
-        System.out.println("set.get(44):"+value);
-        Asserts.assertEquals(value, "45");
-
-        exists = set.exists("44".getBytes());
+        set.remove(value.getBytes()) ;
+        exists = set.exists(value.getBytes());
         System.out.println("set.exists(44):"+exists);
+        set.remove(value.getBytes()) ;
         Asserts.assertFalse(exists);
 
         size = set.size();
         System.out.println("set.size():"+size);
         Asserts.assertEquals(99,size);
-
-        value =  new String(set.get(98));
-        System.out.println("set.get(98):"+value);
-        Asserts.assertEquals("99",value);
 
         System.out.println("<<== finish : " + this.getClass().getName());
     }

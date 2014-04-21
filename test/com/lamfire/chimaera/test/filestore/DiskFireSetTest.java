@@ -2,11 +2,7 @@ package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.chimaera.store.filestore.DiskFireSet;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
-import com.lamfire.chimaera.test.tester.FireSetTester;
-import com.lamfire.utils.Asserts;
-
-import java.util.List;
+import com.lamfire.thalia.ThaliaDatabase;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,12 +12,14 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class DiskFireSetTest  extends DiskStore{
-    private static final String FILE = "/data/chimaera/store";
+    private static final String FILE = "/data/jdbm/groupuser";
 
     public static void main(String[] args)throws Exception {
-        StoreEngine store = getStoreEngine();
-        FireSet set  = new DiskFireSet(store,"TEST_SET");
-        FireSetTester test = new FireSetTester(set);
-        test.test();
+        ThaliaDatabase store = getThaliaDatabase(FILE);
+        FireSet set  = new DiskFireSet(store,"5354d4d87fbeffb3213fed64");
+        System.out.println(set.size());
+        for(int i=0;i<set.size();i++){
+            System.out.println(new String(set.get(i)));
+        }
     }
 }

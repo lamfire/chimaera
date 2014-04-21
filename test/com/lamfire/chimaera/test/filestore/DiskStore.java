@@ -2,7 +2,7 @@ package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.ThreadPools;
 import com.lamfire.chimaera.store.filestore.DiskFireStore;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
+import com.lamfire.thalia.ThaliaDatabase;
 
 import java.io.IOException;
 
@@ -17,13 +17,21 @@ public class DiskStore {
     private static final String FILE = "/data/chimaera/store";
     private static final String NAME = "TESTSTORE1";
 
-    private static StoreEngine engine;
+    private static ThaliaDatabase engine;
     private static DiskFireStore store;
-    public synchronized static  StoreEngine getStoreEngine()throws IOException{
+    public synchronized static ThaliaDatabase getThaliaDatabase()throws IOException{
         if(engine != null){
             return engine;
         }
-        engine = new StoreEngine(FILE,true,true,0,0,false,0, ThreadPools.get().getScheduledExecutorService());
+        engine = new ThaliaDatabase(FILE,true,true,false,false,0);
+        return engine;
+    }
+
+    public synchronized static  ThaliaDatabase getThaliaDatabase(String file)throws IOException{
+        if(engine != null){
+            return engine;
+        }
+        engine = new ThaliaDatabase(file,true,true,false,false,0);
         return engine;
     }
 
@@ -31,7 +39,7 @@ public class DiskStore {
         if(store != null){
             return store;
         }
-        store = new DiskFireStore(getStoreEngine(),NAME);
+        store = new DiskFireStore(getThaliaDatabase(),NAME);
         return store;
     }
 }

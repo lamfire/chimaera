@@ -2,11 +2,8 @@ package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireList;
 import com.lamfire.chimaera.store.filestore.DiskFireList;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
 import com.lamfire.chimaera.test.tester.FireListTester;
-import com.lamfire.utils.Asserts;
-
-import java.util.List;
+import com.lamfire.thalia.ThaliaDatabase;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,7 +15,7 @@ import java.util.List;
 public class DiskFireListTest extends DiskStore{
 
     public static void main(String[] args) throws Exception{
-        StoreEngine store = getStoreEngine();
+        ThaliaDatabase store = getThaliaDatabase();
         FireList list  = new DiskFireList(store,"TEST_LIST");
         FireListTester test = new FireListTester(list);
         for(int i=0;i<1000;i++){

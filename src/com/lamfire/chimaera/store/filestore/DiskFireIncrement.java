@@ -1,9 +1,8 @@
 package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.FireIncrement;
-import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.Item;
-import com.lamfire.chimaera.store.ItemComparator;
+import com.lamfire.thalia.ThaliaDatabase;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -19,10 +18,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class DiskFireIncrement implements FireIncrement {
     private final Lock lock = new ReentrantLock();
     private Map<String, Item> map;
-    private StoreEngine engine;
+    private ThaliaDatabase engine;
     private String name;
 
-    public DiskFireIncrement(StoreEngine engine, String name) {
+    public DiskFireIncrement(ThaliaDatabase engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name + "_MAP", new ItemSerializer());
@@ -50,7 +49,7 @@ public class DiskFireIncrement implements FireIncrement {
                 return;
             }
             item.increment(step);
-            engine.cacheOrFlush();
+            engine.flush();
         } finally {
             lock.unlock();
         }
@@ -66,7 +65,7 @@ public class DiskFireIncrement implements FireIncrement {
                 return;
             }
             item.setValue(value);
-            engine.cacheOrFlush();
+            engine.flush();
         } finally {
             lock.unlock();
         }
@@ -87,7 +86,7 @@ public class DiskFireIncrement implements FireIncrement {
             }else{
                 item.increment(step);
             }
-            engine.cacheOrFlush();
+            engine.flush();
             return item.getValue();
         } finally {
             lock.unlock();
@@ -111,7 +110,7 @@ public class DiskFireIncrement implements FireIncrement {
             if (item == null) {
                 return 0;
             }
-            engine.cacheOrFlush();
+            engine.flush();
             return item.getValue();
         } finally {
             lock.unlock();

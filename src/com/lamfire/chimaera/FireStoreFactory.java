@@ -2,9 +2,9 @@ package com.lamfire.chimaera;
 
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.chimaera.store.filestore.DiskFireStore;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
 import com.lamfire.chimaera.store.memstore.MemoryFireStore;
 import com.lamfire.logger.Logger;
+import com.lamfire.thalia.ThaliaDatabase;
 import com.lamfire.utils.FilenameUtils;
 
 import java.io.IOException;
@@ -35,7 +35,7 @@ class FireStoreFactory {
 
     public static DiskFireStore makeDiskFireStore(String name,ChimaeraOpts opts) throws IOException {
         String file = FilenameUtils.concat(opts.getStoreDir(), name);
-        StoreEngine engine = new StoreEngine(file,opts.isEnableLocking(),opts.isEnableTransactions(),opts.getFlushThresholdOps(),opts.getFlushInterval(),opts.isEnableCache(),opts.getCacheSize(),ThreadPools.get().getScheduledExecutorService()) ;
+        ThaliaDatabase engine = new ThaliaDatabase(file,opts.isEnableLocking(),opts.isEnableTransactions(),false,opts.isEnableCache(),opts.getCacheSize()) ;
         DiskFireStore store = new DiskFireStore(engine,name);
         LOGGER.info("MAKE STORE[" + name + "] :" + file);
         return store;

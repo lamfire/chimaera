@@ -2,9 +2,8 @@ package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.chimaera.store.filestore.DiskFireQueue;
-import com.lamfire.chimaera.store.filestore.StoreEngine;
 import com.lamfire.chimaera.test.tester.FireQueueTester;
-import com.lamfire.utils.Asserts;
+import com.lamfire.thalia.ThaliaDatabase;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +16,7 @@ public class DiskFireQueueTest  extends DiskStore{
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args)throws Exception {
-        StoreEngine store = getStoreEngine();;
+        ThaliaDatabase store = getThaliaDatabase(FILE);
         FireQueue queue  = new DiskFireQueue(store,"TEST_SET");
         FireQueueTester test = new FireQueueTester(queue);
         test.test();

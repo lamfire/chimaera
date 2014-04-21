@@ -3,7 +3,7 @@ package com.lamfire.chimaera.store.filestore;
 import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.code.MD5;
 import com.lamfire.code.MurmurHash;
-import org.apache.jdbm.Serialization;
+import com.lamfire.thalia.ThaliaDatabase;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,16 +14,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class DiskFireSet implements FireSet {
     private final Map<String, byte[]> map;
-    private final List<String> index;
+
     private final Lock lock = new ReentrantLock();
-    private StoreEngine engine;
+    private ThaliaDatabase engine;
     private String name;
 
-    public DiskFireSet(StoreEngine engine, String name) {
+    public DiskFireSet(ThaliaDatabase engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name);
-        this.index = engine.getLinkedList(name + "_index", new Serialization());
     }
 
     static String hash(byte[] bytes) {
@@ -41,8 +40,7 @@ public class DiskFireSet implements FireSet {
             String hash = hash(value);
             if(! map.containsKey(hash)){
                 map.put(hash, value);
-                index.add(hash);
-                engine.cacheOrFlush();
+                engine.flush();
             }
         } finally {
             lock.unlock();
@@ -53,11 +51,17 @@ public class DiskFireSet implements FireSet {
     public byte[] get(int index) {
         lock.lock();
         try {
-            String hash = this.index.get(index);
-            return map.get(hash);
+            int i=0;
+            for(Map.Entry<String, byte[]> e: map.entrySet()){
+                if(i == index){
+                     return e.getValue();
+                }
+                i++;
+            }
         } finally {
             lock.unlock();
         }
+        return null;
     }
 
     @Override
@@ -65,9 +69,15 @@ public class DiskFireSet implements FireSet {
         List<byte[]> list = new ArrayList<byte[]>();
         lock.lock();
         try {
-            for (int i = fromIndex; i < fromIndex + size; i++) {
-                byte[] bytes = get(i);
-                list.add(bytes);
+            int i=0;
+            for(Map.Entry<String, byte[]> e: map.entrySet()){
+                if(i >= fromIndex){
+                   list.add(e.getValue());
+                    if(list.size() == size){
+                        break;
+                    }
+                }
+                i++;
             }
         } finally {
             lock.unlock();
@@ -92,7 +102,7 @@ public class DiskFireSet implements FireSet {
             byte[] bytes = get(index);
             if (bytes != null) {
                 remove(bytes);
-                engine.cacheOrFlush();
+                engine.flush();
             }
             return bytes;
         } finally {
@@ -105,7 +115,6 @@ public class DiskFireSet implements FireSet {
         lock.lock();
         try {
             map.clear();
-            index.clear();
             engine.flush();
         } finally {
             lock.unlock();
@@ -118,8 +127,7 @@ public class DiskFireSet implements FireSet {
         try {
             String hash = hash(value);
             if(map.remove(hash)!=null){
-                index.remove(hash);
-                engine.cacheOrFlush();
+                engine.flush();
             }
             return value;
         } finally {

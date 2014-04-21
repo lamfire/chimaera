@@ -1,6 +1,7 @@
 package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.FireQueue;
+import com.lamfire.thalia.ThaliaDatabase;
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,11 +11,11 @@ import java.util.concurrent.locks.ReentrantLock;
 public class DiskFireQueue implements FireQueue {
 
     private final List<byte[]> list;
-    private StoreEngine engine;
+    private ThaliaDatabase engine;
     private String name;
     private final Lock lock = new ReentrantLock();
 
-    public DiskFireQueue(StoreEngine engine, String name) {
+    public DiskFireQueue(ThaliaDatabase engine, String name) {
         this.engine = engine;
         this.name = name;
         this.list = engine.getLinkedList(name, new BytesSerializer());
@@ -27,7 +28,7 @@ public class DiskFireQueue implements FireQueue {
             list.add(value);
         } finally {
             lock.unlock();
-            engine.cacheOrFlush();
+            engine.flush();
         }
     }
 
@@ -45,7 +46,7 @@ public class DiskFireQueue implements FireQueue {
             return list.remove(0);
         } finally {
             lock.unlock();
-            engine.cacheOrFlush();
+            engine.flush();
         }
     }
 
