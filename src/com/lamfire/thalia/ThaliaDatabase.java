@@ -39,6 +39,22 @@ public class ThaliaDatabase {
 		this.db = builder.build();
 	}
 
+    public synchronized<K extends Comparable<K>, V> Map<K, V> getTreeMap(String name) {
+        Map<K, V> map = this.db.getTreeMap(name);
+        if (map == null) {
+            map = this.db.createTreeMap(name);
+        }
+        return map;
+    }
+
+    public synchronized <K, V> Map<K, V> getTreeMap(String name,Comparator<K> comparator ,Serializer<K> keySerializer, Serializer<V> valSerializer) {
+        Map<K, V> map = this.db.getTreeMap(name);
+        if (map == null) {
+            map = this.db.createTreeMap(name,comparator, keySerializer, valSerializer);
+        }
+        return map;
+    }
+
 	public synchronized <K, V> Map<K, V> getHashMap(String name) {
 		Map<K, V> map = this.db.getHashMap(name);
 		if (map == null) {
@@ -71,6 +87,14 @@ public class ThaliaDatabase {
 		}
 		return list;
 	}
+
+    public synchronized <E> List<E> getLinkedList(String name) {
+        List<E> list = this.db.getLinkedList(name);
+        if (list == null) {
+            list = this.db.createLinkedList(name);
+        }
+        return list;
+    }
 
 	public synchronized <E> Set<E> getHashSet(String name, Serializer<E> serializer) {
 		Set<E> set = this.db.getHashSet(name);

@@ -137,8 +137,7 @@ public interface Thalia {
      * @param valueSerializer Serializer used for values. This may reduce disk space usage
      * @return
      */
-    <K, V> ConcurrentNavigableMap<K, V> createTreeMap(String name,
-                                                      Comparator<K> keyComparator, Serializer<K> keySerializer, Serializer<V> valueSerializer);
+    <K, V> ConcurrentNavigableMap<K, V> createTreeMap(String name, Comparator<K> keyComparator, Serializer<K> keySerializer, Serializer<V> valueSerializer);
 
     <K> NavigableSet<K> getTreeSet(String name);
 
