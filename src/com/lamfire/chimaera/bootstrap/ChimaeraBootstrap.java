@@ -4,9 +4,11 @@ import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.chimaera.ChimaeraServer;
 import com.lamfire.chimaera.config.ChimaeraXmlParser;
 import com.lamfire.chimaera.config.ServerConfigure;
+import com.lamfire.chimaera.http.HttpServerBootstrap;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.FileUtils;
 
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
 
@@ -70,8 +72,12 @@ public class ChimaeraBootstrap {
         server.startupTunnels();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         ChimaeraBootstrap bootstrap = new ChimaeraBootstrap();
         bootstrap.startup();
+
+        HttpServerBootstrap httpBootstrap = new HttpServerBootstrap();
+        httpBootstrap.startup();
+
     }
 }

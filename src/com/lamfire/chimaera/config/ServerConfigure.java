@@ -15,6 +15,7 @@ import java.util.List;
 public class ServerConfigure extends ChimaeraOpts {
     private String bind = "0.0.0.0";
     private int port = 19800;
+    private int httpPort = 19900;
     private int threads = 16;
     private boolean renew = false;
     private List<TunnelSetting> TunnelSettings;
@@ -57,5 +58,13 @@ public class ServerConfigure extends ChimaeraOpts {
 
     public void setTunnelSettings(List<TunnelSetting> tunnelSettings) {
         TunnelSettings = tunnelSettings;
+    }
+
+    public int getHttpPort() {
+        return httpPort;
+    }
+
+    public void setHttpPort(int httpPort) {
+        this.httpPort = httpPort;
     }
 }

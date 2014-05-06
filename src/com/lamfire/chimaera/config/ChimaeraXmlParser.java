@@ -50,12 +50,14 @@ public class ChimaeraXmlParser {
         XMLParser parser = XMLParser.load(XML_RESOURCE,ChimaeraXmlParser.class);
         String bind = parser.getNodeAttribute("/chimaera/server","bind");
         int port = Integer.parseInt(parser.getNodeAttribute("/chimaera/server","port"));
+        int httpPort = Integer.parseInt(parser.getNodeAttribute("/chimaera/server","httpPort"));
         int threads = Integer.parseInt(parser.getNodeValue("/chimaera/server/threads"));
 
         String type = parser.getNodeAttribute("/chimaera/server/store", "type");
 
         serverConfigure.setBind(bind);
         serverConfigure.setPort(port);
+        serverConfigure.setHttpPort(httpPort);
         serverConfigure.setThreads(threads);
         serverConfigure.setStoreOnDisk(false);
         if(!StringUtils.equalsIgnoreCase("memory",type)){
