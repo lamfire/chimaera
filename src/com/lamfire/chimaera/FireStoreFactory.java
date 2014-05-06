@@ -16,7 +16,7 @@ import java.io.IOException;
  * Time: 上午10:18
  * To change this template use File | Settings | File Templates.
  */
-class FireStoreFactory {
+public class FireStoreFactory {
     private static final Logger LOGGER = Logger.getLogger(FireStoreFactory.class);
 
     public synchronized static FireStore makeFireStore(String name,ChimaeraOpts opts)throws IOException{

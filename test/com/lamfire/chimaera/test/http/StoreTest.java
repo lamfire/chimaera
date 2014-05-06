@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class StoreTest {
 
-    public static void main(String[] args) throws IOException {
+    public static void push() throws IOException {
         QueuePushCommand cmd = new QueuePushCommand();
         cmd.setStore("TEST_HTTP");
         cmd.setKey("QUEUE");
@@ -34,5 +34,29 @@ public class StoreTest {
 
         String str = http.readAsString();
         System.out.println("RESPONSE:" +str);
+
+
+    }
+
+    public static void pop() throws IOException {
+        JSON js = new JSON();
+        js.put("command","QUEUE_POP");
+        js.put("store","TEST_HTTP");
+        js.put("key","QUEUE");
+
+        String json = js.toJSONString();
+        System.out.println("REQUEST:" + json);
+
+        HttpClient http = new HttpClient();
+        http.setMethod("POST");
+        http.open("http://127.0.0.1:19900/api");
+        http.post(json.getBytes());
+
+        String str = http.readAsString();
+        System.out.println("RESPONSE:" +str);
+    }
+
+    public static void main(String[] args) throws IOException {
+        pop();
     }
 }
