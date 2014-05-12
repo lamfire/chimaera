@@ -15,7 +15,7 @@ import com.lamfire.utils.RandomUtils;
 public class MutilQueueWriteTest {
     public static void main(String[] args) {
         long startAt = System.currentTimeMillis();
-        for(int i=0;i<1000000;i++){
+        for(int i=0;i<10000;i++){
             FireQueue queue = Config.getFireStore(args).getFireQueue("TEST_QUEUE_"+i);
             queue.push(Bytes.toBytes(i));
             if(i % 1000 == 0){

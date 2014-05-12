@@ -30,7 +30,7 @@ public class PollerPublishTest implements OnMessageListener {
 
     public void publish(String message){
         PollerAccessor accessor = (PollerAccessor)poller;
-        accessor.publishSync("TEST", clientId, message.getBytes());
+        accessor.publish("TEST", clientId, message.getBytes());
     }
 
     @Override
@@ -41,10 +41,12 @@ public class PollerPublishTest implements OnMessageListener {
 
     public static void main(String[] args) {
         PollerPublishTest test = new PollerPublishTest();
+        long startAt = System.currentTimeMillis();
         while(true){
             test.publish("POLLER[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
             if (counter.get() % 10000 == 0) {
-                System.out.println(counter.get());
+                System.out.println(counter.get() +"  " + (System.currentTimeMillis() - startAt) +" ms");
+                startAt = System.currentTimeMillis();
             }
             if(counter.get() >= 10){
                 //return;
