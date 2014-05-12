@@ -23,7 +23,7 @@ public class DiskStore {
         if(engine != null){
             return engine;
         }
-        engine = new ThaliaDatabase(FILE,true,true,false,false,0);
+        engine = new ThaliaDatabase(FILE,false,false,false,false,0);
         return engine;
     }
 
