@@ -1,8 +1,8 @@
 package com.lamfire.chimaera.test.filestore;
 
+import com.lamfire.chimaera.store.filestore.DiskDatabase;
 import com.lamfire.chimaera.store.filestore.DiskFireRank;
 import com.lamfire.chimaera.test.tester.FireRankTester;
-import com.lamfire.thalia.ThaliaDatabase;
 
 import java.io.IOException;
 
@@ -17,10 +17,10 @@ public class DiskFireRankTest  extends DiskStore{
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args) throws IOException {
-        ThaliaDatabase store = getThaliaDatabase(FILE);
+        DiskDatabase store = getDatabase(FILE);
         FireRankTester test = new FireRankTester(new DiskFireRank(store,"TEST_RANK"));
         test.size();
-        //test.test();
+        test.test();
         test.incr();
         test.max(5);
         test.putsRandom(20);

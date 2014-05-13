@@ -1,12 +1,10 @@
 package com.lamfire.chimaera.test.filestore.benchmark;
 
-import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.chimaera.store.FireQueue;
-import com.lamfire.chimaera.store.filestore.DiskFireMap;
+import com.lamfire.chimaera.store.filestore.DiskDatabase;
 import com.lamfire.chimaera.store.filestore.DiskFireQueue;
 import com.lamfire.chimaera.test.filestore.DiskStore;
 import com.lamfire.logger.Logger;
-import com.lamfire.thalia.ThaliaDatabase;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.Threads;
 
@@ -28,7 +26,7 @@ public class DiskFireQueueBenchmark extends DiskStore{
 
 
     public DiskFireQueueBenchmark() throws IOException {
-        ThaliaDatabase store = getThaliaDatabase();
+        DiskDatabase store = getDatabase();
         this.queue  = new DiskFireQueue(store,"TEST_QUEUE");
 
         Threads.scheduleWithFixedDelay(new Runnable() {

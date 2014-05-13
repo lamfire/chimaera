@@ -1,7 +1,8 @@
 package com.lamfire.chimaera.store.filestore;
 
 
-import com.lamfire.thalia.serializer.Serializer;
+
+import org.apache.jdbm.Serializer;
 
 import java.io.DataInput;
 import java.io.DataOutput;

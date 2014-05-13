@@ -2,7 +2,6 @@ package com.lamfire.chimaera.store.filestore;
 
 import com.lamfire.chimaera.store.FireIncrement;
 import com.lamfire.chimaera.store.Item;
-import com.lamfire.thalia.ThaliaDatabase;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -18,10 +17,10 @@ import java.util.concurrent.locks.ReentrantLock;
 public class DiskFireIncrement implements FireIncrement {
     private final Lock lock = new ReentrantLock();
     private Map<String, Item> map;
-    private ThaliaDatabase engine;
+    private DiskDatabase engine;
     private String name;
 
-    public DiskFireIncrement(ThaliaDatabase engine, String name) {
+    public DiskFireIncrement(DiskDatabase engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name + "_MAP", new ItemSerializer());

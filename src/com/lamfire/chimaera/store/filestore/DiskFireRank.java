@@ -3,7 +3,6 @@ package com.lamfire.chimaera.store.filestore;
 import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.Item;
 import com.lamfire.chimaera.store.ItemComparator;
-import com.lamfire.thalia.ThaliaDatabase;
 
 import java.util.*;
 import java.util.concurrent.locks.Lock;
@@ -21,10 +20,10 @@ public class DiskFireRank implements FireRank {
     private NavigableSet<Item> tree;
     private NavigableSet<Item> descending;
     private Map<String, Item> map;
-    private ThaliaDatabase engine;
+    private DiskDatabase engine;
     private String name;
 
-    public DiskFireRank(ThaliaDatabase engine, String name) {
+    public DiskFireRank(DiskDatabase engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name + "_MAP", new ItemSerializer());

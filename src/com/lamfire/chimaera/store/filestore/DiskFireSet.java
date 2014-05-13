@@ -3,7 +3,6 @@ package com.lamfire.chimaera.store.filestore;
 import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.code.MD5;
 import com.lamfire.code.MurmurHash;
-import com.lamfire.thalia.ThaliaDatabase;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,10 +15,10 @@ public class DiskFireSet implements FireSet {
     private final Map<String, byte[]> map;
 
     private final Lock lock = new ReentrantLock();
-    private ThaliaDatabase engine;
+    private DiskDatabase engine;
     private String name;
 
-    public DiskFireSet(ThaliaDatabase engine, String name) {
+    public DiskFireSet(DiskDatabase engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name);

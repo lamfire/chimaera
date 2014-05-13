@@ -1,9 +1,9 @@
 package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireIncrement;
+import com.lamfire.chimaera.store.filestore.DiskDatabase;
 import com.lamfire.chimaera.store.filestore.DiskFireIncrement;
 import com.lamfire.chimaera.test.tester.FireIncrementTester;
-import com.lamfire.thalia.ThaliaDatabase;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +16,7 @@ public class DiskFireIncrementTest extends DiskStore{
     private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args)throws Exception {
-        ThaliaDatabase store = getThaliaDatabase(FILE);
+        DiskDatabase store = getDatabase(FILE);
         FireIncrement inc  = new DiskFireIncrement(store,"TEST_INCR");
         FireIncrementTester test = new FireIncrementTester(inc);
         test.test();

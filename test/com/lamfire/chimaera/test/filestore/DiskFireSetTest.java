@@ -1,8 +1,8 @@
 package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireSet;
+import com.lamfire.chimaera.store.filestore.DiskDatabase;
 import com.lamfire.chimaera.store.filestore.DiskFireSet;
-import com.lamfire.thalia.ThaliaDatabase;
 import com.lamfire.utils.Bytes;
 
 /**
@@ -13,10 +13,10 @@ import com.lamfire.utils.Bytes;
  * To change this template use File | Settings | File Templates.
  */
 public class DiskFireSetTest  extends DiskStore{
-    private static final String FILE = "/data/jdbm/groupuser";
+    private static final String FILE = "/data/chimaera/groupuser";
 
     public static void main(String[] args)throws Exception {
-        ThaliaDatabase store = getThaliaDatabase(FILE);
+        DiskDatabase store = getDatabase(FILE);
         FireSet set  = new DiskFireSet(store,"5354d4d87fbeffb3213fed64");
         System.out.println(set.size());
 //        for(int i=0;i< 10;i++){

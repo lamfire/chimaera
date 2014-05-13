@@ -33,7 +33,7 @@ public class FireRankTester {
     void puts(){
         long startAt = System.currentTimeMillis();
         int index = 0;
-        while(true){
+        for(int i=0;i<100000;i++){
             index =  count.getAndIncrement();
             this.rank.put(String.valueOf(index));
             if(index % 1000 == 0){
@@ -130,6 +130,9 @@ public class FireRankTester {
                 }
                 System.out.println("rank.put():"+i+ "pcs,time_millis:"+ timeUsed +" ms,max_time_used:" + max_used_time);
                 startAt = System.currentTimeMillis();
+            }
+            if(i >= maxItems){
+                return;
             }
         }
     }

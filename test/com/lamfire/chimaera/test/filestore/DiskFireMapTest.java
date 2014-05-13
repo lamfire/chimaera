@@ -1,9 +1,9 @@
 package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireMap;
+import com.lamfire.chimaera.store.filestore.DiskDatabase;
 import com.lamfire.chimaera.store.filestore.DiskFireMap;
 import com.lamfire.chimaera.test.tester.FireMapTester;
-import com.lamfire.thalia.ThaliaDatabase;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +14,7 @@ import com.lamfire.thalia.ThaliaDatabase;
  */
 public class DiskFireMapTest  extends DiskStore{
     public static void main(String[] args)throws Exception {
-        ThaliaDatabase store = getThaliaDatabase();
+        DiskDatabase store = getDatabase();
         FireMap map  = new DiskFireMap(store,"TEST_MAP");
         FireMapTester test = new FireMapTester(map);
         test.test();
