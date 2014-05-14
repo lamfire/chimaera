@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.dbmstore;
 
 import com.lamfire.chimaera.store.FireQueue;
 
@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class DiskFireQueue implements FireQueue {
+public class DBMFireQueue implements FireQueue {
 
     private final List<byte[]> list;
-    private DiskDatabase engine;
+    private JDBMEngine engine;
     private String name;
     private final Lock lock = new ReentrantLock();
 
-    public DiskFireQueue(DiskDatabase engine, String name) {
+    public DBMFireQueue(JDBMEngine engine, String name) {
         this.engine = engine;
         this.name = name;
         this.list = engine.getLinkedList(name, new BytesSerializer());

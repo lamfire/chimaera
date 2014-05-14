@@ -1,7 +1,5 @@
 package com.lamfire.chimaera.test.filestore;
 
-import com.lamfire.chimaera.store.filestore.DiskDatabase;
-import com.lamfire.chimaera.store.filestore.DiskFireRank;
 import com.lamfire.chimaera.test.tester.FireRankTester;
 
 import java.io.IOException;
@@ -14,11 +12,9 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class DiskFireRankTest  extends DiskStore{
-    private static final String FILE = "/data/chimaera/store";
 
     public static void main(String[] args) throws IOException {
-        DiskDatabase store = getDatabase(FILE);
-        FireRankTester test = new FireRankTester(new DiskFireRank(store,"TEST_RANK"));
+        FireRankTester test = new FireRankTester(getFireStore().getFireRank("TEST_RANK"));
         test.size();
         test.test();
         test.incr();

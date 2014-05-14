@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.dbmstore;
 
 import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.code.MD5;
@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class DiskFireSet implements FireSet {
+public class DBMFireSet implements FireSet {
     private final Map<String, byte[]> map;
 
     private final Lock lock = new ReentrantLock();
-    private DiskDatabase engine;
+    private JDBMEngine engine;
     private String name;
 
-    public DiskFireSet(DiskDatabase engine, String name) {
+    public DBMFireSet(JDBMEngine engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name);

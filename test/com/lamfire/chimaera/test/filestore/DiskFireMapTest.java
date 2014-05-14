@@ -1,8 +1,6 @@
 package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.filestore.DiskDatabase;
-import com.lamfire.chimaera.store.filestore.DiskFireMap;
 import com.lamfire.chimaera.test.tester.FireMapTester;
 
 /**
@@ -14,8 +12,7 @@ import com.lamfire.chimaera.test.tester.FireMapTester;
  */
 public class DiskFireMapTest  extends DiskStore{
     public static void main(String[] args)throws Exception {
-        DiskDatabase store = getDatabase();
-        FireMap map  = new DiskFireMap(store,"TEST_MAP");
+        FireMap map  = getFireStore().getFireMap("TEST_MAP");
         FireMapTester test = new FireMapTester(map);
         test.test();
     }

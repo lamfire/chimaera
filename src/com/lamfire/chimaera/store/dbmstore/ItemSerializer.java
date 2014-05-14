@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.dbmstore;
 
 import com.lamfire.chimaera.store.Item;
 import org.apache.jdbm.Serializer;
@@ -15,7 +15,7 @@ import java.io.Serializable;
  * Time: 下午2:48
  * To change this template use File | Settings | File Templates.
  */
-public class ItemSerializer implements Serializer<Item>, Serializable {
+class ItemSerializer implements Serializer<Item>, Serializable {
 
     @Override
     public void serialize(DataOutput dataOutput, Item item) throws IOException {

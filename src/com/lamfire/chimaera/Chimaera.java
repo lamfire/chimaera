@@ -47,7 +47,7 @@ public class Chimaera {
                 if(Chimaera.opts != null){
                 store = FireStoreFactory.makeFireStore(storeName,Chimaera.opts);
                 }else{
-                    store = FireStoreFactory.makeMemoryFireStore(storeName);
+                    store = FireStoreFactory.makeFireStoreWithMemory(storeName);
                 }
                 stores.put(storeName, store);
             }catch (IOException e){

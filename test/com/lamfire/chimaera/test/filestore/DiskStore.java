@@ -1,7 +1,8 @@
 package com.lamfire.chimaera.test.filestore;
 
-import com.lamfire.chimaera.store.filestore.DiskDatabase;
-import com.lamfire.chimaera.store.filestore.DiskFireStore;
+import com.lamfire.chimaera.ChimaeraOpts;
+import com.lamfire.chimaera.FireStoreFactory;
+import com.lamfire.chimaera.store.FireStore;
 
 import java.io.IOException;
 
@@ -13,32 +14,21 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class DiskStore {
-    private static final String FILE = "/data/chimaera/store";
+    private static final String JDBM_DIR = "/data/chimaera";
+    private static final String MAPDB_DIR = "/data/chimaera/MAPDB";
     private static final String NAME = "TESTSTORE1";
 
-    private static DiskDatabase engine;
-    private static DiskFireStore store;
-    public synchronized static DiskDatabase getDatabase()throws IOException{
-        if(engine != null){
-            return engine;
-        }
-        engine = new DiskDatabase(FILE,false,false,false,false,0);
-        return engine;
-    }
+    private static FireStore store;
 
-    public synchronized static DiskDatabase getDatabase(String file)throws IOException{
-        if(engine != null){
-            return engine;
-        }
-        engine = new DiskDatabase(file,false,false,false,false,0);
-        return engine;
-    }
 
-    public synchronized static DiskFireStore getDiskFireStore()throws IOException{
+    public synchronized static FireStore getFireStore()throws IOException{
         if(store != null){
             return store;
         }
-        store = new DiskFireStore(getDatabase(),NAME);
+        ChimaeraOpts opts = new ChimaeraOpts();
+        opts.setStoreOnDisk(true);
+        opts.setStoreDir(MAPDB_DIR);
+        store = FireStoreFactory.makeFireStore(NAME,opts);
         return store;
     }
 }

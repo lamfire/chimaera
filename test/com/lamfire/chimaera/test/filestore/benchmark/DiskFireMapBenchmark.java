@@ -1,8 +1,6 @@
 package com.lamfire.chimaera.test.filestore.benchmark;
 
 import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.filestore.DiskDatabase;
-import com.lamfire.chimaera.store.filestore.DiskFireMap;
 import com.lamfire.chimaera.test.filestore.DiskStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Lists;
@@ -11,6 +9,7 @@ import com.lamfire.utils.Threads;
 import java.io.IOException;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DiskFireMapBenchmark extends DiskStore{
@@ -23,8 +22,16 @@ public class DiskFireMapBenchmark extends DiskStore{
     static long timeMillisAvg = 0;
     private FireMap map ;
     public DiskFireMapBenchmark() throws IOException {
-        DiskDatabase store = getDatabase();
-        this.map  = new DiskFireMap(store,"TEST_MAP");
+        this.map  = getFireStore().getFireMap("TEST_MAP_BENCHMARK");
+        Threads.scheduleWithFixedDelay(new Runnable() {
+            int pre = 0;
+            @Override
+            public void run() {
+                int val = atomic.get();
+                System.out.println("[COUNTER/S] : " +  (val - pre) +"/s ");
+                pre = val;
+            }
+        },1,1, TimeUnit.SECONDS);
     }
 
     private void put(String v){
@@ -70,7 +77,7 @@ public class DiskFireMapBenchmark extends DiskStore{
 				if(++count % 1000 == 0){
 					long timeUsed = System.currentTimeMillis() - startAt;
                     times.add(timeUsed);
-					System.out.println("Thread-"+Thread.currentThread().getId()+" Write "+i + " item time millis:" + timeUsed +" ms,error:" + errorAtomic.get() +" max_time_used:" + times.last());
+					//System.out.println("Thread-"+Thread.currentThread().getId()+" Write "+i + " item time millis:" + timeUsed +" ms,error:" + errorAtomic.get() +" max_time_used:" + times.last());
 					startAt = System.currentTimeMillis();
 				}
 			}
@@ -91,7 +98,7 @@ public class DiskFireMapBenchmark extends DiskStore{
                 if(count++ % 1000 == 0){
                     long timeUsed = System.currentTimeMillis() - startAt;
                     times.add(timeUsed);
-                    System.out.println("Thread-"+Thread.currentThread().getId()+" Read "+i + " item time millis:" + timeUsed + " ms,error:" + errorAtomic.get() + ",avg_time:" + timeMillisAvg +" max_time:" + times.last());
+                    //System.out.println("Thread-"+Thread.currentThread().getId()+" Read "+i + " item time millis:" + timeUsed + " ms,error:" + errorAtomic.get() + ",avg_time:" + timeMillisAvg +" max_time:" + times.last());
                     startAt = System.currentTimeMillis();
                 }
             }

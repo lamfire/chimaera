@@ -1,9 +1,9 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.dbmstore;
 
 import com.lamfire.chimaera.store.FireIncrement;
 import com.lamfire.chimaera.store.Item;
 
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,13 +14,13 @@ import java.util.concurrent.locks.ReentrantLock;
  * Time: 上午11:53
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireIncrement implements FireIncrement {
+public class DBMFireIncrement implements FireIncrement {
     private final Lock lock = new ReentrantLock();
     private Map<String, Item> map;
-    private DiskDatabase engine;
+    private JDBMEngine engine;
     private String name;
 
-    public DiskFireIncrement(DiskDatabase engine, String name) {
+    public DBMFireIncrement(JDBMEngine engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name + "_MAP", new ItemSerializer());

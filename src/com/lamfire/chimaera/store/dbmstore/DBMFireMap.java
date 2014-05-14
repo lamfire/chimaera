@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.dbmstore;
 
 import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.utils.Lists;
@@ -13,13 +13,13 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 持久化的FireMap类，该对象中的数据将会被持久化到文件中。
  */
-public class DiskFireMap implements FireMap {
-    private DiskDatabase engine;
+public class DBMFireMap implements FireMap {
+    private JDBMEngine engine;
     private String name;
     private Map<String, byte[]> map;
     private final Lock lock = new ReentrantLock();
 
-    public DiskFireMap(DiskDatabase engine, String name) {
+    public DBMFireMap(JDBMEngine engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(this.name);

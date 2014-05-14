@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.dbmstore;
 
 import com.lamfire.chimaera.store.*;
 import com.lamfire.utils.Maps;
@@ -12,14 +12,14 @@ import java.util.Map;
  * Time: 下午4:47
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireStore implements FireStore {
+public class DBMFireStore implements FireStore {
     //key collection caches
     private final Map<String, FireCollection> keyCaches = Maps.newHashMap();
 
     private String storeName;
-    private DiskDatabase engine;
+    private JDBMEngine engine;
 
-    public DiskFireStore(DiskDatabase engine,String storeName) {
+    public DBMFireStore(JDBMEngine engine, String storeName) {
         this.storeName = storeName;
         this.engine = engine;
     }
@@ -73,7 +73,7 @@ public class DiskFireStore implements FireStore {
     public synchronized FireIncrement getFireIncrement(String key) {
         FireIncrement result = (FireIncrement)keyCaches.get(key);
         if (result == null) {
-            result = new DiskFireIncrement(this.engine, key);
+            result = new DBMFireIncrement(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;
@@ -81,9 +81,9 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public synchronized FireList getFireList(String key) {
-        DiskFireList result = (DiskFireList)keyCaches.get(key);
+        DBMFireList result = (DBMFireList)keyCaches.get(key);
         if (result == null) {
-            result = new DiskFireList(this.engine, key);
+            result = new DBMFireList(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;
@@ -91,9 +91,9 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public synchronized FireMap getFireMap(String key) {
-        DiskFireMap result = (DiskFireMap)keyCaches.get(key);
+        DBMFireMap result = (DBMFireMap)keyCaches.get(key);
         if (result == null) {
-            result = new DiskFireMap(this.engine, key);
+            result = new DBMFireMap(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;
@@ -101,9 +101,9 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public synchronized FireQueue getFireQueue(String key) {
-        DiskFireQueue result = (DiskFireQueue)keyCaches.get(key);
+        DBMFireQueue result = (DBMFireQueue)keyCaches.get(key);
         if (result == null) {
-            result = new DiskFireQueue(this.engine, key);
+            result = new DBMFireQueue(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;
@@ -111,9 +111,9 @@ public class DiskFireStore implements FireStore {
 
     @Override
     public synchronized FireSet getFireSet(String key) {
-        DiskFireSet result = (DiskFireSet)keyCaches.get(key);
+        DBMFireSet result = (DBMFireSet)keyCaches.get(key);
         if (result == null) {
-            result = new DiskFireSet(this.engine, key);
+            result = new DBMFireSet(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;
@@ -123,7 +123,7 @@ public class DiskFireStore implements FireStore {
     public synchronized FireRank getFireRank(String key) {
         FireRank result = (FireRank)keyCaches.get(key);
         if (result == null) {
-            result = new DiskFireRank(this.engine, key);
+            result = new DBMFireRank(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;

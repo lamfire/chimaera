@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.dbmstore;
 
 import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.Item;
@@ -15,15 +15,15 @@ import java.util.concurrent.locks.ReentrantLock;
  * Time: 上午11:53
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireRank implements FireRank {
+public class DBMFireRank implements FireRank {
     private final Lock lock = new ReentrantLock();
     private NavigableSet<Item> tree;
     private NavigableSet<Item> descending;
     private Map<String, Item> map;
-    private DiskDatabase engine;
+    private JDBMEngine engine;
     private String name;
 
-    public DiskFireRank(DiskDatabase engine, String name) {
+    public DBMFireRank(JDBMEngine engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getHashMap(name + "_MAP", new ItemSerializer());

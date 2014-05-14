@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.dbmstore;
 
 
 import org.apache.jdbm.DB;
@@ -9,13 +9,13 @@ import org.apache.jdbm.Serializer;
 import java.io.IOException;
 import java.util.*;
 
-public class DiskDatabase {
+public class JDBMEngine {
 	private String file; // 文件路径
 	private DB db;
 	private int cacheSize = -1;
 
-	public DiskDatabase(String file, boolean enableLocking, boolean enableTransactions, boolean deleteFilesAfterClose,
-                        boolean enableCache, int cacheSize) throws IOException {
+	public JDBMEngine(String file, boolean enableLocking, boolean enableTransactions, boolean deleteFilesAfterClose,
+                      boolean enableCache, int cacheSize) throws IOException {
 		this.file = file;
 		this.cacheSize = cacheSize;
 

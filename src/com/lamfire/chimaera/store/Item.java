@@ -1,5 +1,6 @@
 package com.lamfire.chimaera.store;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -9,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Time: 上午11:23
  * To change this template use File | Settings | File Templates.
  */
-public class Item {
+public class Item implements Serializable {
     private String name;
     private AtomicLong count = new AtomicLong();
 

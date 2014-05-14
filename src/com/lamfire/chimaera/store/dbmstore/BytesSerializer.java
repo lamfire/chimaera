@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.store.filestore;
+package com.lamfire.chimaera.store.dbmstore;
 
 
 
@@ -16,7 +16,7 @@ import java.io.Serializable;
  * Time: 下午2:48
  * To change this template use File | Settings | File Templates.
  */
-public class BytesSerializer implements Serializer<byte[]>, Serializable {
+class BytesSerializer implements Serializer<byte[]>, Serializable {
 
     @Override
     public void serialize(DataOutput dataOutput, byte[] bytes) throws IOException {

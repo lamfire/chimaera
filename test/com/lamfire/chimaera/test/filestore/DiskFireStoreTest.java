@@ -13,7 +13,7 @@ import com.lamfire.chimaera.test.tester.FireStoreTester;
 public class DiskFireStoreTest  extends DiskStore{
 
     public static void main(String[] args)throws Exception {
-        FireStore store  =getDiskFireStore();
+        FireStore store  =getFireStore();
         FireStoreTester test = new FireStoreTester(store);
         test.test();
     }

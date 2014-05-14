@@ -265,10 +265,10 @@ public class PersistenceLinkedList<E> extends AbstractSequentialList<E> {
 
 			Entry<E> e = fetch(next);
 
-			prev = next;
-			next = e.next;
-			index++;
-			lastOper = +1;
+            prev = next;
+            index++;
+            lastOper = +1;
+            next = e.next;
 			return e.value;
 		}
 
