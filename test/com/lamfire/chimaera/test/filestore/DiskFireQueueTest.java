@@ -14,6 +14,7 @@ public class DiskFireQueueTest  extends DiskStore{
     public static void main(String[] args)throws Exception {
         FireQueue queue  = getFireStore().getFireQueue("TEST_SET");
         FireQueueTester test = new FireQueueTester(queue);
+        for(int i=0;i<100;i++)
         test.test();
     }
 }

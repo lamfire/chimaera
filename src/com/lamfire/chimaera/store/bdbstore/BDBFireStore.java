@@ -84,7 +84,7 @@ public class BDBFireStore implements FireStore {
     public synchronized FireList getFireList(String key) {
         FireList result = (FireList)keyCaches.get(key);
         if (result == null) {
-            result = new BDBFireList(this.engine.takeDatabase(key), key);
+            result = new BDBFireList(this.engine,key);
             keyCaches.put(key, result);
         }
         return result;
@@ -104,7 +104,7 @@ public class BDBFireStore implements FireStore {
     public synchronized FireQueue getFireQueue(String key) {
         FireQueue result = (FireQueue)keyCaches.get(key);
         if (result == null) {
-            result = new BDBFireQueue(this.engine.takeDatabase(key), key);
+            result = new BDBFireQueue(this.engine,key);
             keyCaches.put(key, result);
         }
         return result;

@@ -1,9 +1,12 @@
 package com.lamfire.chimaera.store.bdbstore;
 
+import java.io.IOError;
 import java.io.Serializable;
 import java.util.AbstractQueue;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.lamfire.chimaera.store.FireQueue;
 import com.sleepycat.bind.EntryBinding;
@@ -17,26 +20,35 @@ import com.sleepycat.je.*;
 public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,FireQueue {
 
 	private static final long serialVersionUID = 3427799316155220967L;
+    private static final String HEAD_SEQUENCE_NAME_SUFFIX = "_HEAD_SEQUENCE";
+    private static final String TAIL_SEQUENCE_NAME_SUFFIX = "_TAIL_SEQUENCE";
 	private transient Database db; // 数据库,用于保存值,使得支持队列持久化,无需序列化
 	private transient StoredMap<Long, byte[]> queueMap; // 持久化Map,Key为指针位置,Value为值,无需序列化
-	private AtomicLong headIndex; // 头部指针
-	private AtomicLong tailIndex; // 尾部指针
 	private transient byte[] peekItem = null; // 当前获取的值
+
+    private final Lock lock = new ReentrantLock();
 
     private StoredClassCatalog classCatalog;
     private Database classCatalogDB;
     private String name;
+
+    private Sequence headSequence;
+    private Sequence tailSequence;
+
+    public BDBFireQueue(BDBEngine engine,String name) {
+        this(engine.takeDatabase(name),name,engine.getSequence(name+HEAD_SEQUENCE_NAME_SUFFIX),engine.getSequence(name+TAIL_SEQUENCE_NAME_SUFFIX));
+    }
 
 	/**
 	 * 构造函数,传入BDB数据库
 	 * 
 	 * @param db
 	 */
-	public BDBFireQueue(Database db,String name) {
+	public BDBFireQueue(Database db,String name,Sequence headSequence,Sequence tailSequence) {
 		this.db = db;
         this.name = name;
-		headIndex = new AtomicLong(0);
-		tailIndex = new AtomicLong(0);
+		this.headSequence  = headSequence;
+		this.tailSequence = tailSequence;
 		bindDatabase(db, byte[].class, getClassCatalog());
 	}
 
@@ -74,11 +86,12 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	 */
 	@Override
 	public int size() {
-		synchronized (tailIndex) {
-			synchronized (headIndex) {
-				return (int) (tailIndex.get() - headIndex.get());
-			}
-		}
+		try{
+            lock.lock();
+			return (int) (tailSequence.get() - headSequence.get());
+		}finally {
+            lock.unlock();
+        }
 	}
 
 	/**
@@ -86,9 +99,12 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	 */
 	@Override
 	public boolean offer(byte[] e) {
-		synchronized (tailIndex) {
-			queueMap.put(tailIndex.getAndIncrement(), e); // 从尾部插入
-		}
+        try{
+            lock.lock();
+			queueMap.put(tailSequence.inrc(1), e); // 从尾部插入
+        }finally {
+            lock.unlock();
+        }
 		return true;
 	}
 
@@ -107,21 +123,24 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	 */
 	@Override
 	public byte[] peek() {
-		synchronized (headIndex) {
+        try{
+            lock.lock();
 			if (peekItem != null) {
 				return peekItem;
 			}
 			byte[] headItem = null;
-			while (headItem == null && headIndex.get() < tailIndex.get()) { // 没有超出范围
-				headItem = queueMap.get(headIndex.get());
+			while (headItem == null && headSequence.get() < tailSequence.get()) { // 没有超出范围
+				headItem = queueMap.get(headSequence.get());
 				if (headItem != null) {
 					peekItem = headItem;
 					continue;
 				}
-				headIndex.incrementAndGet(); // 头部指针后移
+                headSequence.inrc(1);
 			}
 			return headItem;
-		}
+		}finally {
+            lock.unlock();
+        }
 	}
 
 	/**
@@ -129,14 +148,17 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	 */
 	@Override
 	public byte[] poll() {
-		synchronized (headIndex) {
+        try{
+            lock.lock();
             byte[] headItem = peek();
 			if (headItem != null) {
-				queueMap.remove(headIndex.getAndIncrement());
+				queueMap.remove(headSequence.inrc(1));
 				peekItem = null;
 				return headItem;
 			}
-		}
+        }finally {
+            lock.unlock();
+        }
 		return null;
 	}
 
@@ -145,14 +167,16 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	 */
 	public void close() {
 		try {
+            lock.lock();
 			if (db != null) {
 				db.sync();
 				db.close();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			e.printStackTrace();
-		}
+			throw new IOError(e);
+		}finally {
+            lock.unlock();
+        }
 	}
 
 	/**
@@ -160,12 +184,13 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	 */
 	@Override
 	public void clear() {
-        synchronized (tailIndex) {
-            synchronized (headIndex) {
-                headIndex.set(0);
-                tailIndex.set(0);
-                queueMap.clear();
-            }
+        try {
+            lock.lock();
+            headSequence.set(0);
+            tailSequence.set(0);
+            queueMap.clear();
+        }finally {
+            lock.unlock();
         }
 	}
 }

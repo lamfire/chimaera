@@ -75,7 +75,8 @@ public class BDBFireIncrement implements FireIncrement {
     @Override
     public long incrGet(String name, long step) {
         AtomicLong atomic = atomic(name);
-        long val = atomic.addAndGet(step);
+        long val = atomic.get();
+        atomic.addAndGet(step);
         update(name,atomic);
         return val;
     }

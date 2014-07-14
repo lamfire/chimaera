@@ -2,6 +2,7 @@ package com.lamfire.chimaera.test.filestore;
 
 import com.lamfire.chimaera.store.FireList;
 import com.lamfire.chimaera.test.tester.FireListTester;
+import com.lamfire.utils.Threads;
 
 /**
  * Created with IntelliJ IDEA.

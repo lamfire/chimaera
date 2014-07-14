@@ -11,7 +11,7 @@
         <store type="file">
             <renew>false</renew>
             <enableCache>true</enableCache>
-            <cacheSize>100</cacheSize>
+            <cacheSize>100000</cacheSize>
             <enableLocking>false</enableLocking>
             <enableTransactions>false</enableTransactions>
             <flushThresholdOps>-1</flushThresholdOps>

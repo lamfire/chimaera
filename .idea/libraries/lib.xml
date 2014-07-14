@@ -9,6 +9,8 @@
       <root url="jar://$PROJECT_DIR$/lib/lamfire-2.2.1.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://D:/devel/libs/bdb/je-1.5.3/src" />
+    </SOURCES>
   </library>
 </component>

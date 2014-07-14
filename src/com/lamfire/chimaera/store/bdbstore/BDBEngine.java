@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.lamfire.chimaera.store.FireIncrement;
 import com.lamfire.logger.Logger;
 import com.sleepycat.bind.ByteArrayBinding;
 import com.sleepycat.bind.tuple.StringBinding;
@@ -19,7 +20,7 @@ import com.sleepycat.je.*;
 public class BDBEngine {
 
 	private static final Logger logger = Logger.getLogger(BDBEngine.class);
-
+    private static final String META_SEQUENCE_TABLE_NAME = " META_SEQUENCE_TABLE";
 	private final Map<String,Database> openedDatabases = new HashMap<String, Database>();
 	private final Map<String,StoredContainer> containers = new HashMap<String, StoredContainer>();
 	
@@ -28,11 +29,13 @@ public class BDBEngine {
 	private BDBOpts config;
 	private Environment environment;
 
+    private final BDBFireIncrement metaSequenceTable;
+
 	public BDBEngine(String name, BDBOpts config) throws BDBStorageException {
 		this.name = name;
 		this.config = config;
-				
 		initEnvironment();
+        metaSequenceTable = new BDBFireIncrement(this,META_SEQUENCE_TABLE_NAME);
 	}
 
 	private void initEnvironment() throws BDBStorageException {
@@ -152,6 +155,11 @@ public class BDBEngine {
         }
     }
 
+    public Sequence getSequence(String name){
+        return new Sequence(this.metaSequenceTable,name);
+    }
+
+
     public void sync(){
         this.environment.sync();
     }
@@ -197,25 +205,18 @@ public class BDBEngine {
 		return map;
 	}
 
-    public Sequence getSequence(String name){
-        Database db = takeDatabase( name);
-        DatabaseEntry entry = new DatabaseEntry(name.getBytes());
-        SequenceConfig config = new SequenceConfig();
-        config.setAllowCreate(true);
-        return db.openSequence(null,entry,config) ;
-    }
 
 	public synchronized BDBFireQueue getQueue(String name){
 		DatabaseConfig conf = makeDatabaseConfig();
 		Database db = takeDatabase(conf, name);
-		BDBFireQueue queue = new BDBFireQueue (db,name);
+		BDBFireQueue queue = new BDBFireQueue (this,name);
 		return queue;
 	}
 	
 	public synchronized BDBFireList getList(String name){
 		DatabaseConfig conf = makeDatabaseConfig();
 		Database db = takeDatabase(conf, name);
-		BDBFireList  list = new BDBFireList (db,name);
+		BDBFireList  list = new BDBFireList (db,name,new Sequence(this.metaSequenceTable,name));
 		return list;
 	}
 	
