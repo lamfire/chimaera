@@ -1,10 +1,13 @@
 package com.lamfire.chimaera;
 
 import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.chimaera.store.dbmstore.DBMFireStore;
-import com.lamfire.chimaera.store.dbmstore.JDBMEngine;
+import com.lamfire.chimaera.store.bdbstore.BDBEngine;
+import com.lamfire.chimaera.store.bdbstore.BDBFireStore;
+import com.lamfire.chimaera.store.bdbstore.BDBOpts;
+import com.lamfire.chimaera.store.bdbstore.BDBStorageException;
 import com.lamfire.chimaera.store.memstore.MemoryFireStore;
 import com.lamfire.logger.Logger;
+import com.lamfire.utils.FileUtils;
 import com.lamfire.utils.FilenameUtils;
 
 import java.io.IOException;
@@ -22,7 +25,7 @@ public class FireStoreFactory {
     public synchronized static FireStore makeFireStore(String name,ChimaeraOpts opts)throws IOException{
         FireStore store = null;
         if (opts != null && opts.isStoreOnDisk()) {
-            store = makeFireStoreWithJDBM(name, opts);
+            store = makeFireStoreWithBDB(name, opts);
         } else {
             store = makeFireStoreWithMemory(name);
         }
@@ -33,11 +36,20 @@ public class FireStoreFactory {
         return new MemoryFireStore(name);
     }
 
-    public static FireStore makeFireStoreWithJDBM(String name,ChimaeraOpts opts) throws IOException {
-        String file = FilenameUtils.concat(opts.getStoreDir(), name);
-        JDBMEngine engine = new JDBMEngine(file,opts.isEnableLocking(),opts.isEnableTransactions(),false,opts.isEnableCache(),opts.getCacheSize()) ;
-        DBMFireStore store = new DBMFireStore(engine,name);
-        LOGGER.info("MAKE STORE[" + name + "] :" + file);
+    public static FireStore makeFireStoreWithBDB(String name,ChimaeraOpts opts) throws IOException {
+        String dir = FilenameUtils.concat(opts.getStoreDir(), name);
+        BDBOpts bdbOpts = new BDBOpts();
+        bdbOpts.setPath(dir);
+        FileUtils.makeDirs(dir);
+
+        BDBEngine engine = null;
+        try {
+            engine = new BDBEngine(name,bdbOpts);
+        } catch (BDBStorageException e) {
+            throw new IOException(e);
+        }
+        BDBFireStore store = new BDBFireStore(engine,name);
+        LOGGER.info("MAKE BDB STORE[" + name + "] :" + dir);
         return store;
     }
 }

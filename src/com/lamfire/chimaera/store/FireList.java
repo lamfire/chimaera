@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface FireList extends FireCollection {
 
-    public void add(byte[] value);
+    public boolean add(byte[] value);
 
     public void set(int index, byte[] value);
 

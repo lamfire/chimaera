@@ -14,14 +14,14 @@ public class MemoryFireList implements FireList {
     private final List<byte[]> list = new LinkedList<byte[]>();
 
     @Override
-    public void add(byte[] value) {
+    public boolean add(byte[] value) {
         try {
             lock.lock();
             list.add(value);
         } finally {
             lock.unlock();
         }
-
+        return true;
     }
 
     public Iterator<byte[]> iterator() {

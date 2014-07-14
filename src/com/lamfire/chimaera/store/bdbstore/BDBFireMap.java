@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.store.dbmstore;
+package com.lamfire.chimaera.store.bdbstore;
 
 import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.utils.Lists;
@@ -13,16 +13,16 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 持久化的FireMap类，该对象中的数据将会被持久化到文件中。
  */
-public class DBMFireMap implements FireMap {
-    private JDBMEngine engine;
+public class BDBFireMap implements FireMap {
+    private BDBEngine engine;
     private String name;
     private Map<String, byte[]> map;
     private final Lock lock = new ReentrantLock();
 
-    public DBMFireMap(JDBMEngine engine, String name) {
+    public BDBFireMap(BDBEngine engine, String name) {
         this.engine = engine;
         this.name = name;
-        this.map = engine.getHashMap(this.name);
+        this.map = engine.getMap(name);
     }
 
     @Override
@@ -32,7 +32,6 @@ public class DBMFireMap implements FireMap {
             map.put(key, value);
         } finally {
             lock.unlock();
-            engine.flush();
         }
     }
 
@@ -73,7 +72,6 @@ public class DBMFireMap implements FireMap {
             map.remove(key);
         } finally {
             lock.unlock();
-            engine.flush();
         }
     }
 
@@ -87,7 +85,6 @@ public class DBMFireMap implements FireMap {
         try {
             lock.lock();
             map.clear();
-            engine.flush();
         } finally {
             lock.unlock();
 

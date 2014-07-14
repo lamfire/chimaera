@@ -29,13 +29,14 @@ public class FireListAccessor implements FireList {
     }
 
     @Override
-    public void add(byte[] value) {
+    public boolean add(byte[] value) {
         ListAddCommand cmd = new ListAddCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
         cmd.setCommand(Command.LIST_ADD);
         cmd.setValue(value);
         transfer.sendCommand(cmd, EmptyResponse.class).waitResponse();
+        return true;
     }
 
     @Override

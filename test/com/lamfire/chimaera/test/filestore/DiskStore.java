@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public class DiskStore {
     private static final String JDBM_DIR = "/data/chimaera";
-    private static final String MAPDB_DIR = "/data/chimaera/MAPDB";
+    private static final String MAPDB_DIR = "/data/chimaera/BDB";
     private static final String NAME = "TESTSTORE1";
 
     private static FireStore store;
@@ -28,7 +28,7 @@ public class DiskStore {
         ChimaeraOpts opts = new ChimaeraOpts();
         opts.setStoreOnDisk(true);
         opts.setStoreDir(MAPDB_DIR);
-        store = FireStoreFactory.makeFireStore(NAME,opts);
+        store = FireStoreFactory.makeFireStoreWithBDB(NAME,opts);
         return store;
     }
 }

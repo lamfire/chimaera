@@ -1,6 +1,7 @@
-package com.lamfire.chimaera.store.dbmstore;
+package com.lamfire.chimaera.store.bdbstore;
 
 import com.lamfire.chimaera.store.*;
+import com.lamfire.chimaera.store.memstore.MemoryFireRank;
 import com.lamfire.utils.Maps;
 
 import java.util.Map;
@@ -12,14 +13,14 @@ import java.util.Map;
  * Time: 下午4:47
  * To change this template use File | Settings | File Templates.
  */
-public class DBMFireStore implements FireStore {
+public class BDBFireStore implements FireStore {
     //key collection caches
     private final Map<String, FireCollection> keyCaches = Maps.newHashMap();
 
     private String storeName;
-    private JDBMEngine engine;
+    private BDBEngine engine;
 
-    public DBMFireStore(JDBMEngine engine, String storeName) {
+    public BDBFireStore(BDBEngine engine, String storeName) {
         this.storeName = storeName;
         this.engine = engine;
     }
@@ -73,7 +74,7 @@ public class DBMFireStore implements FireStore {
     public synchronized FireIncrement getFireIncrement(String key) {
         FireIncrement result = (FireIncrement)keyCaches.get(key);
         if (result == null) {
-            result = new DBMFireIncrement(this.engine, key);
+            result = new BDBFireIncrement(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;
@@ -81,9 +82,9 @@ public class DBMFireStore implements FireStore {
 
     @Override
     public synchronized FireList getFireList(String key) {
-        DBMFireList result = (DBMFireList)keyCaches.get(key);
+        FireList result = (FireList)keyCaches.get(key);
         if (result == null) {
-            result = new DBMFireList(this.engine, key);
+            result = new BDBFireList(this.engine.takeDatabase(key), key);
             keyCaches.put(key, result);
         }
         return result;
@@ -91,9 +92,9 @@ public class DBMFireStore implements FireStore {
 
     @Override
     public synchronized FireMap getFireMap(String key) {
-        DBMFireMap result = (DBMFireMap)keyCaches.get(key);
+        FireMap result = (FireMap)keyCaches.get(key);
         if (result == null) {
-            result = new DBMFireMap(this.engine, key);
+            result = new BDBFireMap(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;
@@ -101,9 +102,9 @@ public class DBMFireStore implements FireStore {
 
     @Override
     public synchronized FireQueue getFireQueue(String key) {
-        DBMFireQueue result = (DBMFireQueue)keyCaches.get(key);
+        FireQueue result = (FireQueue)keyCaches.get(key);
         if (result == null) {
-            result = new DBMFireQueue(this.engine, key);
+            result = new BDBFireQueue(this.engine.takeDatabase(key), key);
             keyCaches.put(key, result);
         }
         return result;
@@ -111,9 +112,9 @@ public class DBMFireStore implements FireStore {
 
     @Override
     public synchronized FireSet getFireSet(String key) {
-        DBMFireSet result = (DBMFireSet)keyCaches.get(key);
+        FireSet result = (FireSet)keyCaches.get(key);
         if (result == null) {
-            result = new DBMFireSet(this.engine, key);
+            result = new BDBFireSet(this.engine, key);
             keyCaches.put(key, result);
         }
         return result;
@@ -123,7 +124,7 @@ public class DBMFireStore implements FireStore {
     public synchronized FireRank getFireRank(String key) {
         FireRank result = (FireRank)keyCaches.get(key);
         if (result == null) {
-            result = new DBMFireRank(this.engine, key);
+            result = new MemoryFireRank();
             keyCaches.put(key, result);
         }
         return result;
@@ -131,11 +132,15 @@ public class DBMFireStore implements FireStore {
 
     @Override
     public void defrag() {
-        this.engine.defrag();
+
     }
 
     public void close(){
-        this.engine.flush();
-        this.engine.close();
+        this.engine.sync();
+        try {
+            this.engine.close();
+        } catch (BDBStorageException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 }

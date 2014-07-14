@@ -81,7 +81,7 @@ public class MemoryFireRank implements FireRank {
 
     @Override
     public synchronized long remove(String name) {
-        lock.unlock();
+        lock.lock();
         try {
             Item item = items.remove(name);
             if (item == null) {
