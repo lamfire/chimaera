@@ -36,12 +36,14 @@ public class FireStoreFactory {
         return new MemoryFireStore(name);
     }
 
-    public static FireStore makeFireStoreWithBDB(String name,ChimaeraOpts opts) throws IOException {
+    public synchronized static FireStore makeFireStoreWithBDB(String name,ChimaeraOpts opts) throws IOException {
         BDBOpts bdbOpts = new BDBOpts();
         bdbOpts.setPath(opts.getStoreDir());
         bdbOpts.setWriteTransactionEnabled(opts.isEnableTransactions());
         bdbOpts.setCacheSize(opts.getCacheSize());
-        FileUtils.makeDirs(opts.getStoreDir());
+        if(!FileUtils.exists(opts.getStoreDir())){
+            FileUtils.makeDirs(opts.getStoreDir());
+        }
 
         BDBEngine engine = null;
         try {
