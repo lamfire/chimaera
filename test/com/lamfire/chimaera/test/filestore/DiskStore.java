@@ -14,8 +14,7 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class DiskStore {
-    private static final String JDBM_DIR = "/data/chimaera";
-    private static final String MAPDB_DIR = "/data/chimaera/BDB";
+    private static final String BDB_DIR = "/data/chimaera/";
     private static final String NAME = "TESTSTORE1";
 
     private static FireStore store;
@@ -27,7 +26,7 @@ public class DiskStore {
         }
         ChimaeraOpts opts = new ChimaeraOpts();
         opts.setStoreOnDisk(true);
-        opts.setStoreDir(MAPDB_DIR);
+        opts.setStoreDir(BDB_DIR);
         store = FireStoreFactory.makeFireStoreWithBDB(NAME,opts);
         return store;
     }

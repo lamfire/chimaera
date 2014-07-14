@@ -26,7 +26,7 @@ public class ChimaeraOpts {
     private boolean enableLocking = false;
     private boolean enableTransactions = false;
     private boolean enableCache = true;
-    private int cacheSize = 10000;
+    private int cacheSize = 100000;
 
     public boolean isStoreOnDisk() {
         return storeOnDisk;

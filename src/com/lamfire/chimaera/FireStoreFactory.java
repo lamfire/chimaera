@@ -37,10 +37,11 @@ public class FireStoreFactory {
     }
 
     public static FireStore makeFireStoreWithBDB(String name,ChimaeraOpts opts) throws IOException {
-        String dir = FilenameUtils.concat(opts.getStoreDir(), name);
         BDBOpts bdbOpts = new BDBOpts();
-        bdbOpts.setPath(dir);
-        FileUtils.makeDirs(dir);
+        bdbOpts.setPath(opts.getStoreDir());
+        bdbOpts.setWriteTransactionEnabled(opts.isEnableTransactions());
+        bdbOpts.setCacheSize(opts.getCacheSize());
+        FileUtils.makeDirs(opts.getStoreDir());
 
         BDBEngine engine = null;
         try {
@@ -49,7 +50,7 @@ public class FireStoreFactory {
             throw new IOException(e);
         }
         BDBFireStore store = new BDBFireStore(engine,name);
-        LOGGER.info("MAKE BDB STORE[" + name + "] :" + dir);
+        LOGGER.info("MAKE BDB STORE[" + name + "] :" + opts.getStoreDir());
         return store;
     }
 }
