@@ -95,8 +95,6 @@ public class BDBFireIncrement implements FireIncrement {
         return atomic.get();
     }
 
-
-
     @Override
     public int size() {
         return map.size();

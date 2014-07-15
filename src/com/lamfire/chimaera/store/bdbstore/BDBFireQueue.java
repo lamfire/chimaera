@@ -88,7 +88,7 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	public int size() {
 		try{
             lock.lock();
-			return (int) (tailSequence.get() - headSequence.get());
+			return queueMap.size();
 		}finally {
             lock.unlock();
         }
