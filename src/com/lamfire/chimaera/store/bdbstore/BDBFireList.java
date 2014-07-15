@@ -81,7 +81,7 @@ public class BDBFireList  implements Serializable,FireList {
 	 */
 	@Override
 	public int size() {
-		return (int)db.count();
+		return (int)sequence.get();
 	}
 
     @Override
