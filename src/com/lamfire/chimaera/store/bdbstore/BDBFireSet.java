@@ -6,6 +6,8 @@ import com.sleepycat.collections.StoredKeySet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,17 +21,31 @@ public class BDBFireSet implements FireSet {
     private BDBEngine engine;
     private StoredKeySet<byte[]> set;
     private String name;
+    private Sequence counter;
+
+    private final Lock lock = new ReentrantLock();
 
     public BDBFireSet(BDBEngine engine ,String name){
         this.engine = engine;
         this.name = name;
         set = engine.getSet(name);
+        this.counter = engine.getSequence(name+"_COUNTER");
     }
 
 
     @Override
     public void add(byte[] value) {
-        set.add(value);
+        try{
+            lock.lock();
+            boolean exists = set.contains(value);
+            set.add(value);
+            if(!exists){
+                counter.increment();
+            }
+        }finally {
+            lock.unlock();
+        }
+
     }
 
     @Override
@@ -43,37 +59,55 @@ public class BDBFireSet implements FireSet {
 
     @Override
     public byte[] remove(byte[] value) {
-        set.remove(value);
-        return value;
+        try{
+            lock.lock();
+            boolean exists = set.contains(value);
+            set.remove(value);
+            if(exists){
+                counter.increment(-1);
+            }
+            return value;
+        }finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public byte[] get(int index) {
-        int i=0;
-        for(byte[] e:set){
-            if(i == index){
-                return e;
+        try{
+            lock.lock();
+            int i=0;
+            for(byte[] e:set){
+                if(i == index){
+                    return e;
+                }
+                i++;
             }
-            i++;
+            return null;
+        }finally {
+            lock.unlock();
         }
-        return null;
     }
 
     @Override
     public List<byte[]> gets(int fromIndex, int size) {
-        List<byte[]> list = new ArrayList<byte[]>();
-        int i=0;
-        for(byte[] e:set){
-            if(i >= fromIndex){
-                list.add(e);
-                if(list.size() == size){
-                    break;
+        try{
+            lock.lock();
+            List<byte[]> list = new ArrayList<byte[]>();
+            int i=0;
+            for(byte[] e:set){
+                if(i >= fromIndex){
+                    list.add(e);
+                    if(list.size() == size){
+                        break;
+                    }
                 }
+                i++;
             }
-            i++;
+            return list;
+        }finally {
+            lock.unlock();
         }
-
-        return list;
     }
 
     @Override
@@ -83,11 +117,17 @@ public class BDBFireSet implements FireSet {
 
     @Override
     public int size() {
-        return set.size();
+        return (int)counter.get();
     }
 
     @Override
     public void clear() {
-        set.clear();
+        try{
+            lock.lock();
+            set.clear();
+            counter.set(0);
+        }finally {
+            lock.unlock();
+        }
     }
 }

@@ -4,7 +4,6 @@ import java.io.IOError;
 import java.io.Serializable;
 import java.util.AbstractQueue;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -106,7 +105,7 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	public boolean offer(byte[] e) {
         try{
             lock.lock();
-			queueMap.put(tailSequence.inrc(1), e); // 从尾部插入
+			queueMap.put(tailSequence.increment(1), e); // 从尾部插入
         }finally {
             lock.unlock();
         }
@@ -140,7 +139,7 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 					peekItem = headItem;
 					continue;
 				}
-                headSequence.inrc(1);
+                headSequence.increment(1);
 			}
 			return headItem;
 		}finally {
@@ -157,7 +156,7 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
             lock.lock();
             byte[] headItem = peek();
 			if (headItem != null) {
-				queueMap.remove(headSequence.inrc(1));
+				queueMap.remove(headSequence.increment(1));
 				peekItem = null;
 				return headItem;
 			}

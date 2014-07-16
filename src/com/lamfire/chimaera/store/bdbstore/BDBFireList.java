@@ -132,7 +132,7 @@ public class BDBFireList  implements Serializable,FireList {
     public boolean add(byte[] e) {
 		try {
             lock.lock();
-			dataMap.put(sequence.inrc(1), e); // 从尾部插入
+			dataMap.put(sequence.increment(1), e); // 从尾部插入
         }finally {
             lock.unlock();
         }

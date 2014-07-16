@@ -30,9 +30,11 @@ public class DiskFireQueueBenchmark extends DiskStore{
             int pre = 0;
             @Override
             public void run() {
-                int val = atomic.get();
-                System.out.println("[COUNTER/S] : " +  (val - pre) +"/s ");
-                pre = val;
+                synchronized (atomic){
+                    int val = atomic.get();
+                    System.out.println("[COUNTER/S] : " +  (val - pre) +"/s " + queue.size() +"/" +val);
+                    pre = val;
+                }
             }
         },1,1, TimeUnit.SECONDS);
     }
@@ -74,13 +76,9 @@ public class DiskFireQueueBenchmark extends DiskStore{
 		public void run() {
 			long startAt = System.currentTimeMillis();
 			while(true){
+                synchronized (atomic){
                 int i = atomic.getAndIncrement();
                 test.put(String.valueOf(i));
-				if(i % 10000 == 0){
-					long timeUsed = System.currentTimeMillis() - startAt;
-                    times.add(timeUsed);
-					//System.out.println("Thread-"+Thread.currentThread().getId()+" Write "+i + " item time millis:" + timeUsed +" ms,error:" + errorAtomic.get() +" max_time_used:" + times.last());
-					startAt = System.currentTimeMillis();
 				}
 			}
 		}

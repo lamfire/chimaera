@@ -22,8 +22,12 @@ public class Sequence {
         return sequenceTable.get(name);
     }
 
-    public long inrc(int step){
+    public long increment(int step){
         return sequenceTable.incrGet(name,step);
+    }
+
+    public long increment(){
+        return sequenceTable.incrGet(name);
     }
 
     public void set(long value){

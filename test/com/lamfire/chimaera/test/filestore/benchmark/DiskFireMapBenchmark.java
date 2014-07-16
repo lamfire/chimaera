@@ -27,9 +27,11 @@ public class DiskFireMapBenchmark extends DiskStore{
             int pre = 0;
             @Override
             public void run() {
-                int val = atomic.get();
-                System.out.println("[COUNTER/S] : " +  (val - pre) +"/s ");
-                pre = val;
+                synchronized (atomic){
+                    int val = atomic.get();
+                    System.out.println("[COUNTER/S] : " +  (val - pre) +"/s " + map.size() +"/" + val);
+                    pre = val;
+                }
             }
         },1,1, TimeUnit.SECONDS);
     }
@@ -72,14 +74,10 @@ public class DiskFireMapBenchmark extends DiskStore{
 			long startAt = System.currentTimeMillis();
             long count = 0;
 			while(true){
+                synchronized (atomic){
                 int i = atomic.getAndIncrement();
                 test.put(String.valueOf(i));
-				if(++count % 1000 == 0){
-					long timeUsed = System.currentTimeMillis() - startAt;
-                    times.add(timeUsed);
-					//System.out.println("Thread-"+Thread.currentThread().getId()+" Write "+i + " item time millis:" + timeUsed +" ms,error:" + errorAtomic.get() +" max_time_used:" + times.last());
-					startAt = System.currentTimeMillis();
-				}
+                }
 			}
 		}
 	};
@@ -93,13 +91,9 @@ public class DiskFireMapBenchmark extends DiskStore{
             long startAt = System.currentTimeMillis();
             long count = 0;
             while(true){
+                synchronized (atomic){
                 int i = atomic.getAndIncrement();
                 byte[] bytes = test.get(i);
-                if(count++ % 1000 == 0){
-                    long timeUsed = System.currentTimeMillis() - startAt;
-                    times.add(timeUsed);
-                    //System.out.println("Thread-"+Thread.currentThread().getId()+" Read "+i + " item time millis:" + timeUsed + " ms,error:" + errorAtomic.get() + ",avg_time:" + timeMillisAvg +" max_time:" + times.last());
-                    startAt = System.currentTimeMillis();
                 }
             }
         }

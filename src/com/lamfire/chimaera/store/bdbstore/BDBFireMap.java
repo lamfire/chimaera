@@ -17,19 +17,25 @@ public class BDBFireMap implements FireMap {
     private BDBEngine engine;
     private String name;
     private Map<String, byte[]> map;
+    private Sequence counter;
     private final Lock lock = new ReentrantLock();
 
     public BDBFireMap(BDBEngine engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getMap(name);
+        this.counter = engine.getSequence(name+"_COUNTER");
     }
 
     @Override
     public void put(String key, byte[] value) {
         try {
             lock.lock();
+            boolean exists = map.containsKey(key);
             map.put(key, value);
+            if(!exists){
+                counter.increment();
+            }
         } finally {
             lock.unlock();
         }
@@ -62,14 +68,18 @@ public class BDBFireMap implements FireMap {
 
     @Override
     public int size() {
-        return map.size();
+        return (int)counter.get();
     }
 
     @Override
     public void remove(String key) {
         try {
             lock.lock();
+            boolean exists = map.containsKey(key);
             map.remove(key);
+            if(exists){
+                counter.increment(-1);
+            }
         } finally {
             lock.unlock();
         }
@@ -85,6 +95,7 @@ public class BDBFireMap implements FireMap {
         try {
             lock.lock();
             map.clear();
+            counter.set(0);
         } finally {
             lock.unlock();
 
