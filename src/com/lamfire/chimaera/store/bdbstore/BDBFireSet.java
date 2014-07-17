@@ -5,7 +5,6 @@ import com.sleepycat.collections.StoredKeySet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -21,7 +20,7 @@ public class BDBFireSet implements FireSet {
     private BDBEngine engine;
     private StoredKeySet<byte[]> set;
     private String name;
-    private Sequence counter;
+    private Incrementer counter;
 
     private final Lock lock = new ReentrantLock();
 
@@ -29,7 +28,7 @@ public class BDBFireSet implements FireSet {
         this.engine = engine;
         this.name = name;
         set = engine.getSet(name);
-        this.counter = engine.getSequence(name+"_COUNTER");
+        this.counter = engine.getIncrementor(name + "_COUNTER");
     }
 
 

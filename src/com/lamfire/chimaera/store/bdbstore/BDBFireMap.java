@@ -17,14 +17,14 @@ public class BDBFireMap implements FireMap {
     private BDBEngine engine;
     private String name;
     private Map<String, byte[]> map;
-    private Sequence counter;
+    private Incrementer counter;
     private final Lock lock = new ReentrantLock();
 
     public BDBFireMap(BDBEngine engine, String name) {
         this.engine = engine;
         this.name = name;
         this.map = engine.getMap(name);
-        this.counter = engine.getSequence(name+"_COUNTER");
+        this.counter = engine.getIncrementor(name + "_COUNTER");
     }
 
     @Override

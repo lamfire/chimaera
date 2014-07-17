@@ -27,13 +27,13 @@ public class BDBFireList  implements Serializable,FireList {
     private StoredClassCatalog classCatalog;
     private Database classCatalogDB;
     private String name;
-    private Sequence sequence;
+    private Incrementer sequence;
 
     public BDBFireList(BDBEngine engine,String name) {
-        this(engine.takeDatabase(name),name,engine.getSequence(name));
+        this(engine.takeDatabase(name),name,engine.getIncrementor(name));
     }
 	
-	public BDBFireList(Database db,String name,Sequence sequence) {
+	public BDBFireList(Database db,String name,Incrementer sequence) {
 		this.db = db;
         this.name = name;
         this.sequence = sequence;

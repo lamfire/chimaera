@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.lamfire.chimaera.store.FireIncrement;
 import com.lamfire.logger.Logger;
 import com.sleepycat.bind.ByteArrayBinding;
 import com.sleepycat.bind.tuple.StringBinding;
@@ -155,8 +154,16 @@ public class BDBEngine {
         }
     }
 
-    public Sequence getSequence(String name){
-        return new Sequence(this.metaSequenceTable,name);
+    public Incrementer getIncrementor(String name){
+        return new Incrementer(this.metaSequenceTable,name);
+    }
+
+
+    public Sequence getSequence (String name){
+            Database db = takeDatabase( "SEQUENCE_DATABASE");
+            SequenceConfig conf = new SequenceConfig();
+            conf.setAllowCreate(true);
+            return db.openSequence(null, new DatabaseEntry(name.getBytes()), conf);
     }
 
 
@@ -216,7 +223,7 @@ public class BDBEngine {
 	public synchronized BDBFireList getList(String name){
 		DatabaseConfig conf = makeDatabaseConfig();
 		Database db = takeDatabase(conf, name);
-		BDBFireList  list = new BDBFireList (db,name,new Sequence(this.metaSequenceTable,name));
+		BDBFireList  list = new BDBFireList (db,name,new Incrementer(this.metaSequenceTable,name));
 		return list;
 	}
 	

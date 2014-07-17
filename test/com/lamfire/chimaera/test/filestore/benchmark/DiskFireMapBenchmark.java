@@ -4,6 +4,7 @@ import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.chimaera.test.filestore.DiskStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Lists;
+import com.lamfire.utils.RandomUtils;
 import com.lamfire.utils.Threads;
 
 import java.io.IOException;
@@ -27,18 +28,16 @@ public class DiskFireMapBenchmark extends DiskStore{
             int pre = 0;
             @Override
             public void run() {
-                synchronized (atomic){
                     int val = atomic.get();
-                    System.out.println("[COUNTER/S] : " +  (val - pre) +"/s " + map.size() +"/" + val);
+                    System.out.println("[COUNTER/S] : " +  (val - pre) +"/s " + map.size());
                     pre = val;
-                }
+
             }
         },1,1, TimeUnit.SECONDS);
     }
 
-    private void put(String v){
+    private void put(String v,byte[] bytes){
         try{
-            byte[] bytes = v.getBytes();
             map.put(v,bytes);
         }   catch(Exception e){
              e.printStackTrace();
@@ -71,13 +70,10 @@ public class DiskFireMapBenchmark extends DiskStore{
         }
 		@Override
 		public void run() {
-			long startAt = System.currentTimeMillis();
-            long count = 0;
+            byte[] bytes = RandomUtils.randomText(1000).getBytes();
 			while(true){
-                synchronized (atomic){
                 int i = atomic.getAndIncrement();
-                test.put(String.valueOf(i));
-                }
+                test.put(String.valueOf(i),bytes);
 			}
 		}
 	};

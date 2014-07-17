@@ -9,11 +9,11 @@ import com.lamfire.chimaera.store.FireIncrement;
  * Time: 下午7:14
  * To change this template use File | Settings | File Templates.
  */
-public class Sequence {
+public class Incrementer {
     private FireIncrement sequenceTable;
     private String name;
 
-    public Sequence(FireIncrement table,String name){
+    public Incrementer(FireIncrement table, String name){
         this.sequenceTable = table;
         this.name = name;
     }

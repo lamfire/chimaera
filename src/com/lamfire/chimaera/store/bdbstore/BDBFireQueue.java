@@ -31,11 +31,11 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
     private Database classCatalogDB;
     private String name;
 
-    private Sequence headSequence;
-    private Sequence tailSequence;
+    private Incrementer headSequence;
+    private Incrementer tailSequence;
 
     public BDBFireQueue(BDBEngine engine,String name) {
-        this(engine.takeDatabase(name),name,engine.getSequence(name+HEAD_SEQUENCE_NAME_SUFFIX),engine.getSequence(name+TAIL_SEQUENCE_NAME_SUFFIX));
+        this(engine.takeDatabase(name),name,engine.getIncrementor(name + HEAD_SEQUENCE_NAME_SUFFIX),engine.getIncrementor(name + TAIL_SEQUENCE_NAME_SUFFIX));
     }
 
 	/**
@@ -43,7 +43,7 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	 * 
 	 * @param db
 	 */
-	public BDBFireQueue(Database db,String name,Sequence headSequence,Sequence tailSequence) {
+	public BDBFireQueue(Database db,String name,Incrementer headSequence,Incrementer tailSequence) {
 		this.db = db;
         this.name = name;
 		this.headSequence  = headSequence;

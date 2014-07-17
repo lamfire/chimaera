@@ -14,8 +14,8 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class DiskStore {
-    private static final String BDB_DIR = "/data/chimaera/";
-    private static final String NAME = "TESTSTORE1";
+    private static final String BDB_DIR = "k:/data/chimaera/";
+    private static final String NAME = "BDBStore";
 
     private static FireStore store;
 
