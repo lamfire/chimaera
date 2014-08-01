@@ -111,7 +111,7 @@ public class BDBFireList  implements Serializable,FireList {
         List<byte[]> list = new ArrayList<byte[]>(size);
         try{
             lock.lock();
-            for (int i = fromIndex; i < list.size(); i++) {
+            for (int i = fromIndex; i < dataMap.size(); i++) {
                 list.add(get(i));
                 if (list.size() >= size) {
                     break;
