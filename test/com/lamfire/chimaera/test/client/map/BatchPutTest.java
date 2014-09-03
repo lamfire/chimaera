@@ -1,45 +1,57 @@
 package com.lamfire.chimaera.test.client.map;
 
+import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.Threads;
 
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BatchPutTest {
 
     static AtomicInteger atomic = new AtomicInteger();
-    static AtomicInteger errorAtomic =   new AtomicInteger();
-    static List<String> errorList = Lists.newArrayList();
     static TreeSet<Long> times = new TreeSet<Long>();
 
-    private static void put(String v){
-        try{
-            byte[] bytes = v.getBytes();
-            Config.getFireStore().getFireMap("TEST_MAP").put(v,bytes);
-        }   catch(Exception e){
-             e.printStackTrace();
-            errorAtomic.getAndIncrement();
-            errorList.add(v);
-        }
+    static{
+        Threads.scheduleWithFixedDelay(new Runnable() {
+            private int pre = 0;
+            @Override
+            public void run() {
+                try{
+                    int val = atomic.get();
+                    if(!times.isEmpty()){
+                        System.out.println( (val - pre ) + "/s,count="+ val +  ",max_time=" + times.last() +"ms");
+                    }else{
+                        System.out.println( (val - pre ) + "/s,count="+ val);
+                    }
+                    pre = val;
+                }catch (Throwable t){
+                    t.printStackTrace();
+                }
+            }
+        },1,1, TimeUnit.SECONDS);
+
+        System.out.println("monitor starting...");
     }
-	
+
 	private static Runnable task = new Runnable() {
 		@Override
 		public void run() {
 			long startAt = System.currentTimeMillis();
             long count = 0;
+            FireMap map = Config.getFireStore().getFireMap("TEST_MAP");
+            System.out.println("Thread-"+Thread.currentThread().getId()+" starting...");
 			while(true){
                 int i = atomic.getAndIncrement();
-				put(String.valueOf(i));
-				if(++count % 1000 == 0){
-					long timeUsed = System.currentTimeMillis() - startAt;
-                    times.add(timeUsed);
-					System.out.println("Thread-"+Thread.currentThread().getId()+" Write "+i + " item time millis:" + timeUsed +" ms,error:" + errorAtomic.get() +" max_time_used:" + times.last());
-					startAt = System.currentTimeMillis();
-				}
+				String v = String.valueOf(i);
+                byte[] bytes = v.getBytes();
+
+                long start = System.currentTimeMillis();
+                map.put(v, bytes);
+                times.add( System.currentTimeMillis() - start);
 			}
 		}
 	};
@@ -47,14 +59,14 @@ public class BatchPutTest {
 
 	public static void main(String[] args) {
 		Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
-        Threads.startup(task);
+//        Threads.startup(task);
+//        Threads.startup(task);
+//        Threads.startup(task);
+//        Threads.startup(task);
+//        Threads.startup(task);
+//        Threads.startup(task);
+//        Threads.startup(task);
+//        Threads.startup(task);
+//        Threads.startup(task);
 	}
 }

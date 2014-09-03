@@ -27,6 +27,7 @@ public class DiskStore {
         ChimaeraOpts opts = new ChimaeraOpts();
         opts.setStoreOnDisk(true);
         opts.setStoreDir(BDB_DIR);
+        opts.setEnableTransactions(true);
         store = FireStoreFactory.makeFireStoreWithBDB(NAME,opts);
         return store;
     }

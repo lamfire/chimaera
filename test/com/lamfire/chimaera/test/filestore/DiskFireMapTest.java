@@ -11,9 +11,16 @@ import com.lamfire.chimaera.test.tester.FireMapTester;
  * To change this template use File | Settings | File Templates.
  */
 public class DiskFireMapTest  extends DiskStore{
-    public static void main(String[] args)throws Exception {
+    public static void test(String[] args)throws Exception {
         FireMap map  = getFireStore().getFireMap("TEST_MAP");
         FireMapTester test = new FireMapTester(map);
         test.test();
+    }
+
+    public static void main(String[] args)throws Exception {
+        FireMap map  = getFireStore().getFireMap("TEST_MAP");
+        //map.put("1","111".getBytes());
+        System.out.println(map.get("1"));
+        System.out.println(map.size());
     }
 }
