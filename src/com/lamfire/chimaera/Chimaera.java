@@ -31,6 +31,10 @@ public class Chimaera {
         Chimaera.opts = opts;
     }
 
+    public static ChimaeraOpts getChimaeraOpts(){
+        return opts;
+    }
+
     public static final FireStore getFireStore(String storeName) {
         FireStore store = stores.get(storeName);
         if (store != null) {

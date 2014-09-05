@@ -37,7 +37,9 @@ public class ChimaeraServiceTask implements Runnable {
     public void run() {
         Response response = null;
         try {
-            checkMemory();
+            if( !Chimaera.getChimaeraOpts().isStoreOnDisk()){
+                checkMemory();
+            }
             Service<Command> service = ServiceRegistry.getInstance().getService(command.getCommand());
             response = service.execute(context, command);
         } catch (Throwable e) {
