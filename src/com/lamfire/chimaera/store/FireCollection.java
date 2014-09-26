@@ -2,7 +2,7 @@ package com.lamfire.chimaera.store;
 
 public interface FireCollection {
 
-    public int size();
+    public long size();
 
     public void clear();
 

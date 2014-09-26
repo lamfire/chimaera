@@ -3,11 +3,11 @@ package com.lamfire.chimaera.store;
 public interface FireStore {
     public void remove(String key);
 
-    public int size(String key);
+    public long size(String key);
 
     public void clear(String key);
 
-    public int size();
+    public long size();
 
     public void clear();
 

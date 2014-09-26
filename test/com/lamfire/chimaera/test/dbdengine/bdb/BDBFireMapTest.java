@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.test.filestore;
+package com.lamfire.chimaera.test.dbdengine.bdb;
 
 import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.chimaera.test.tester.FireMapTester;
@@ -10,7 +10,7 @@ import com.lamfire.chimaera.test.tester.FireMapTester;
  * Time: 下午1:54
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireMapTest  extends DiskStore{
+public class BDBFireMapTest extends BDBStore {
     public static void test(String[] args)throws Exception {
         FireMap map  = getFireStore().getFireMap("TEST_MAP");
         FireMapTester test = new FireMapTester(map);

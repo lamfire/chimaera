@@ -19,7 +19,7 @@ public class MapSizeService implements Service<MapSizeCommand> {
     public Response execute(MessageContext context, MapSizeCommand cmd) {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        int size = store.getFireMap(cmd.getKey()).size();
+        long size = store.getFireMap(cmd.getKey()).size();
         return Responses.makeSizeResponse(cmd, size);
     }
 

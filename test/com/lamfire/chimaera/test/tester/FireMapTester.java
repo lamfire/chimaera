@@ -43,7 +43,7 @@ public class FireMapTester {
         System.out.println("map.put('"+field+"','"+value+"') time_millis:" + timeUsed+ " ms");
 
 
-        int size = map.size();
+        long size = map.size();
         System.out.println("map.size():" + size);
         Asserts.assertEquals(2, size);
 

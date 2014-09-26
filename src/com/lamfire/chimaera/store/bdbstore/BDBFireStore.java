@@ -39,7 +39,7 @@ public class BDBFireStore implements FireStore {
     }
 
     @Override
-    public int size(String key) {
+    public long size(String key) {
         FireCollection col = keyCaches.get(key);
         if(col != null){
             return col.size();
@@ -56,7 +56,7 @@ public class BDBFireStore implements FireStore {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return this.keyCaches.size();
     }
 

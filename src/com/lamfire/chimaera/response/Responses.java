@@ -64,7 +64,7 @@ public class Responses {
         return res;
     }
 
-    public static SizeResponse makeSizeResponse(Command command, int size) {
+    public static SizeResponse makeSizeResponse(Command command, long size) {
         SizeResponse res = new SizeResponse();
         res.setSize(size);
         fillResponse(command, res);

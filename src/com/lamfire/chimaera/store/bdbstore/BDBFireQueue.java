@@ -16,7 +16,7 @@ import com.sleepycat.collections.StoredMap;
 import com.sleepycat.collections.StoredSortedMap;
 import com.sleepycat.je.*;
 
-public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,FireQueue {
+public class BDBFireQueue implements Serializable,FireQueue {
 
 	private static final long serialVersionUID = 3427799316155220967L;
     private static final String HEAD_SEQUENCE_NAME_SUFFIX = "_HEAD_SEQUENCE";
@@ -75,7 +75,6 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	/**
 	 * 值遍历器
 	 */
-	@Override
 	public Iterator<byte[]> iterator() {
 		return queueMap.values().iterator();
 	}
@@ -84,7 +83,7 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	 * 大小
 	 */
 	@Override
-	public int size() {
+	public long size() {
 		try{
             lock.lock();
             long last = tailSequence.get();
@@ -92,7 +91,7 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
             if(last < 0 && first > 0){
                 return (int) ((Long.MAX_VALUE - first) + (Long.MIN_VALUE - last));
             }
-			return (int)Math.abs(last - first);
+			return Math.abs(last - first);
 		}finally {
             lock.unlock();
         }
@@ -101,7 +100,6 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	/**
 	 * 插入值
 	 */
-	@Override
 	public boolean offer(byte[] e) {
         try{
             lock.lock();
@@ -150,7 +148,6 @@ public class BDBFireQueue extends AbstractQueue<byte[]> implements Serializable,
 	/**
 	 * 移出元素,移出头部元素
 	 */
-	@Override
 	public byte[] poll() {
         try{
             lock.lock();

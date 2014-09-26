@@ -85,7 +85,7 @@ public class FireListAccessor implements FireList {
     }
 
     @Override
-    public int size() {
+    public long size() {
         ListSizeCommand cmd = new ListSizeCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);

@@ -96,7 +96,7 @@ public class BDBFireIncrement implements FireIncrement {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return map.size();
     }
 

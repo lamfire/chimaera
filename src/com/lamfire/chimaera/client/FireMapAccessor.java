@@ -84,7 +84,7 @@ public class FireMapAccessor implements FireMap {
     }
 
     @Override
-    public int size() {
+    public long size() {
         MapSizeCommand cmd = new MapSizeCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);

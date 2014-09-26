@@ -36,7 +36,7 @@ public class FireQueueTester {
             System.out.println("queue.push("+val+")");
         }
 
-        int size = queue.size();
+        long size = queue.size();
         System.out.println("queue.size():"+size);
         Asserts.assertEquals(100,size);
 

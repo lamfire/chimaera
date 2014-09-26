@@ -93,7 +93,7 @@ public class FireSetAccesser implements FireSet {
     }
 
     @Override
-    public int size() {
+    public long size() {
         SetSizeCommand cmd = new SetSizeCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);

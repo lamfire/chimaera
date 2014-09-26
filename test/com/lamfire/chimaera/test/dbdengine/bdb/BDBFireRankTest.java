@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.test.filestore;
+package com.lamfire.chimaera.test.dbdengine.bdb;
 
 import com.lamfire.chimaera.test.tester.FireRankTester;
 
@@ -11,17 +11,10 @@ import java.io.IOException;
  * Time: 下午2:02
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireRankTest  extends DiskStore{
+public class BDBFireRankTest extends BDBStore {
 
     public static void main(String[] args) throws IOException {
         FireRankTester test = new FireRankTester(getFireStore().getFireRank("TEST_RANK"));
-        test.size();
         test.test();
-        test.incr();
-        test.max(5);
-        test.putsRandom(20);
-        test.max(5);
-        test.size();
-
     }
 }

@@ -25,7 +25,7 @@ public class MemoryFireStore implements FireStore {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return store.size();
     }
 
@@ -117,7 +117,7 @@ public class MemoryFireStore implements FireStore {
     }
 
     @Override
-    public int size(String key) {
+    public long size(String key) {
         try {
             FireCollection c = assertInstance(key, FireCollection.class);
             return c.size();

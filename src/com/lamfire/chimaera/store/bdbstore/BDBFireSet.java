@@ -115,8 +115,8 @@ public class BDBFireSet implements FireSet {
     }
 
     @Override
-    public int size() {
-        return (int)counter.get();
+    public long size() {
+        return counter.get();
     }
 
     @Override

@@ -22,17 +22,19 @@ public class FireSetTester {
     }
 
     public  void test() {
+        int elements = 100000;
         System.out.println("==>> startup : " + this.getClass().getName());
         set.clear();
         System.out.println("set.clear()");
+        long startAt = System.currentTimeMillis();
 
-        for(int i=0;i<100;i++){
+        for(int i=0;i<elements;i++){
             String val = String.valueOf(i);
             set.add(val.getBytes());
             System.out.println("set.add("+val+")");
         }
 
-        for(int i=0;i<100;i++){
+        for(int i=0;i<elements;i++){
             String val = String.valueOf(i);
             set.add(val.getBytes());
             System.out.println("set.add(" + val + ")");
@@ -46,10 +48,18 @@ public class FireSetTester {
         }
         System.out.println();
 
+        System.out.print("set.gets("+(elements -10)+",10):" );
+        gets = set.gets(elements -10,10);
+        for(byte[] bytes : gets){
+            String v = new String(bytes);
+            System.out.print(v +" ");
+        }
+        System.out.println();
 
-        int size = set.size();
+
+        long size = set.size();
         System.out.println("set.size():"+size);
-        Asserts.assertEquals(size, 100);
+        Asserts.assertEquals(size, elements);
 
         boolean exists = set.exists("44".getBytes());
         System.out.println("set.exists(44):"+exists);
@@ -65,9 +75,9 @@ public class FireSetTester {
 
         size = set.size();
         System.out.println("set.size():"+size);
-        Asserts.assertEquals(99,size);
+        Asserts.assertEquals(elements -1,size);
 
-        System.out.println("<<== finish : " + this.getClass().getName());
+        System.out.println("<<== finish : " + this.getClass().getName() +" - " +(System.currentTimeMillis() - startAt) +"ms");
     }
 
 }

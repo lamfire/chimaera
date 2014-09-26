@@ -129,7 +129,7 @@ public class FireRankAccessor implements FireRank {
     }
 
     @Override
-    public int size() {
+    public long size() {
         RankSizeCommand cmd = new RankSizeCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);

@@ -80,8 +80,8 @@ public class BDBFireList  implements Serializable,FireList {
 	 * 大小
 	 */
 	@Override
-	public int size() {
-		return (int)sequence.get();
+	public long size() {
+		return sequence.get();
 	}
 
     @Override

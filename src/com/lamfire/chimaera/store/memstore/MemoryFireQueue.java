@@ -45,7 +45,7 @@ public class MemoryFireQueue implements FireQueue {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return queue.size();
     }
 

@@ -66,7 +66,7 @@ public class MemoryFireList implements FireList {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return list.size();
     }
 

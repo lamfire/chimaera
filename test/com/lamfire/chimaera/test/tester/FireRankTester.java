@@ -47,57 +47,119 @@ public class FireRankTester {
         }
     }
 
-    public void size(){
+    public void testSize(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
         long startAt = System.currentTimeMillis();
-        long size = this.rank.size();
+        rank.clear();
+        System.out.println("[Starting] test size() ...");
+        int size = RandomUtils.nextInt(10000);
+        for(int i=0;i<size;i++){
+            rank.put(String.valueOf(i));
+        }
+        Asserts.assertEquals(size,rank.size());
         long timeUsed = System.currentTimeMillis() - startAt;
-        System.out.println("rank.size()="+size+" time millis:" + timeUsed +" ms");
+        System.out.println("[END] test size():  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
     }
-    public void puts(int count){
+
+    public void testPut(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test put()");
+        rank.clear();
+
+        String name ="TEST_PUT_KEY";
+        int count = RandomUtils.nextInt(1000);
         long startAt = System.currentTimeMillis();
+
+        System.out.println("put count : " + count);
+        for(int i=0;i<count;i++){
+            this.rank.put(name);
+        }
+        Asserts.assertEquals(count,rank.score(name));
+        System.out.println("score : " + rank.score(name));
+        long timeUsed = System.currentTimeMillis() - startAt;
+        System.out.println("[END] test put():  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
+    }
+
+    public void testPuts(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test batch puts()");
+        rank.clear();
+        long startAt = System.currentTimeMillis();
+        int count = RandomUtils.nextInt(1000);
         for(int i=0;i<count;i++){
             this.rank.put(String.valueOf(i));
         }
+        Asserts.assertEquals(count,rank.size());
         long timeUsed = System.currentTimeMillis() - startAt;
-        System.out.println("rank.put():"+count+ "pcs,time_millis:" + timeUsed +" ms");
+        System.out.println("[END] test batch puts():  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
     }
 
-    public void incr(){
+    public void testIncr(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test incr()");
         String name = "RANK_INCR_NAME";
         this.rank.set(name,0);
+        System.out.println("set score to : 0");
         long startAt = System.currentTimeMillis();
         this.rank.incr(name,1);
+        System.out.println("incr score : 1");
+
         this.rank.incr(name,10);
+        System.out.println("incr score : 10");
         long score = this.rank.score(name);
-        long timeUsed = System.currentTimeMillis() - startAt;
-        System.out.println("rank.incr("+name+"):"+score+ " time_millis:" + timeUsed +" ms");
         Asserts.assertEquals(score,11);
+        System.out.println("get score = " + rank.score(name));
+
+        long timeUsed = System.currentTimeMillis() - startAt;
+
+        System.out.println("[END] test incr("+name+"):"+score+ " time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
+
     }
 
-    public void remove(){
+    public void restRemove(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test remove()");
         String name = "RANK_INCR_NAME_REMOVE";
-        this.rank.set(name,0);
+        this.rank.clear();
         long startAt = System.currentTimeMillis();
-        this.rank.incr(name,1);
-        this.rank.incr(name,10);
-        long score = this.rank.score(name);
-        long timeUsed = System.currentTimeMillis() - startAt;
-        System.out.println("rank.incr("+name+"):"+score+ " time_millis:" + timeUsed +" ms");
-        Asserts.assertEquals(score,11);
 
-        this.rank.remove(name);
-        score = this.rank.score(name);
-        System.out.println("rank.remove("+name+"):"+score+ " time_millis:" + timeUsed +" ms");
+        int size = RandomUtils.nextInt(10000);
+        System.out.println("put name : " + size);
+        for(int i=0;i<size;i++){
+            rank.put(String.valueOf(i));
+        }
+        Asserts.assertEquals(size,rank.size());
+        System.out.println("puted name : " + rank.size());
+
+        System.out.println("removing names : " + size);
+        for(int i=0;i<size;i++){
+            rank.remove(String.valueOf(i));
+        }
+        Asserts.assertEquals(0,rank.size());
+        System.out.println("[TEST] size = "+ rank.size());
+
+        long timeUsed = System.currentTimeMillis() - startAt;
+        System.out.println("[END] test remove("+name+"):  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
     }
 
-    public void set(){
+    public void testSet(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test set()");
         long startAt = System.currentTimeMillis();
         this.rank.set("TEST", 99);
+        System.out.println("set score 99");
         long timeUsed = System.currentTimeMillis() - startAt;
 
-        long count = this.rank.score("TEST");
-        System.out.println("rank.set('TEST',99)=" + count + " time millis:" + timeUsed + " ms");
+        long score = this.rank.score("TEST");
         Asserts.assertEquals(99, this.rank.score("TEST"));
+        System.out.println("get score = " + score);
+        System.out.println("[END] test set():  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
     }
 
     public void putsRandom(){
@@ -155,83 +217,193 @@ public class FireRankTester {
         System.out.println("rank.size:" + this.rank.size());
     }
 
-    public void max(int count){
+    public void testMax(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test max()");
+        this.rank.clear();
         long startAt = System.currentTimeMillis();
 
-        List<Item> maxItems = this.rank.max(count);
-        long timeUsed = System.currentTimeMillis() - startAt;
+        int size = RandomUtils.nextInt(10000);
+        System.out.println("put elements : " + size);
+        for(int i=0;i<size;i++){
+            rank.put(String.valueOf(i));
+        }
+        Asserts.assertEquals(size,rank.size());
+
+        rank.put("999999");
+        rank.put("999999");
+        rank.put("999999");
+
+        rank.put("9999999");
+        rank.put("9999999");
+
+        rank.put("99999999");
+
+        List<Item> maxItems = this.rank.max(10);
         print(maxItems);
-        System.out.println("rank.max("+count + ") time_millis:" + timeUsed +" ms");
+
+        Item top0 = maxItems.get(0);
+        Asserts.assertEquals(top0.getValue(),3);
+        Asserts.assertEquals(top0.getName(),"999999");
+
+        Item top1 = maxItems.get(1);
+        Asserts.assertEquals(top1.getValue(),2);
+        Asserts.assertEquals(top1.getName(),"9999999");
+
+        Item top2 = maxItems.get(2);
+        Asserts.assertEquals(top2.getValue(),1);
+        Asserts.assertEquals(top2.getName(),"99999999");
+
+        long timeUsed = System.currentTimeMillis() - startAt;
+        System.out.println("[END] test max():  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
     }
 
 
-    public void min(int count){
+    public void testMin(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test min()");
+        this.rank.clear();
         long startAt = System.currentTimeMillis();
 
-        List<Item> minItems = this.rank.min(count);
+        int size = RandomUtils.nextInt(10000);
+        for(int c=0;c<4;c++){
+            System.out.println("put elements : " + size);
+            for(int i=0;i<size;i++){
+                rank.put(String.valueOf(i));
+            }
+        }
+        Asserts.assertEquals(size,rank.size());
+
+        rank.put("999999");
+        rank.put("999999");
+        rank.put("999999");
+
+        rank.put("9999999");
+        rank.put("9999999");
+
+        rank.put("99999999");
+
+        List<Item> items = this.rank.min(10);
+        print(items);
+
+        Item top0 = items.get(2);
+        Asserts.assertEquals(top0.getValue(),3);
+        Asserts.assertEquals(top0.getName(),"999999");
+
+        Item top1 = items.get(1);
+        Asserts.assertEquals(top1.getValue(),2);
+        Asserts.assertEquals(top1.getName(),"9999999");
+
+        Item top2 = items.get(0);
+        Asserts.assertEquals(top2.getValue(),1);
+        Asserts.assertEquals(top2.getName(),"99999999");
+
         long timeUsed = System.currentTimeMillis() - startAt;
-        print(minItems);
-        System.out.println("rank.min("+count + ") time_millis:" + timeUsed +" ms");
+        System.out.println("[END] test min():  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
     }
 
-    public void maxRange(int i,int count){
+    public void testMaxRange(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test maxRange()");
+        this.rank.clear();
         long startAt = System.currentTimeMillis();
 
-        List<Item> maxItems = this.rank.maxRange(i, count);
+        int size = RandomUtils.nextInt(10000);
+        System.out.println("put elements : " + size);
+        for(int i=0;i<size;i++){
+            rank.put(String.valueOf(i));
+        }
+        Asserts.assertEquals(size,rank.size());
+
+        for(int i=0;i<100;i++){
+            for(int j=10;j<i;j++){
+                rank.put(String.valueOf(j));
+            }
+        }
+
+        List<Item> items = this.rank.maxRange(0,15);
+        print(items);
+
+        int name = 10;
+        for(Item item : items){
+            Asserts.assertEquals(String.valueOf(name) ,item.getName());
+            Asserts.assertEquals(item.getValue() ,100 - name);
+            name++;
+        }
+
         long timeUsed = System.currentTimeMillis() - startAt;
-        print(maxItems);
-        System.out.println("rank.maxRange("+i+","+count + ") time_millis:" + timeUsed +" ms");
+        System.out.println("[END] test maxRange():  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
     }
 
-    public void minRange(int i,int count){
+    public void testMinRange(){
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test minRange()");
+        this.rank.clear();
         long startAt = System.currentTimeMillis();
 
-        List<Item> minItems = this.rank.minRange(i, count);
+        int size = RandomUtils.nextInt(100);
+        System.out.println("putting elements : " + size);
+        for(int i=0;i<size;i++){
+            for(int j=i;j<size;j++){
+                rank.put(String.valueOf(j));
+            }
+        }
+
+        List<Item> items = this.rank.minRange(0,15);
+        print(items);
+
+        int name = 0;
+        for(Item item : items){
+            Asserts.assertEquals(String.valueOf(name) ,item.getName());
+            Asserts.assertEquals(item.getValue() ,(name +1));
+            name++;
+        }
+
         long timeUsed = System.currentTimeMillis() - startAt;
-        print(minItems);
-        System.out.println("rank.minRange("+i+","+count + ") time_millis:" + timeUsed +" ms");
+        System.out.println("[END] test minRange():  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
     }
 
 
-    public void score(String name){
-        long startAt = System.currentTimeMillis();
+    public void testScore(){
 
-        long count = this.rank.score(name);
+        System.out.println("\n\n\n----------------------------------------------------------------->");
+        System.out.println("[Starting] test score()");
+        long startAt = System.currentTimeMillis();
+        String name = "TEST_SCORE_001";
+        long score = RandomUtils.nextInt(1000000);
+        this.rank.set(name,score);
+        System.out.println("set score :" + score);
+        long value = this.rank.score(name);
+        System.out.println("score = " + value);
+        Asserts.assertEquals(score,value);
         long timeUsed = System.currentTimeMillis() - startAt;
-        System.out.println("rank.score ("+name + ") = ["+count+"] ,time_millis:" + timeUsed +" ms");
+        System.out.println("[END] test minRange():  time_millis:" + timeUsed +" ms");
+        System.out.println("<-----------------------------------------------------------------");
     }
 
     public void clear(){
         long startAt = System.currentTimeMillis();
         this.rank.clear();
         long timeUsed = System.currentTimeMillis() - startAt;
-        System.out.println("rank.clear () time_millis:" + timeUsed +" ms");
     }
 
     public void test() {
+        long startAt = System.currentTimeMillis();
         System.out.println("==>> startup : " + this.getClass().getName());
-        System.out.println("================> clear()");
-        clear();
-        System.out.println("================> remove()");
-        remove();
-        System.out.println("================> incr()");
-        incr();
-        System.out.println("================> set()");
-        set();
-        System.out.println("================> puts(100)");
-        puts(100);
-        System.out.println("================>  size()");
-        size();
-        System.out.println("================> score(\"38\")");
-        score("38");
-        System.out.println("================> max(20)");
-        max(20);
-        System.out.println("================> min(10)");
-        min(10);
-        System.out.println("================> maxRange(2,20)");
-        maxRange(2,20);
-        System.out.println("================>  minRange(2,10)");
-        minRange(0,10);
-        System.out.println("<<== finish : " + this.getClass().getName());
+        testPut();
+        testSet();
+        testScore();
+        testSize();
+        testPuts();
+        testIncr();
+        testMax();
+        testMaxRange();
+        testMin();
+        testMinRange();
+        System.out.println("<<== finish : " + this.getClass().getName() + " - " + (System.currentTimeMillis() - startAt) +"ms");
     }
 }

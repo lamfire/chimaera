@@ -57,7 +57,7 @@ public class FireQueueAccessor implements FireQueue {
     }
 
     @Override
-    public int size() {
+    public long size() {
         QueueSizeCommand cmd = new QueueSizeCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);

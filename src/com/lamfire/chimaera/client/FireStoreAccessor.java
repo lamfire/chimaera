@@ -34,7 +34,7 @@ public class FireStoreAccessor implements FireStore {
     }
 
     @Override
-    public int size(String key) {
+    public long size(String key) {
         SizeCommand cmd = new SizeCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);
@@ -55,7 +55,7 @@ public class FireStoreAccessor implements FireStore {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return size(null);
     }
 

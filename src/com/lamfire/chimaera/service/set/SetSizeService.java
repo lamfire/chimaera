@@ -19,7 +19,7 @@ public class SetSizeService implements Service<SetSizeCommand> {
     public Response execute(MessageContext context, SetSizeCommand cmd) {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        int size = store.getFireSet(cmd.getKey()).size();
+        long size = store.getFireSet(cmd.getKey()).size();
 
         return Responses.makeSizeResponse(cmd, size);
     }

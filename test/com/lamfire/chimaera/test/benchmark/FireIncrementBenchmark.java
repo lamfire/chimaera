@@ -1,44 +1,47 @@
-package com.lamfire.chimaera.test.filestore.benchmark;
+package com.lamfire.chimaera.test.benchmark;
 
-import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.test.filestore.DiskStore;
+import com.lamfire.chimaera.store.FireIncrement;
+import com.lamfire.chimaera.test.dbdengine.bdb.BDBStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.RandomUtils;
 import com.lamfire.utils.Threads;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class DiskFireMapBenchmark extends DiskStore{
-    static final Logger logger = Logger.getLogger(DiskFireMapBenchmark.class);
+public class FireIncrementBenchmark extends BDBStore {
+    static final Logger logger = Logger.getLogger(FireIncrementBenchmark.class);
     static AtomicInteger atomic = new AtomicInteger();
     static AtomicInteger errorAtomic =   new AtomicInteger();
     static List<String> errorList = Lists.newArrayList();
     static TreeSet<Long> times = new TreeSet<Long>();
     static long timeMillisCount = 0;
     static long timeMillisAvg = 0;
-    private FireMap map ;
-    public DiskFireMapBenchmark() throws IOException {
-        this.map  = getFireStore().getFireMap("TEST_MAP_BENCHMARK");
+    private FireIncrement increment ;
+
+
+    public FireIncrementBenchmark(FireIncrement testIncrement){
+        this.increment  = testIncrement;
+
         Threads.scheduleWithFixedDelay(new Runnable() {
             int pre = 0;
             @Override
             public void run() {
+                synchronized (atomic){
                     int val = atomic.get();
-                    System.out.println("[COUNTER/S] : " +  (val - pre) +"/s " + map.size());
+                    System.out.println("[COUNTER/S] : " +  (val - pre) +"/s " + increment.size() +"/" +val);
                     pre = val;
-
+                }
             }
         },1,1, TimeUnit.SECONDS);
     }
 
-    private void put(String v,byte[] bytes){
+    private void write(String v){
         try{
-            map.put(v,bytes);
+            increment.incr(v);
         }   catch(Exception e){
              e.printStackTrace();
             errorAtomic.getAndIncrement();
@@ -46,11 +49,11 @@ public class DiskFireMapBenchmark extends DiskStore{
         }
     }
 
-    private byte[] get(int val){
+    private long read(String val){
         String key = String.valueOf(val);
         long startAt = System.currentTimeMillis();
         try{
-            return map.get(key);
+            return increment.get(key);
         }   catch (Exception e){
             logger.error("error get (" + val +")",e);
             errorAtomic.getAndIncrement();
@@ -58,55 +61,57 @@ public class DiskFireMapBenchmark extends DiskStore{
         }finally{
             long usedMillis = System.currentTimeMillis() - startAt;
             timeMillisCount +=  usedMillis;
-            timeMillisAvg = timeMillisCount / (1+val);
         }
-        return null;
+        return 0;
     }
 	
 	private static class Writer implements Runnable  {
-        DiskFireMapBenchmark test;
-        public Writer(DiskFireMapBenchmark test){
+        FireIncrementBenchmark test;
+        public Writer(FireIncrementBenchmark test){
              this.test = test;
         }
 		@Override
 		public void run() {
-            byte[] bytes = RandomUtils.randomText(1000).getBytes();
+			long startAt = System.currentTimeMillis();
 			while(true){
-                int i = atomic.getAndIncrement();
-                test.put(String.valueOf(i),bytes);
+                synchronized (atomic){
+                atomic.getAndIncrement();
+                int val = RandomUtils.nextInt(100);
+                test.write(String.valueOf(val));
+				}
 			}
 		}
 	};
 
     private static class Reader implements Runnable{
-        DiskFireMapBenchmark test;
-        public Reader(DiskFireMapBenchmark test){
+        FireIncrementBenchmark test;
+        public Reader(FireIncrementBenchmark test){
             this.test = test;
         }
         public void run() {
             long startAt = System.currentTimeMillis();
-            long count = 0;
             while(true){
-                synchronized (atomic){
                 int i = atomic.getAndIncrement();
-                byte[] bytes = test.get(i);
+                int val = RandomUtils.nextInt(100);
+                long v = test.read(String.valueOf(val)) ;
+                if(i % 10000 == 0){
+                    long timeUsed = System.currentTimeMillis() - startAt;
+                    times.add(timeUsed);
+                    startAt = System.currentTimeMillis();
                 }
             }
         }
     };
 
-
-	public static void startupWriteThreads(int threads) throws Exception{
-        DiskFireMapBenchmark test = new DiskFireMapBenchmark();
+    public void startupBenchmarkWrite(int threads){
         for(int i=0;i<threads;i++){
-            Threads.startup(new Writer(test));
+            Threads.startup(new Writer(this));
         }
     }
 
-    public static void startupReadThreads(int threads) throws Exception{
-        DiskFireMapBenchmark test = new DiskFireMapBenchmark();
+    public void startupBenchmarkRead(int threads){
         for(int i=0;i<threads;i++){
-            Threads.startup(new Reader(test));
+            Threads.startup(new Reader(this));
         }
     }
 }

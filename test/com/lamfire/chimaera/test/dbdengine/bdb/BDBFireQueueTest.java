@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.test.filestore;
+package com.lamfire.chimaera.test.dbdengine.bdb;
 
 import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.chimaera.test.tester.FireQueueTester;
@@ -10,7 +10,7 @@ import com.lamfire.chimaera.test.tester.FireQueueTester;
  * Time: 上午11:06
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireQueueTest  extends DiskStore{
+public class BDBFireQueueTest extends BDBStore {
     public static void main(String[] args)throws Exception {
         FireQueue queue  = getFireStore().getFireQueue("TEST_SET");
         FireQueueTester test = new FireQueueTester(queue);

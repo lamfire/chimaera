@@ -30,7 +30,7 @@ public class QueuePreformanceTest implements Runnable{
     }
 
     void showSize(){
-        int size = queue.size();
+        long size = queue.size();
         System.out.println("[QUEUE_SIZE]" + size +"\t\t\t" +(size - preOps) );
         preOps = size;
     }

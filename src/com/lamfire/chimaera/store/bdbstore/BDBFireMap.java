@@ -67,8 +67,8 @@ public class BDBFireMap implements FireMap {
 
 
     @Override
-    public int size() {
-        return (int)counter.get();
+    public long size() {
+        return  counter.get();
     }
 
     @Override

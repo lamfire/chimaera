@@ -18,8 +18,8 @@ public class FireStoreTester {
         this.store = store;
     }
 
-    public int size(){
-        int size = store.size();
+    public long size(){
+        long size = store.size();
         System.out.println("store.size() = " + size);
         return size;
     }
@@ -33,7 +33,7 @@ public class FireStoreTester {
         store.clear();
         System.out.println("store.clear()");
 
-        int size = size();
+        long size = size();
         //Asserts.assertEquals(size,0);
 
         store.getFireRank("STORE_RANK_TEST");

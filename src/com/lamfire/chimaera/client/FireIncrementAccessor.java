@@ -93,7 +93,7 @@ public class FireIncrementAccessor implements FireIncrement {
 
 
     @Override
-    public int size() {
+    public long size() {
         IncrementRemoveCommand cmd = new IncrementRemoveCommand();
         cmd.setStore(this.store);
         cmd.setKey(key);

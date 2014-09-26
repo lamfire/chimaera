@@ -19,7 +19,7 @@ public class QueueSizeService implements Service<QueueSizeCommand> {
     public Response execute(MessageContext context, QueueSizeCommand cmd) {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        int size = store.getFireQueue(cmd.getKey()).size();
+        long size = store.getFireQueue(cmd.getKey()).size();
         return Responses.makeSizeResponse(cmd, size);
     }
 

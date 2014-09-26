@@ -19,7 +19,7 @@ public class ListSizeService implements Service<ListSizeCommand> {
     public Response execute(MessageContext context, ListSizeCommand cmd) {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        int size = store.getFireList(cmd.getKey()).size();
+        long size = store.getFireList(cmd.getKey()).size();
 
         return Responses.makeSizeResponse(cmd, size);
     }

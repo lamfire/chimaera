@@ -171,7 +171,7 @@ public class MemoryFireRank implements FireRank {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return set.size();
     }
 

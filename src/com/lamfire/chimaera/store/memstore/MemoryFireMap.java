@@ -47,7 +47,7 @@ public class MemoryFireMap implements FireMap {
 
 
     @Override
-    public int size() {
+    public long size() {
         return map.size();
     }
 

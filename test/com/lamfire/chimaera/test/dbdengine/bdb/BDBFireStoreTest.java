@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.test.filestore;
+package com.lamfire.chimaera.test.dbdengine.bdb;
 
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.chimaera.test.tester.FireStoreTester;
@@ -10,7 +10,7 @@ import com.lamfire.chimaera.test.tester.FireStoreTester;
  * Time: 上午10:38
  * To change this template use File | Settings | File Templates.
  */
-public class DiskFireStoreTest  extends DiskStore{
+public class BDBFireStoreTest extends BDBStore {
 
     public static void main(String[] args)throws Exception {
         FireStore store  =getFireStore();

@@ -19,7 +19,7 @@ public class SizeService implements Service<SizeCommand> {
     public Response execute(MessageContext context, SizeCommand cmd) {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        int size = 0;
+        long size = 0;
         if (StringUtils.isBlank(cmd.getKey())) {
             size = store.size();
         } else {

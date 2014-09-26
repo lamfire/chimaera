@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.test.filestore;
+package com.lamfire.chimaera.test.dbdengine.bdb;
 
 import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.chimaera.FireStoreFactory;
@@ -13,7 +13,7 @@ import java.io.IOException;
  * Time: 下午3:14
  * To change this template use File | Settings | File Templates.
  */
-public class DiskStore {
+public class BDBStore {
     private static final String BDB_DIR = "k:/data/chimaera/";
     private static final String NAME = "BDBStore";
 

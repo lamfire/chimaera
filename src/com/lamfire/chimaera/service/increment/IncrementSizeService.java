@@ -18,7 +18,7 @@ public class IncrementSizeService implements Service<IncrementSizeCommand> {
     @Override
     public Response execute(MessageContext context, IncrementSizeCommand cmd) {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
-        int val = store.getFireIncrement(cmd.getKey()).size();
+        long val = store.getFireIncrement(cmd.getKey()).size();
         return Responses.makeSizeResponse(cmd, val);
     }
 

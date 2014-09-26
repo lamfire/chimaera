@@ -19,7 +19,7 @@ public class RankSizeService implements Service<RankSizeCommand> {
     public Response execute(MessageContext context, RankSizeCommand cmd) {
         FireStore store = Chimaera.getFireStore(cmd.getStore());
 
-        int size = store.getFireRank(cmd.getKey()).size();
+        long size = store.getFireRank(cmd.getKey()).size();
         return Responses.makeSizeResponse(cmd, size);
     }
 

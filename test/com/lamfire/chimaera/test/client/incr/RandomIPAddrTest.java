@@ -22,7 +22,7 @@ public class RandomIPAddrTest {
     static long timeMillisAvg = 0;
     static TreeSet<Long> times = new TreeSet<Long>();
     static FireStore store = Config.getFireStore("IPADDR_COUNT");
-    static int[] sizes = new int[255];
+    static long[] sizes = new long[255];
     static long addrCount = 0;
 
     static{

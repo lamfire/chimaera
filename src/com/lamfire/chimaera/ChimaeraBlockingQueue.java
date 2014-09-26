@@ -57,7 +57,7 @@ public class ChimaeraBlockingQueue implements FireQueue {
     }
 
     @Override
-    public int size() {
+    public long size() {
         return this.storeQueue.size();
     }
 

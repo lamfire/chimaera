@@ -7,6 +7,7 @@
       <root url="jar://$PROJECT_DIR$/lib/warden.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/je-6.0.11.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/lamfire-2.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/leveldb-1.8.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
