@@ -28,17 +28,22 @@ public class FireSetTester {
         System.out.println("set.clear()");
         long startAt = System.currentTimeMillis();
 
-        for(int i=0;i<elements;i++){
-            String val = String.valueOf(i);
-            set.add(val.getBytes());
-            System.out.println("set.add("+val+")");
-        }
 
+        System.out.println("set.add() - " + elements);
         for(int i=0;i<elements;i++){
             String val = String.valueOf(i);
             set.add(val.getBytes());
-            System.out.println("set.add(" + val + ")");
         }
+        Asserts.assertEquals(elements,set.size());
+        System.out.println("set.size() = " + set.size());
+
+        System.out.println("set.add() - " + elements);
+        for(int i=0;i<elements;i++){
+            String val = String.valueOf(i);
+            set.add(val.getBytes());
+        }
+        Asserts.assertEquals(elements,set.size());
+        System.out.println("set.size() = " + set.size());
 
         System.out.print("set.gets(2,5):" );
         List<byte[]> gets = set.gets(2,5);

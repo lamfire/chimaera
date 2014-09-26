@@ -24,6 +24,7 @@ public class LDBFireStore implements FireStore {
         this.storageDir = storageDir;
         this.name = name;
         this.levelDB = new LevelDB(storageDir);
+        this.levelDB.open();
     }
 
     @Override

@@ -58,6 +58,13 @@ public class LevelDB {
         }
 	}
 
+    private DB getMetaDb(){
+        if(metaDb == null){
+            throw new RuntimeException("the level db has not opened");
+        }
+        return metaDb;
+    }
+
     public String getDBDir(String name){
         return FilenameUtils.concat(rootDir,name);
     }
@@ -94,7 +101,7 @@ public class LevelDB {
         try{
         long value = getMetaValueAsLong(key);
         value += step;
-        metaDb.put(key, Bytes.toBytes(value));
+        getMetaDb().put(key, Bytes.toBytes(value));
         return value;
         }finally {
             lock.unlock();
@@ -105,7 +112,7 @@ public class LevelDB {
         lock.lock();
         try{
             long value = 0;
-            byte[] bytes = metaDb.get(key);
+            byte[] bytes = getMetaDb().get(key);
             if(bytes != null){
                 value = Bytes.toLong(bytes);
             }
@@ -118,8 +125,8 @@ public class LevelDB {
     void removeMeta(byte[] key){
         lock.lock();
         try{
-            if(metaDb.get(key) != null){
-                metaDb.delete(key);
+            if(getMetaDb().get(key) != null){
+                getMetaDb().delete(key);
             }
         }finally {
             lock.unlock();
