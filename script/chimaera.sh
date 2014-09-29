@@ -1,6 +1,6 @@
 ﻿#! /bin/sh
 JAVA_HOME=/usr/local/java
-JAVA_OPTS="-Xmx512m -Xms512m -Xmn128m -XX:PermSize=16m -XX:MaxPermSize=64m"
+JAVA_OPTS="-Xmx2048m -Xms2048m -Xmn512m -server -XX:PermSize=16m -XX:MaxPermSize=64m"
 
 SCRIPT="$0"
 while [ -h "$SCRIPT" ] ; do
