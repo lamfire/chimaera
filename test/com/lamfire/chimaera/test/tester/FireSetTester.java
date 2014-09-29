@@ -72,10 +72,12 @@ public class FireSetTester {
 
         String value = new String(set.get(44));
         System.out.println("set.get(44):"+value);
+
         set.remove(value.getBytes()) ;
+        System.out.println("set.remove(bytes):");
+
         exists = set.exists(value.getBytes());
         System.out.println("set.exists(44):"+exists);
-        set.remove(value.getBytes()) ;
         Asserts.assertFalse(exists);
 
         size = set.size();

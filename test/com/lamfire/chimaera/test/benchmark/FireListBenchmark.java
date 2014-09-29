@@ -1,7 +1,6 @@
 package com.lamfire.chimaera.test.benchmark;
 
 import com.lamfire.chimaera.store.FireList;
-import com.lamfire.chimaera.test.dbdengine.bdb.BDBStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.Threads;
@@ -11,7 +10,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FireListBenchmark extends BDBStore {
+public class FireListBenchmark {
     static final Logger logger = Logger.getLogger(FireListBenchmark.class);
     static AtomicInteger atomic = new AtomicInteger();
     static AtomicInteger errorAtomic =   new AtomicInteger();
