@@ -1,12 +1,8 @@
 package com.lamfire.chimaera;
 
 import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.chimaera.store.bdbstore.BDBEngine;
-import com.lamfire.chimaera.store.bdbstore.BDBFireStore;
-import com.lamfire.chimaera.store.bdbstore.BDBOpts;
-import com.lamfire.chimaera.store.bdbstore.BDBStorageException;
+
 import com.lamfire.chimaera.store.leveldbstore.LDBFireStore;
-import com.lamfire.chimaera.store.leveldbstore.LevelDB;
 import com.lamfire.chimaera.store.memstore.MemoryFireStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.FileUtils;
@@ -38,25 +34,6 @@ public class FireStoreFactory {
         return new MemoryFireStore(name);
     }
 
-    public synchronized static FireStore makeFireStoreWithBDB(String name,ChimaeraOpts opts) throws IOException {
-        BDBOpts bdbOpts = new BDBOpts();
-        bdbOpts.setPath(opts.getStoreDir());
-        bdbOpts.setWriteTransactionEnabled(opts.isEnableTransactions());
-        bdbOpts.setCacheSize(opts.getCacheSize());
-        if(!FileUtils.exists(opts.getStoreDir())){
-            FileUtils.makeDirs(opts.getStoreDir());
-        }
-
-        BDBEngine engine = null;
-        try {
-            engine = new BDBEngine(name,bdbOpts);
-        } catch (BDBStorageException e) {
-            throw new IOException(e);
-        }
-        BDBFireStore store = new BDBFireStore(engine,name);
-        LOGGER.info("MAKE BDB STORE[" + name + "] :" + opts.getStoreDir());
-        return store;
-    }
 
     public synchronized static FireStore makeFireStoreWithLDB(String name,ChimaeraOpts opts) throws IOException {
         if(!FileUtils.exists(opts.getStoreDir())){
