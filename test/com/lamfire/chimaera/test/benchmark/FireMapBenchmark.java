@@ -21,7 +21,7 @@ public class FireMapBenchmark {
     static long timeMillisCount = 0;
     static long timeMillisAvg = 0;
     private FireMap map ;
-    public FireMapBenchmark(FireMap fireMap) throws IOException {
+    public FireMapBenchmark(FireMap fireMap) {
         this.map  = fireMap;
         Threads.scheduleWithFixedDelay(new Runnable() {
             int pre = 0;

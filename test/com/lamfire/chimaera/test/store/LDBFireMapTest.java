@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.test.dbdengine.leveldb;
+package com.lamfire.chimaera.test.store;
 
 import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.chimaera.store.leveldbstore.LDBFireMap;

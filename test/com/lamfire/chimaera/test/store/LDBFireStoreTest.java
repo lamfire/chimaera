@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.test.dbdengine.leveldb;
+package com.lamfire.chimaera.test.store;
 
 import com.lamfire.chimaera.store.*;
 import com.lamfire.chimaera.store.leveldbstore.*;

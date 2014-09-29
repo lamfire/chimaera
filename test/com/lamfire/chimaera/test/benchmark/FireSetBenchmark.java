@@ -3,6 +3,7 @@ package com.lamfire.chimaera.test.benchmark;
 import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Lists;
+import com.lamfire.utils.RandomUtils;
 import com.lamfire.utils.Threads;
 
 import java.util.List;
@@ -75,8 +76,9 @@ public class FireSetBenchmark {
 			long startAt = System.currentTimeMillis();
 			while(true){
                 synchronized (atomic){
-                int i = atomic.getAndIncrement();
-                test.put(String.valueOf(i));
+                    atomic.getAndIncrement();
+                    int val = RandomUtils.nextInt(1000000);
+                    test.put(String.valueOf(val));
 				}
 			}
 		}
@@ -90,9 +92,10 @@ public class FireSetBenchmark {
         public void run() {
             long startAt = System.currentTimeMillis();
             while(true){
-                int i = atomic.getAndIncrement();
-                byte[] bytes = test.get(i) ;
-                if(i % 10000 == 0){
+                atomic.getAndIncrement();
+                int val = RandomUtils.nextInt(1000000);
+                byte[] bytes = test.get(val) ;
+                if(val % 10000 == 0){
                     long timeUsed = System.currentTimeMillis() - startAt;
                     times.add(timeUsed);
                     startAt = System.currentTimeMillis();

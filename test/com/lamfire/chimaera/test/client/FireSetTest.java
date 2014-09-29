@@ -2,6 +2,7 @@ package com.lamfire.chimaera.test.client;
 
 import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.chimaera.test.Config;
+import com.lamfire.chimaera.test.benchmark.FireSetBenchmark;
 import com.lamfire.chimaera.test.tester.FireSetTester;
 import com.lamfire.utils.Asserts;
 
@@ -16,8 +17,22 @@ import java.util.List;
  */
 public class FireSetTest {
 
-    public static void main(String[] args) {
-        FireSetTester test = new FireSetTester( Config.getFireStore(args).getFireSet("TEST_SET"));
+    public static void benchmark(FireSet set){
+        FireSetBenchmark benchmark = new FireSetBenchmark(set);
+        benchmark.startupBenchmarkWrite(1);
+    }
+
+    public static void test(FireSet set) {
+        FireSetTester test = new FireSetTester(set);
         test.test();
+    }
+
+    public static void main(String[] args) {
+        FireSet set =  Config.getFireStore(args).getFireSet("TEST_SET");
+        if(args.length== 0){
+             benchmark(set);
+        }else{
+            test(set);
+        }
     }
 }

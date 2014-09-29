@@ -1,4 +1,4 @@
-package com.lamfire.chimaera.test.dbdengine.leveldb;
+package com.lamfire.chimaera.test.store;
 
 import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.FireSet;
@@ -38,7 +38,7 @@ public class LDBFireRankTest {
     }
 
     public static void main(String[] args){
-        test();
+        //test();
         benchmark();
     }
 }
