@@ -4,6 +4,7 @@ import com.lamfire.chimaera.store.FireSet;
 import com.lamfire.chimaera.test.Config;
 import com.lamfire.chimaera.test.benchmark.FireSetBenchmark;
 import com.lamfire.chimaera.test.tester.FireSetTester;
+import com.lamfire.utils.ArrayUtils;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class FireSetTest {
 
     public static void main(String[] args) {
         FireSet set =  Config.getFireStore(args).getFireSet("TEST_SET");
-        if(args.length== 0){
+        if(ArrayUtils.contains(args, "benchmark")){
              benchmark(set);
         }else{
             test(set);

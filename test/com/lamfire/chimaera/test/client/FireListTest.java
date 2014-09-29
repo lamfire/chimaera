@@ -7,6 +7,7 @@ import com.lamfire.chimaera.test.benchmark.FireIncrementBenchmark;
 import com.lamfire.chimaera.test.benchmark.FireListBenchmark;
 import com.lamfire.chimaera.test.tester.FireIncrementTester;
 import com.lamfire.chimaera.test.tester.FireListTester;
+import com.lamfire.utils.ArrayUtils;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class FireListTest {
 
     public static void main(String[] args) {
         FireList target =  Config.getFireStore(args).getFireList("FireList");
-        if(args.length== 0){
+        if(ArrayUtils.contains(args, "benchmark")){
             benchmark(target);
         }else{
             test(target);

@@ -9,7 +9,9 @@ import com.lamfire.chimaera.test.benchmark.FireQueueBenchmark;
 import com.lamfire.chimaera.test.benchmark.FireRankBenchmark;
 import com.lamfire.chimaera.test.tester.FireQueueTester;
 import com.lamfire.chimaera.test.tester.FireRankTester;
+import com.lamfire.utils.ArrayUtils;
 import com.lamfire.utils.Asserts;
+import com.lamfire.utils.StringUtils;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +37,7 @@ public class FireRankTest {
 
     public static void main(String[] args) {
         FireRank target =  Config.getFireStore(args).getFireRank("FireRank");
-        if(args.length== 0){
+        if(ArrayUtils.contains(args,"benchmark")){
             benchmark(target);
         }else{
             test(target);

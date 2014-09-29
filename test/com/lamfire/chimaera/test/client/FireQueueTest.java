@@ -7,6 +7,7 @@ import com.lamfire.chimaera.test.benchmark.FireMapBenchmark;
 import com.lamfire.chimaera.test.benchmark.FireQueueBenchmark;
 import com.lamfire.chimaera.test.tester.FireMapTester;
 import com.lamfire.chimaera.test.tester.FireQueueTester;
+import com.lamfire.utils.ArrayUtils;
 import com.lamfire.utils.Asserts;
 
 /**
@@ -30,7 +31,7 @@ public class FireQueueTest {
 
     public static void main(String[] args) {
         FireQueue target =  Config.getFireStore(args).getFireQueue("FireQueue");
-        if(args.length== 0){
+        if(ArrayUtils.contains(args, "benchmark")){
             benchmark(target);
         }else{
             test(target);

@@ -30,7 +30,7 @@ public class Config {
     }
 
     public synchronized static ChimaeraCli getChimaeraCli(String[] args){
-        if(args!= null && args.length == 2){
+        if(args!= null && args.length >= 2){
             return newChimaeraCli(args);
         }
         return getChimaeraCli();
@@ -46,7 +46,7 @@ public class Config {
             return null;
         }
 
-        if (args != null && args.length == 2) {
+        if (args != null && args.length >= 2) {
             host = args[0];
             port = Integer.valueOf(args[1]);
         }
