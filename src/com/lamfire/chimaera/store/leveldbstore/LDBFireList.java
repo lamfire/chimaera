@@ -4,9 +4,11 @@ import com.lamfire.chimaera.store.FireList;
 import com.lamfire.hydra.exception.NotSupportedMethodException;
 import com.lamfire.utils.Bytes;
 import org.iq80.leveldb.DB;
+import org.iq80.leveldb.DBIterator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -20,15 +22,24 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LDBFireList implements FireList{
     private final Lock lock = new ReentrantLock();
     private LevelDB levelDB;
-    private DB db;
+    private DB _db;
     private byte[] writeIndexKey;
+    private byte[] sizeKey;
     private String name;
 
     public LDBFireList(LevelDB levelDB,String name){
         this.levelDB = levelDB;
         this.name = name;
-        this.db = levelDB.getDB(name);
+        this._db = levelDB.getDB(name);
         this.writeIndexKey = levelDB.encodeWriteIndexKey(name);
+        this.sizeKey = levelDB.encodeSizeKey(name);
+    }
+
+    private synchronized DB getDB(){
+        if(this._db == null){
+            _db = levelDB.getDB(name);
+        }
+        return _db;
     }
 
     public long getWriteIndex(){
@@ -39,50 +50,101 @@ public class LDBFireList implements FireList{
         levelDB.incrementMeta(writeIndexKey);
     }
 
-    @Override
-    public boolean add(byte[] value) {
-        long index = getWriteIndex();
-        db.put(Bytes.toBytes(index),value);
-        incrementWriteIndex();
-        return true;
+    public long getSize(){
+        return levelDB.getMetaValueAsLong(sizeKey);
+    }
+
+    void incrementSize(){
+        levelDB.incrementMeta(sizeKey);
+    }
+
+    void decrementSize(){
+        levelDB.incrementMeta(sizeKey,-1);
+    }
+
+    private synchronized Map.Entry<byte[] ,byte[]> getEntry(int index){
+        DBIterator it = getDB().iterator();
+        it.seekToFirst();
+        int count = 0;
+        while(it.hasNext()){
+            if(count == index){
+                break;
+            }
+            it.next();
+            count ++;
+        }
+        Map.Entry<byte[] ,byte[]> entry = it.next();
+        return entry;
     }
 
     @Override
-    public void set(int index, byte[] value) {
-        long size = getWriteIndex();
-        if(index >= size){
-            throw new IndexOutOfBoundsException("Index " + index +",Size " + size);
+    public boolean add(byte[] value) {
+        try{
+            lock.lock();
+            long index = getWriteIndex();
+            getDB().put(Bytes.toBytes(index),value);
+            incrementWriteIndex();
+            incrementSize();
+            return true;
+        }finally {
+            lock.unlock();
         }
-        long key = (long)index;
-        db.put(Bytes.toBytes(key),value);
+    }
+
+
+
+    @Override
+    public void set(int index, byte[] value) {
+        try{
+            lock.lock();
+            long size = getSize();
+            if(index >= size){
+                throw new IndexOutOfBoundsException("Index " + index +",Size " + size);
+            }
+            Map.Entry<byte[] ,byte[]> entry = getEntry(index);
+            getDB().put(entry.getKey(),value);
+        }finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public byte[] get(int index) {
-        long size = getWriteIndex();
+        long size = getSize();
         if(index >= size){
             throw new IndexOutOfBoundsException("Index " + index +",Size " + size);
         }
-        long key = (long)index;
-        return db.get(Bytes.toBytes(key));
+        return getEntry(index).getValue();
     }
 
     @Override
     public List<byte[]> gets(int fromIndex, int size) {
-        long max = getWriteIndex();
+        long max = getSize();
         if(fromIndex + size >= max){
             throw new IndexOutOfBoundsException("Index [" + fromIndex +" - " +(fromIndex + size) +"],Size " + max);
         }
         List<byte[]> list = new ArrayList<byte[]>(size);
         try{
             lock.lock();
-            long maxIndex = getWriteIndex();
-            for (int i = fromIndex; i < maxIndex; i++) {
-                list.add(get(i));
-                if (list.size() >= size) {
+            DBIterator it = getDB().iterator();
+            it.seekToFirst();
+            int count = 0;
+            while(it.hasNext()){
+                if(count == fromIndex){
+                    break;
+                }
+                it.next();
+                count ++;
+            }
+
+            while(it.hasNext()){
+                Map.Entry<byte[] ,byte[]> entry = it.next();
+                list.add(entry.getValue());
+                if(list.size() == size){
                     break;
                 }
             }
+
         }finally {
             lock.unlock();
         }
@@ -91,12 +153,24 @@ public class LDBFireList implements FireList{
 
     @Override
     public byte[] remove(int index) {
-        throw new NotSupportedMethodException("cannot remove elements");
+        try{
+            lock.lock();
+            long size = getSize();
+            if(index >= size){
+                throw new IndexOutOfBoundsException("Index " + index +",Size " + size);
+            }
+            Map.Entry<byte[] ,byte[]> entry = getEntry(index);
+            getDB().delete(entry.getKey());
+            decrementSize();
+            return entry.getValue();
+        }finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public long size() {
-        return getWriteIndex();
+        return getSize();
     }
 
     @Override
@@ -105,7 +179,8 @@ public class LDBFireList implements FireList{
             lock.lock();
             levelDB.deleteDB(name);
             levelDB.removeMeta(writeIndexKey);
-            this.db = levelDB.getDB(name);
+            levelDB.removeMeta(sizeKey);
+            this._db = null;
         }finally {
             lock.unlock();
         }

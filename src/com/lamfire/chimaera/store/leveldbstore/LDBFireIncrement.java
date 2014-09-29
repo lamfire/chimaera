@@ -17,15 +17,22 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LDBFireIncrement implements FireIncrement {
     private final Lock lock = new ReentrantLock();
     private LevelDB levelDB;
-    private DB db;
+    private DB _db;
     private byte[] sizeKey;
     private String name;
 
     public LDBFireIncrement(LevelDB levelDB, String name) {
         this.levelDB = levelDB;
         this.name = name;
-        db = levelDB.getDB(name);
+        _db = levelDB.getDB(name);
         this.sizeKey = levelDB.encodeSizeKey(name);
+    }
+
+    private synchronized DB getDB(){
+        if(this._db == null){
+            _db = levelDB.getDB(name);
+        }
+        return _db;
     }
 
     private void incrSize() {
@@ -37,7 +44,7 @@ public class LDBFireIncrement implements FireIncrement {
     }
 
     byte[] asBytes(String message) {
-        return levelDB.bytes(message);
+        return levelDB.asBytes(message);
     }
 
     @Override
@@ -56,7 +63,7 @@ public class LDBFireIncrement implements FireIncrement {
             lock.lock();
             byte[] key = asBytes(name);
             long value = 0;
-            byte[] bytes = db.get(key);
+            byte[] bytes = getDB().get(key);
             if (bytes != null) {
                 value = Bytes.toLong(bytes);
             }
@@ -71,11 +78,11 @@ public class LDBFireIncrement implements FireIncrement {
         try {
             lock.lock();
             byte[] key = asBytes(name);
-            byte[] bytes = db.get(key);
+            byte[] bytes = getDB().get(key);
             if (bytes == null) {
                 incrSize();
             }
-            db.put(key, Bytes.toBytes(value));
+            getDB().put(key, Bytes.toBytes(value));
         } finally {
             lock.unlock();
         }
@@ -92,14 +99,14 @@ public class LDBFireIncrement implements FireIncrement {
             lock.lock();
             byte[] key = asBytes(name);
             long value = 0;
-            byte[] bytes = db.get(key);
+            byte[] bytes = getDB().get(key);
             if (bytes != null) {
                 value = Bytes.toLong(bytes);
             } else {
                 incrSize();
             }
             value += step;
-            db.put(key, Bytes.toBytes(value));
+            getDB().put(key, Bytes.toBytes(value));
             return value;
         } finally {
             lock.unlock();
@@ -112,9 +119,9 @@ public class LDBFireIncrement implements FireIncrement {
             lock.lock();
             byte[] key = asBytes(name);
             long value = 0;
-            byte[] bytes = db.get(key);
+            byte[] bytes = getDB().get(key);
             if (bytes != null) {
-                db.delete(key);
+                getDB().delete(key);
                 decrSize();
                 value = Bytes.toLong(bytes);
             }
@@ -140,7 +147,7 @@ public class LDBFireIncrement implements FireIncrement {
             lock.lock();
             levelDB.deleteDB(name);
             levelDB.removeMeta(sizeKey);
-            this.db = levelDB.getDB(name);
+            this._db = null;
         } finally {
             lock.unlock();
         }

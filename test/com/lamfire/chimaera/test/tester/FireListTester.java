@@ -69,16 +69,21 @@ public class FireListTester {
         System.out.println("list.get(44):"+value);
         Asserts.assertEquals(value,"1231231312313");
 
-        //list.remove(44);
-        //System.out.println("list.remove(44)");
-
-        value = new String(list.get(44));
-        System.out.println("list.get(44):"+value);
-        Asserts.assertEquals(value,"1231231312313");
-
         size = list.size();
         System.out.println("list.size():"+size);
         Asserts.assertEquals(size,elements);
+
+        //=================================================================remove
+        list.remove(44);
+        System.out.println("list.remove(44)");
+
+        value = new String(list.get(44));
+        System.out.println("list.get(44):"+value);
+        Asserts.assertEquals(value,"45");
+
+        size = list.size();
+        System.out.println("list.size():"+size);
+        Asserts.assertEquals(size,elements - 1);
 
         System.out.println("<<== finish : " + this.getClass().getName() + " - " + ( System.currentTimeMillis() - startAt) +"ms");
     }

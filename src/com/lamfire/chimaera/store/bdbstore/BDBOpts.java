@@ -22,9 +22,9 @@ public class BDBOpts {
 	}
 
 	/**
-	 * BDB cache size in bytes.
+	 * BDB cache size in asBytes.
 	 * 
-	 * @return BDB cache size in bytes.
+	 * @return BDB cache size in asBytes.
 	 */
 	public long getCacheSize() {
 		return cacheSize;
@@ -63,9 +63,9 @@ public class BDBOpts {
 	}
 
 	/**
-	 * BDB file size in bytes.
+	 * BDB file size in asBytes.
 	 * 
-	 * @return the number of bytes each BDB file has.
+	 * @return the number of asBytes each BDB file has.
 	 */
 	public long getMaxLogFileSize() {
 		return logFileSize;

@@ -10,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.fusesource.leveldbjni.JniDBFactory;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBFactory;
+import org.iq80.leveldb.DBIterator;
 import org.iq80.leveldb.Options;
 
 import com.lamfire.logger.Logger;
@@ -20,6 +21,11 @@ import com.lamfire.utils.Maps;
 
 public class LevelDB {
 	private static final Logger LOGGER = Logger.getLogger(LevelDB.class);
+    public static final String META_KEY_PREFIX_DATABASE = "[DATABASE]";
+    public static final String META_KEY_PREFIX_SIZE = "[SIZE]";
+    public static final String META_KEY_PREFIX_WRITE_INDEX = "[WRITE_INDEX]";
+    public static final String META_KEY_PREFIX_READ_INDEX = "[READ_INDEX]";
+
     private static final String META_NAME = ".meta";
 	private Charset charset = Charset.forName("UTF-8");
 	private DBFactory factory = new JniDBFactory();
@@ -58,6 +64,28 @@ public class LevelDB {
         }
 	}
 
+    synchronized void clearMeta(){
+        if(metaDb ==null){
+            return;
+        }
+        try {
+            metaDb.close();
+        } catch (IOException e) {
+            LOGGER.warn(e);
+        }
+
+        metaDb=null;
+
+        String dbDir = getDBDir(META_NAME);
+        try {
+            FileUtils.deleteDirectory(new File(dbDir));
+        } catch (IOException e) {
+            LOGGER.warn(e);
+        }
+
+        open();
+    }
+
     private DB getMetaDb(){
         if(metaDb == null){
             throw new RuntimeException("the level db has not opened");
@@ -69,7 +97,7 @@ public class LevelDB {
         return FilenameUtils.concat(rootDir,name);
     }
 	
-	public byte[] bytes(String text) {
+	public byte[] asBytes(String text) {
 		return text.getBytes(charset);
 	}
 
@@ -78,18 +106,28 @@ public class LevelDB {
 	}
 	
 	byte[] encodeSizeKey(String name){
-		byte [] sizeKey = (name+"_SIZE").getBytes(charset);
+		byte [] sizeKey = (META_KEY_PREFIX_SIZE +":"+name).getBytes(charset);
 		return sizeKey;
 	}
 
     byte[] encodeWriteIndexKey(String name){
-        byte [] sizeKey = (name+"_WRITE_INDEX").getBytes(charset);
+        byte [] sizeKey = (META_KEY_PREFIX_WRITE_INDEX+ ":"+name).getBytes(charset);
         return sizeKey;
     }
 
     byte[] encodeReadIndexKey(String name){
-        byte [] sizeKey = (name+"_READ_INDEX").getBytes(charset);
+        byte [] sizeKey = (META_KEY_PREFIX_READ_INDEX+":"+name).getBytes(charset);
         return sizeKey;
+    }
+
+    byte[] encodeDatabaseKey(String name){
+        byte [] sizeKey = (META_KEY_PREFIX_DATABASE +":"+name).getBytes(charset);
+        return sizeKey;
+    }
+
+    String decodeDatabaseKey(byte[] bytes){
+        String key = asString(bytes);
+        return key.substring(META_KEY_PREFIX_DATABASE.length() +1);
     }
 
     long incrementMeta(byte[] key){
@@ -103,6 +141,25 @@ public class LevelDB {
         value += step;
         getMetaDb().put(key, Bytes.toBytes(value));
         return value;
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    byte[] getMetaValue(byte[] key){
+        lock.lock();
+        try{
+            byte[] bytes = getMetaDb().get(key);
+            return bytes;
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    void setMetaValue(byte[] key,byte[] value){
+        lock.lock();
+        try{
+            getMetaDb().put(key,value);
         }finally {
             lock.unlock();
         }
@@ -122,6 +179,20 @@ public class LevelDB {
         }
     }
 
+    String getMetaValueAsString(byte[] key){
+        lock.lock();
+        try{
+            String value = null;
+            byte[] bytes = getMetaDb().get(key);
+            if(bytes != null){
+                value = asString(bytes);
+            }
+            return value;
+        }finally {
+            lock.unlock();
+        }
+    }
+
     void removeMeta(byte[] key){
         lock.lock();
         try{
@@ -132,6 +203,23 @@ public class LevelDB {
             lock.unlock();
         }
     }
+
+
+    public synchronized Map<byte[],byte[]> findMetaByPrefix(final byte[] prefix){
+        Map<byte[],byte[]> map = Maps.newHashMap();
+        DBIterator it = metaDb.iterator();
+        it.seekToFirst();
+        while(it.hasNext()){
+            Map.Entry<byte[],byte[]> entry = it.next();
+            byte[] key = entry.getKey();
+            byte[] head = Bytes.head(key,prefix.length);
+            if(Bytes.equals(prefix,head)){
+                 map.put(key,entry.getValue());
+            }
+        }
+        return map;
+    }
+
 
 	public synchronized DB getDB(String name){
         lock.lock();

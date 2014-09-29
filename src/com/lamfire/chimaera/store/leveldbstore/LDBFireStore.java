@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.store.leveldbstore;
 
 import com.lamfire.chimaera.store.*;
-import com.lamfire.chimaera.store.memstore.MemoryFireRank;
+import com.lamfire.logger.Logger;
 import com.lamfire.utils.Maps;
 
 import java.util.Map;
@@ -14,105 +14,163 @@ import java.util.Map;
  * To change this template use File | Settings | File Templates.
  */
 public class LDBFireStore implements FireStore {
-    private final Map<String, FireCollection> caches = Maps.newHashMap();
+    private static final Logger LOGGER = Logger.getLogger(LDBFireStore.class);
+
+    private final Map<String, FireCollection> dbs = Maps.newHashMap();
 
     private String name;
     private String storageDir;
     private LevelDB levelDB;
 
     public LDBFireStore(String storageDir,String name){
+        LOGGER.info("Make 'LDBFireStore' : " + storageDir + " - " + name);
         this.storageDir = storageDir;
         this.name = name;
         this.levelDB = new LevelDB(storageDir);
         this.levelDB.open();
+        init();
+    }
+
+    private void init(){
+        //读取已经存在的DB
+        byte[] prefix = levelDB.asBytes(LevelDB.META_KEY_PREFIX_DATABASE);
+        Map<byte[],byte[]> map = levelDB.findMetaByPrefix(prefix);
+        for(Map.Entry<byte[] ,byte[]> e : map.entrySet()){
+            String dbName = levelDB.decodeDatabaseKey(e.getKey());
+            String clsName = levelDB.asString(e.getValue());
+            load(dbName,clsName);
+        }
+    }
+
+    private void load(String name,String className){
+        LOGGER.info("Loading data collection [" + name +"] : " + className);
+        switch (className){
+            case "LDBFireSet":
+                getFireSet(name);
+                break;
+            case "LDBFireList":
+                getFireList(name);
+                break;
+            case "LDBFireRank":
+                getFireRank(name);
+                break;
+            case "LDBFireQueue":
+                getFireQueue(name);
+                break;
+            case "LDBFireIncrement":
+                getFireIncrement(name);
+                break;
+            case "LDBFireMap":
+                getFireMap(name);
+                break;
+        }
+    }
+
+    private void register(String name,FireCollection col){
+        String clsName = col.getClass().getSimpleName();
+        byte[] dbKey = levelDB.encodeDatabaseKey(name);
+        levelDB.setMetaValue(dbKey,levelDB.asBytes(clsName));
+        dbs.put(name,col);
     }
 
     @Override
     public void remove(String key) {
+        FireCollection col = dbs.remove(key);
+        col.clear();
         this.levelDB.deleteDB(key);
+        this.levelDB.removeMeta(levelDB.encodeDatabaseKey(name));
     }
 
     @Override
     public long size(String key) {
+        FireCollection col = dbs.get(key);
+        if(col != null){
+            return col.size();
+        }
         return 0;
     }
 
     @Override
     public void clear(String key) {
-        this.levelDB.deleteDB(key);
+        FireCollection col = dbs.get(key);
+        col.clear();
     }
 
     @Override
     public long size() {
-        return 0;
+        return dbs.size();
     }
 
     @Override
-    public void clear() {
-
+    public synchronized void clear() {
+       for(Map.Entry<String,FireCollection> e : dbs.entrySet()){
+           e.getValue().clear();
+       }
+       dbs.clear();
+       levelDB.clearMeta();
     }
 
     @Override
     public boolean exists(String key) {
-        return false;
+        return dbs.containsKey(key);
     }
 
     @Override
     public FireIncrement getFireIncrement(String key) {
-        FireIncrement result = (FireIncrement)caches.get(key);
+        FireIncrement result = (FireIncrement)dbs.get(key);
         if (result == null) {
             result = new LDBFireIncrement(this.levelDB, key);
-            caches.put(key, result);
+            register(key, result);
         }
         return result;
     }
 
     @Override
     public FireList getFireList(String key) {
-        FireList result = (FireList)caches.get(key);
+        FireList result = (FireList)dbs.get(key);
         if (result == null) {
             result = new LDBFireList(this.levelDB,key);
-            caches.put(key, result);
+            register(key, result);
         }
         return result;
     }
 
     @Override
     public FireMap getFireMap(String key) {
-        FireMap result = (FireMap)caches.get(key);
+        FireMap result = (FireMap)dbs.get(key);
         if (result == null) {
             result = new LDBFireMap(this.levelDB, key);
-            caches.put(key, result);
+            register(key, result);
         }
         return result;
     }
 
     @Override
     public FireQueue getFireQueue(String key) {
-        FireQueue result = (FireQueue)caches.get(key);
+        FireQueue result = (FireQueue)dbs.get(key);
         if (result == null) {
             result = new LDBFireQueue(this.levelDB,key);
-            caches.put(key, result);
+            register(key, result);
         }
         return result;
     }
 
     @Override
     public FireSet getFireSet(String key) {
-        FireSet result = (FireSet)caches.get(key);
+        FireSet result = (FireSet)dbs.get(key);
         if (result == null) {
             result = new LDBFireSet(this.levelDB, key);
-            caches.put(key, result);
+            register(key, result);
         }
         return result;
     }
 
     @Override
     public FireRank getFireRank(String key) {
-        FireRank result = (FireRank)caches.get(key);
+        FireRank result = (FireRank)dbs.get(key);
         if (result == null) {
             result = new LDBFireRank(levelDB,key);
-            caches.put(key, result);
+            register(key, result);
         }
         return result;
     }

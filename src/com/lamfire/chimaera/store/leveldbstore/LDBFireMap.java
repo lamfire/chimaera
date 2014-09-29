@@ -19,15 +19,22 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LDBFireMap implements FireMap {
     private final Lock lock = new ReentrantLock();
     private LevelDB levelDB;
-    private DB db;
+    private DB _db;
     private byte[] sizeKey;
     private String name;
 
     public LDBFireMap(LevelDB levelDB,String name){
         this.levelDB = levelDB;
         this.name = name;
-        db = levelDB.getDB(name);
+        _db = levelDB.getDB(name);
         this.sizeKey = levelDB.encodeSizeKey(name);
+    }
+
+    private synchronized DB getDB(){
+        if(this._db == null){
+            _db = levelDB.getDB(name);
+        }
+        return _db;
     }
 
     private void incrSize(long incr){
@@ -38,11 +45,11 @@ public class LDBFireMap implements FireMap {
     public void put(String key, byte[] value) {
         try{
             lock.lock();
-            byte[] keyBytes =levelDB.bytes(key);
-            byte[] oldValue = db.get(keyBytes);
+            byte[] keyBytes =levelDB.asBytes(key);
+            byte[] oldValue = getDB().get(keyBytes);
 
             if(!value.equals(oldValue)){
-                db.put(levelDB.bytes(key),value);
+                getDB().put(levelDB.asBytes(key),value);
             }
 
             if(oldValue == null && value != null){
@@ -58,7 +65,7 @@ public class LDBFireMap implements FireMap {
         try{
             lock.lock();
             List<String> keys = Lists.newArrayList();
-            DBIterator it =  db.iterator();
+            DBIterator it =  getDB().iterator();
             it.seekToFirst();
             while(it.hasNext()){
                 byte[] keyBytes = it.next().getKey();
@@ -74,7 +81,7 @@ public class LDBFireMap implements FireMap {
     public byte[] get(String key) {
         try{
             lock.lock();
-            return db.get(levelDB.bytes(key));
+            return getDB().get(levelDB.asBytes(key));
         }finally {
             lock.unlock();
         }
@@ -84,9 +91,9 @@ public class LDBFireMap implements FireMap {
     public synchronized void remove(String key) {
         try{
             lock.lock();
-            byte[] keyBytes =levelDB.bytes(key);
-            byte[] oldValue = db.get(keyBytes);
-            db.delete(keyBytes);
+            byte[] keyBytes =levelDB.asBytes(key);
+            byte[] oldValue = getDB().get(keyBytes);
+            getDB().delete(keyBytes);
             if(oldValue != null){
                 incrSize(-1);
             }
@@ -121,7 +128,7 @@ public class LDBFireMap implements FireMap {
             lock.lock();
             levelDB.deleteDB(name);
             levelDB.removeMeta(sizeKey);
-            this.db = levelDB.getDB(name);
+            this._db = null;
         }finally {
             lock.unlock();
         }

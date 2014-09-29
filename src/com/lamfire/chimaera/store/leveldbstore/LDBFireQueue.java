@@ -18,7 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LDBFireQueue implements FireQueue {
     private final Lock lock = new ReentrantLock();
     private LevelDB levelDB;
-    private DB db;
+    private DB _db;
     private byte[] writeIndexKey;
     private byte[] readIndexKey;
 
@@ -27,9 +27,16 @@ public class LDBFireQueue implements FireQueue {
     public LDBFireQueue(LevelDB levelDB,String name){
         this.levelDB = levelDB;
         this.name = name;
-        this.db = levelDB.getDB(name);
+        this._db = levelDB.getDB(name);
         this.readIndexKey = levelDB.encodeReadIndexKey(name);
         this.writeIndexKey = levelDB.encodeWriteIndexKey(name);
+    }
+
+    private synchronized DB getDB(){
+        if(this._db == null){
+            _db = levelDB.getDB(name);
+        }
+        return _db;
     }
 
     public long getWriteIndex(){
@@ -51,7 +58,7 @@ public class LDBFireQueue implements FireQueue {
     @Override
     public void push(byte[] value) {
         long index = getWriteIndex();
-        db.put(Bytes.toBytes(index),value);
+        getDB().put(Bytes.toBytes(index),value);
         incrementWriteIndex();
     }
 
@@ -70,7 +77,7 @@ public class LDBFireQueue implements FireQueue {
             throw new NoSuchElementException(this.name);
         }
 
-        byte[] bytes = db.get(Bytes.toBytes(readIndex));
+        byte[] bytes = getDB().get(Bytes.toBytes(readIndex));
         return bytes;
     }
 
@@ -89,7 +96,7 @@ public class LDBFireQueue implements FireQueue {
             levelDB.deleteDB(name);
             levelDB.removeMeta(writeIndexKey);
             levelDB.removeMeta(readIndexKey);
-            this.db = levelDB.getDB(name);
+            this._db = null;
         }finally {
             lock.unlock();
         }

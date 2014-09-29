@@ -23,16 +23,23 @@ public class LDBFireSet implements FireSet {
     private final Lock lock = new ReentrantLock();
     private int hashSeed = 13;
     private LevelDB levelDB;
-    private DB db;
+    private DB _db;
     private byte[] sizeKey;
     private String name;
 
     public LDBFireSet(LevelDB levelDB, String name) {
         this.levelDB = levelDB;
         this.name = name;
-        db = levelDB.getDB(name);
+        _db = levelDB.getDB(name);
         this.sizeKey = levelDB.encodeSizeKey(name);
-        this.hashSeed = MurmurHash.hash32(levelDB.bytes(name), 11);
+        this.hashSeed = MurmurHash.hash32(levelDB.asBytes(name), 11);
+    }
+
+    private synchronized DB getDB(){
+        if(this._db == null){
+            _db = levelDB.getDB(name);
+        }
+        return _db;
     }
 
     private long hash(byte[] bytes) {
@@ -57,11 +64,11 @@ public class LDBFireSet implements FireSet {
         try {
             lock.lock();
             byte[] key = makeHashKey(value);
-            byte[] oldValue = db.get(key);
+            byte[] oldValue = getDB().get(key);
             if (oldValue != null) {
                 return;
             }
-            db.put(key, value);
+            getDB().put(key, value);
             incrSize();
         } finally {
             lock.unlock();
@@ -78,9 +85,9 @@ public class LDBFireSet implements FireSet {
         try {
             lock.lock();
             byte[] key = makeHashKey(value);
-            byte[] oldBytes = db.get(key);
+            byte[] oldBytes = getDB().get(key);
             if (oldBytes != null) {
-                db.delete(key);
+                getDB().delete(key);
                 decrSize();
             }
             return value;
@@ -96,7 +103,7 @@ public class LDBFireSet implements FireSet {
         }
         try {
             lock.lock();
-            DBIterator it = db.iterator();
+            DBIterator it = getDB().iterator();
             it.seekToFirst();
             int i = 0;
             byte[] result = null;
@@ -122,7 +129,7 @@ public class LDBFireSet implements FireSet {
         try {
             lock.lock();
             List<byte[]> list = Lists.newArrayList();
-            DBIterator it = db.iterator();
+            DBIterator it = getDB().iterator();
             it.seekToFirst();
             int i = 0;
             while(it.hasNext()){
@@ -146,7 +153,7 @@ public class LDBFireSet implements FireSet {
         try {
             lock.lock();
             byte[] key = makeHashKey(bytes);
-            byte[] oldBytes = db.get(key);
+            byte[] oldBytes = getDB().get(key);
             if (oldBytes != null) {
                 return true;
             }
@@ -172,7 +179,7 @@ public class LDBFireSet implements FireSet {
             lock.lock();
             levelDB.deleteDB(name);
             levelDB.removeMeta(sizeKey);
-            this.db = levelDB.getDB(name);
+            this._db = null;
         } finally {
             lock.unlock();
         }
