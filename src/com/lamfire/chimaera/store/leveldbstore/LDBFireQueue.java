@@ -24,7 +24,7 @@ public class LDBFireQueue implements FireQueue {
 
     private String name;
 
-    public LDBFireQueue(LevelDB levelDB,String name){
+    public LDBFireQueue(LevelDB levelDB, String name) {
         this.levelDB = levelDB;
         this.name = name;
         this._db = levelDB.getDB(name);
@@ -32,72 +32,91 @@ public class LDBFireQueue implements FireQueue {
         this.writeIndexKey = levelDB.encodeWriteIndexKey(name);
     }
 
-    private synchronized DB getDB(){
-        if(this._db == null){
+    private synchronized DB getDB() {
+        if (this._db == null) {
             _db = levelDB.getDB(name);
         }
         return _db;
     }
 
-    public long getWriteIndex(){
-         return levelDB.getMetaValueAsLong(writeIndexKey);
+    public long getWriteIndex() {
+        return levelDB.getMetaValueAsLong(writeIndexKey);
     }
 
-    public long getReadIndex(){
+    public long getReadIndex() {
         return levelDB.getMetaValueAsLong(readIndexKey);
     }
 
-    void incrementWriteIndex(){
+    void incrementWriteIndex() {
         levelDB.incrementMeta(writeIndexKey);
     }
 
-    void incrementReadIndex(){
+    void incrementReadIndex() {
         levelDB.incrementMeta(readIndexKey);
     }
 
     @Override
     public void push(byte[] value) {
-        long index = getWriteIndex();
-        getDB().put(Bytes.toBytes(index),value);
-        incrementWriteIndex();
+        try {
+            lock.lock();
+            long index = getWriteIndex();
+            getDB().put(Bytes.toBytes(index), value);
+            incrementWriteIndex();
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public byte[] pop() {
-        byte[] bytes = peek();
-        incrementReadIndex();
-        return bytes;
+        try {
+            lock.lock();
+            byte[] bytes = peek();
+            incrementReadIndex();
+            return bytes;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public byte[] peek() {
-        long writeIndex = getWriteIndex();
-        long readIndex = getReadIndex();
-        if(readIndex >= writeIndex){
-            throw new NoSuchElementException(this.name);
-        }
+        try {
+            lock.lock();
+            long writeIndex = getWriteIndex();
+            long readIndex = getReadIndex();
+            if (readIndex >= writeIndex) {
+                throw new NoSuchElementException(this.name);
+            }
 
-        byte[] bytes = getDB().get(Bytes.toBytes(readIndex));
-        return bytes;
+            byte[] bytes = getDB().get(Bytes.toBytes(readIndex));
+            return bytes;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public long size() {
-        long writeIndex = getWriteIndex();
-        long readIndex = getReadIndex();
-
-        return writeIndex - readIndex;
+        try {
+            lock.lock();
+            long writeIndex = getWriteIndex();
+            long readIndex = getReadIndex();
+            return writeIndex - readIndex;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public void clear() {
-        try{
+        try {
             lock.lock();
             levelDB.deleteDB(name);
             levelDB.removeMeta(writeIndexKey);
             levelDB.removeMeta(readIndexKey);
             this._db = null;
-        }finally {
+        } finally {
             lock.unlock();
         }
     }

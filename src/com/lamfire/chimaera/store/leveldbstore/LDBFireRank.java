@@ -41,15 +41,15 @@ public class LDBFireRank implements FireRank {
     }
 
 
-    private synchronized DB getDB(){
-        if(this._db == null){
+    private synchronized DB getDB() {
+        if (this._db == null) {
             _db = levelDB.getDB(name);
         }
         return _db;
     }
 
-    private synchronized DB getIndexDB(){
-        if(this._indexDB == null){
+    private synchronized DB getIndexDB() {
+        if (this._indexDB == null) {
             _indexDB = levelDB.getDB(indexName);
         }
         return _indexDB;
@@ -85,211 +85,266 @@ public class LDBFireRank implements FireRank {
     }
 
     private long getScore(byte[] scoreKey) {
-        long score = 0;
-        byte[] bytes = getDB().get(scoreKey);
-        if (bytes != null) {
-            score = Bytes.toLong(bytes);
+        try {
+            lock.lock();
+            long score = 0;
+            byte[] bytes = getDB().get(scoreKey);
+            if (bytes != null) {
+                score = Bytes.toLong(bytes);
+            }
+            return score;
+        } finally {
+            lock.unlock();
         }
-        return score;
     }
 
     private void update(byte[] nameKey, byte[] oldScoreKey, byte[] newScoreKey, long score) {
-        getIndexDB().put(nameKey, newScoreKey);
-        if (oldScoreKey != null) {
-            getDB().delete(oldScoreKey);
+        try {
+            lock.lock();
+            getIndexDB().put(nameKey, newScoreKey);
+            if (oldScoreKey != null) {
+                getDB().delete(oldScoreKey);
+            }
+            getDB().put(newScoreKey, nameKey);
+        } finally {
+            lock.unlock();
         }
-        getDB().put(newScoreKey, nameKey);
     }
 
     @Override
     public void put(String name) {
-        long score = 0;
-        byte[] nameKey = levelDB.asBytes(name);
-        byte[] scoreKey = getIndexDB().get(nameKey);
-        if (scoreKey == null) {
-            score = 1;
-            scoreKey = encodeScoreKey(name, score);
-            update(nameKey, null, scoreKey, score);
-            incrSize();
-            return;
-        }
+        try {
+            lock.lock();
+            long score = 0;
+            byte[] nameKey = levelDB.asBytes(name);
+            byte[] scoreKey = getIndexDB().get(nameKey);
+            if (scoreKey == null) {
+                score = 1;
+                scoreKey = encodeScoreKey(name, score);
+                update(nameKey, null, scoreKey, score);
+                incrSize();
+                return;
+            }
 
-        score = decodeScore(scoreKey);
-        score++;
-        byte[] newScoreKey = encodeScoreKey(name, score);
-        update(nameKey, scoreKey, newScoreKey, score);
+            score = decodeScore(scoreKey);
+            score++;
+            byte[] newScoreKey = encodeScoreKey(name, score);
+            update(nameKey, scoreKey, newScoreKey, score);
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public void incr(String name, long step) {
-        long score = 0;
-        byte[] nameKey = levelDB.asBytes(name);
-        byte[] scoreKey = getIndexDB().get(nameKey);
-        if (scoreKey == null) {
-            score = step;
-            scoreKey = encodeScoreKey(name, score);
-            update(nameKey, null, scoreKey, score);
-            incrSize();
-            return;
-        }
+        try {
+            lock.lock();
+            long score = 0;
+            byte[] nameKey = levelDB.asBytes(name);
+            byte[] scoreKey = getIndexDB().get(nameKey);
+            if (scoreKey == null) {
+                score = step;
+                scoreKey = encodeScoreKey(name, score);
+                update(nameKey, null, scoreKey, score);
+                incrSize();
+                return;
+            }
 
-        score = decodeScore(scoreKey);
-        score += step;
-        byte[] newScoreKey = encodeScoreKey(name, score);
-        update(nameKey, scoreKey, newScoreKey, score);
+            score = decodeScore(scoreKey);
+            score += step;
+            byte[] newScoreKey = encodeScoreKey(name, score);
+            update(nameKey, scoreKey, newScoreKey, score);
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public void set(String name, long score) {
-        byte[] nameKey = levelDB.asBytes(name);
-        byte[] scoreKey = getIndexDB().get(nameKey);
-        if (scoreKey == null) {
-            scoreKey = encodeScoreKey(name, score);
-            update(nameKey, null, scoreKey, score);
-            incrSize();
-            return;
-        }
+        try {
+            lock.lock();
+            byte[] nameKey = levelDB.asBytes(name);
+            byte[] scoreKey = getIndexDB().get(nameKey);
+            if (scoreKey == null) {
+                scoreKey = encodeScoreKey(name, score);
+                update(nameKey, null, scoreKey, score);
+                incrSize();
+                return;
+            }
 
-        score = decodeScore(scoreKey);
-        byte[] newScoreKey = encodeScoreKey(name, score);
-        update(nameKey, scoreKey, newScoreKey, score);
+            score = decodeScore(scoreKey);
+            byte[] newScoreKey = encodeScoreKey(name, score);
+            update(nameKey, scoreKey, newScoreKey, score);
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public long score(String name) {
-        byte[] nameKey = levelDB.asBytes(name);
-        byte[] scoreKey = getIndexDB().get(nameKey);
-        if (scoreKey != null) {
-            return decodeScore(scoreKey);
+        try {
+            lock.lock();
+            byte[] nameKey = levelDB.asBytes(name);
+            byte[] scoreKey = getIndexDB().get(nameKey);
+            if (scoreKey != null) {
+                return decodeScore(scoreKey);
+            }
+            return 0;
+        } finally {
+            lock.unlock();
         }
-        return 0;
     }
 
     @Override
     public long remove(String name) {
-        long score = 0;
-        byte[] nameKey = levelDB.asBytes(name);
-        byte[] scoreKey = getIndexDB().get(nameKey);
-        if (scoreKey != null) {
-            score = decodeScore(scoreKey);
-            getIndexDB().delete(nameKey);
-            getDB().delete(scoreKey);
-            decrSize();
-        }
+        try {
+            lock.lock();
+            long score = 0;
+            byte[] nameKey = levelDB.asBytes(name);
+            byte[] scoreKey = getIndexDB().get(nameKey);
+            if (scoreKey != null) {
+                score = decodeScore(scoreKey);
+                getIndexDB().delete(nameKey);
+                getDB().delete(scoreKey);
+                decrSize();
+            }
 
-        return score;
+            return score;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public List<Item> max(int size) {
-        List<Item> result = Lists.newArrayList();
-        DBIterator it = getDB().iterator();
-        it.seekToLast();
+        try {
+            lock.lock();
+            List<Item> result = Lists.newArrayList();
+            DBIterator it = getDB().iterator();
+            it.seekToLast();
 
-        Map.Entry<byte[], byte[]> e = it.peekNext();
-        Item item = new Item();
-        item.setName(levelDB.asString(e.getValue()));
-        item.setValue(decodeScore(e.getKey()));
-        result.add(item);
-
-        while (it.hasPrev()) {
-            e = it.prev();
-            item = new Item();
+            Map.Entry<byte[], byte[]> e = it.peekNext();
+            Item item = new Item();
             item.setName(levelDB.asString(e.getValue()));
-            long score = decodeScore(e.getKey());
-            item.setValue(score);
+            item.setValue(decodeScore(e.getKey()));
             result.add(item);
-            if (result.size() >= size) {
-                break;
+
+            while (it.hasPrev()) {
+                e = it.prev();
+                item = new Item();
+                item.setName(levelDB.asString(e.getValue()));
+                long score = decodeScore(e.getKey());
+                item.setValue(score);
+                result.add(item);
+                if (result.size() >= size) {
+                    break;
+                }
             }
+            return result;
+        } finally {
+            lock.unlock();
         }
-        return result;
     }
 
     @Override
     public List<Item> min(int size) {
-        List<Item> result = Lists.newArrayList();
-        DBIterator it = getDB().iterator();
-        it.seekToFirst();
-        while (it.hasNext()) {
-            Map.Entry<byte[], byte[]> e = it.next();
-            Item item = new Item();
-            item.setName(levelDB.asString(e.getValue()));
-            long score = decodeScore(e.getKey());
-            item.setValue(score);
-            result.add(item);
-            if (result.size() >= size) {
-                break;
+        try {
+            lock.lock();
+            List<Item> result = Lists.newArrayList();
+            DBIterator it = getDB().iterator();
+            it.seekToFirst();
+            while (it.hasNext()) {
+                Map.Entry<byte[], byte[]> e = it.next();
+                Item item = new Item();
+                item.setName(levelDB.asString(e.getValue()));
+                long score = decodeScore(e.getKey());
+                item.setValue(score);
+                result.add(item);
+                if (result.size() >= size) {
+                    break;
+                }
             }
+            return result;
+        } finally {
+            lock.unlock();
         }
-        return result;
     }
 
     @Override
     public List<Item> maxRange(int from, int size) {
-        List<Item> result = Lists.newArrayList();
-        DBIterator it = getDB().iterator();
-        it.seekToLast();
+        try {
+            lock.lock();
+            List<Item> result = Lists.newArrayList();
+            DBIterator it = getDB().iterator();
+            it.seekToLast();
 
-        //add last;
-        if (from == 0) {
-            Map.Entry<byte[], byte[]> e = it.next();
-            Item item = new Item();
-            item.setName(levelDB.asString(e.getValue()));
-            long score = decodeScore(e.getKey());
-            item.setValue(score);
-            result.add(item);
-        }
-
-        it.seekToLast();
-        //skip
-        for(int i=1;i<from;i++){
-            if(it.hasPrev())it.prev();
-        }
-
-
-        //
-        while (it.hasPrev()) {
-            Map.Entry<byte[], byte[]> e = it.prev();
-            Item item = new Item();
-            item.setName(levelDB.asString(e.getValue()));
-            long score = decodeScore(e.getKey());
-            item.setValue(score);
-            result.add(item);
-            if (result.size() >= size) {
-                break;
+            //add last;
+            if (from == 0) {
+                Map.Entry<byte[], byte[]> e = it.next();
+                Item item = new Item();
+                item.setName(levelDB.asString(e.getValue()));
+                long score = decodeScore(e.getKey());
+                item.setValue(score);
+                result.add(item);
             }
+
+            it.seekToLast();
+            //skip
+            for (int i = 1; i < from; i++) {
+                if (it.hasPrev()) it.prev();
+            }
+
+
+            //
+            while (it.hasPrev()) {
+                Map.Entry<byte[], byte[]> e = it.prev();
+                Item item = new Item();
+                item.setName(levelDB.asString(e.getValue()));
+                long score = decodeScore(e.getKey());
+                item.setValue(score);
+                result.add(item);
+                if (result.size() >= size) {
+                    break;
+                }
+            }
+            return result;
+        } finally {
+            lock.unlock();
         }
-        return result;
     }
 
     @Override
     public List<Item> minRange(int from, int size) {
-        List<Item> result = Lists.newArrayList();
-        DBIterator it = getDB().iterator();
-        it.seekToFirst();
-        //skip
-        int i = 0;
-        while (it.hasPrev()) {
-            if (i >= from) {
-                break;
+        try {
+            lock.lock();
+            List<Item> result = Lists.newArrayList();
+            DBIterator it = getDB().iterator();
+            it.seekToFirst();
+            //skip
+            int i = 0;
+            while (it.hasPrev()) {
+                if (i >= from) {
+                    break;
+                }
+                i++;
             }
-            i++;
-        }
 
-        //
-        while (it.hasNext()) {
-            Map.Entry<byte[], byte[]> e = it.next();
-            Item item = new Item();
-            item.setName(levelDB.asString(e.getValue()));
-            long score = decodeScore(e.getKey());
-            item.setValue(score);
-            result.add(item);
-            if (result.size() >= size) {
-                break;
+            //
+            while (it.hasNext()) {
+                Map.Entry<byte[], byte[]> e = it.next();
+                Item item = new Item();
+                item.setName(levelDB.asString(e.getValue()));
+                long score = decodeScore(e.getKey());
+                item.setValue(score);
+                result.add(item);
+                if (result.size() >= size) {
+                    break;
+                }
             }
+            return result;
+        } finally {
+            lock.unlock();
         }
-        return result;
     }
 
     @Override

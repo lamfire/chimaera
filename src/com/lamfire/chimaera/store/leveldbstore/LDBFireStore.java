@@ -44,25 +44,18 @@ public class LDBFireStore implements FireStore {
 
     private void load(String name,String className){
         LOGGER.info("Loading data collection [" + name +"] : " + className);
-        switch (className){
-            case "LDBFireSet":
+        if ("LDBFireSet".equals(className)){
                 getFireSet(name);
-                break;
-            case "LDBFireList":
+        }else if("LDBFireList".equals(className)){
                 getFireList(name);
-                break;
-            case "LDBFireRank":
-                getFireRank(name);
-                break;
-            case "LDBFireQueue":
-                getFireQueue(name);
-                break;
-            case "LDBFireIncrement":
-                getFireIncrement(name);
-                break;
-            case "LDBFireMap":
-                getFireMap(name);
-                break;
+        }else if("LDBFireRank".equals(className)){
+            getFireRank(name);
+        }else if("LDBFireQueue".equals(className)){
+            getFireQueue(name);
+        }else if("LDBFireIncrement".equals(className)){
+            getFireIncrement(name);
+        }else if("LDBFireMap".equals(className)){
+            getFireMap(name);
         }
     }
 
@@ -116,7 +109,7 @@ public class LDBFireStore implements FireStore {
     }
 
     @Override
-    public FireIncrement getFireIncrement(String key) {
+    public synchronized FireIncrement getFireIncrement(String key) {
         FireIncrement result = (FireIncrement)dbs.get(key);
         if (result == null) {
             result = new LDBFireIncrement(this.levelDB, key);
@@ -126,7 +119,7 @@ public class LDBFireStore implements FireStore {
     }
 
     @Override
-    public FireList getFireList(String key) {
+    public synchronized FireList getFireList(String key) {
         FireList result = (FireList)dbs.get(key);
         if (result == null) {
             result = new LDBFireList(this.levelDB,key);
@@ -136,7 +129,7 @@ public class LDBFireStore implements FireStore {
     }
 
     @Override
-    public FireMap getFireMap(String key) {
+    public synchronized FireMap getFireMap(String key) {
         FireMap result = (FireMap)dbs.get(key);
         if (result == null) {
             result = new LDBFireMap(this.levelDB, key);
@@ -146,7 +139,7 @@ public class LDBFireStore implements FireStore {
     }
 
     @Override
-    public FireQueue getFireQueue(String key) {
+    public synchronized FireQueue getFireQueue(String key) {
         FireQueue result = (FireQueue)dbs.get(key);
         if (result == null) {
             result = new LDBFireQueue(this.levelDB,key);
@@ -156,7 +149,7 @@ public class LDBFireStore implements FireStore {
     }
 
     @Override
-    public FireSet getFireSet(String key) {
+    public synchronized FireSet getFireSet(String key) {
         FireSet result = (FireSet)dbs.get(key);
         if (result == null) {
             result = new LDBFireSet(this.levelDB, key);
@@ -166,7 +159,7 @@ public class LDBFireStore implements FireStore {
     }
 
     @Override
-    public FireRank getFireRank(String key) {
+    public synchronized FireRank getFireRank(String key) {
         FireRank result = (FireRank)dbs.get(key);
         if (result == null) {
             result = new LDBFireRank(levelDB,key);

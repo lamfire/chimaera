@@ -63,18 +63,23 @@ public class LDBFireList implements FireList{
     }
 
     private synchronized Map.Entry<byte[] ,byte[]> getEntry(int index){
-        DBIterator it = getDB().iterator();
-        it.seekToFirst();
-        int count = 0;
-        while(it.hasNext()){
-            if(count == index){
-                break;
+        try{
+            lock.lock();
+            DBIterator it = getDB().iterator();
+            it.seekToFirst();
+            int count = 0;
+            while(it.hasNext()){
+                if(count == index){
+                    break;
+                }
+                it.next();
+                count ++;
             }
-            it.next();
-            count ++;
+            Map.Entry<byte[] ,byte[]> entry = it.next();
+            return entry;
+        }finally {
+            lock.unlock();
         }
-        Map.Entry<byte[] ,byte[]> entry = it.next();
-        return entry;
     }
 
     @Override

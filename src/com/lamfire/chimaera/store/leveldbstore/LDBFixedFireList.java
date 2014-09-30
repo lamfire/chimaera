@@ -17,71 +17,86 @@ import java.util.concurrent.locks.ReentrantLock;
  * Time: 下午2:50
  * To change this template use File | Settings | File Templates.
  */
-public class LDBFixedFireList implements FireList{
+public class LDBFixedFireList implements FireList {
     private final Lock lock = new ReentrantLock();
     private LevelDB levelDB;
     private DB db;
     private byte[] writeIndexKey;
     private String name;
 
-    public LDBFixedFireList(LevelDB levelDB, String name){
+    public LDBFixedFireList(LevelDB levelDB, String name) {
         this.levelDB = levelDB;
         this.name = name;
         this.db = levelDB.getDB(name);
         this.writeIndexKey = levelDB.encodeWriteIndexKey(name);
     }
 
-    private synchronized DB getDB(){
-        if(this.db == null){
+    private synchronized DB getDB() {
+        if (this.db == null) {
             db = levelDB.getDB(name);
         }
         return db;
     }
 
-    public long getWriteIndex(){
+    public long getWriteIndex() {
         return levelDB.getMetaValueAsLong(writeIndexKey);
     }
 
-    void incrementWriteIndex(){
+    void incrementWriteIndex() {
         levelDB.incrementMeta(writeIndexKey);
     }
 
     @Override
     public boolean add(byte[] value) {
-        long index = getWriteIndex();
-        db.put(Bytes.toBytes(index),value);
-        incrementWriteIndex();
-        return true;
+        try {
+            lock.lock();
+            long index = getWriteIndex();
+            db.put(Bytes.toBytes(index), value);
+            incrementWriteIndex();
+            return true;
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public void set(int index, byte[] value) {
-        long size = getWriteIndex();
-        if(index >= size){
-            throw new IndexOutOfBoundsException("Index " + index +",Size " + size);
+        try {
+            lock.lock();
+            long size = getWriteIndex();
+            if (index >= size) {
+                throw new IndexOutOfBoundsException("Index " + index + ",Size " + size);
+            }
+            long key = (long) index;
+            db.put(Bytes.toBytes(key), value);
+        } finally {
+            lock.unlock();
         }
-        long key = (long)index;
-        db.put(Bytes.toBytes(key),value);
     }
 
     @Override
     public byte[] get(int index) {
-        long size = getWriteIndex();
-        if(index >= size){
-            throw new IndexOutOfBoundsException("Index " + index +",Size " + size);
+        try {
+            lock.lock();
+            long size = getWriteIndex();
+            if (index >= size) {
+                throw new IndexOutOfBoundsException("Index " + index + ",Size " + size);
+            }
+            long key = (long) index;
+            return db.get(Bytes.toBytes(key));
+        } finally {
+            lock.unlock();
         }
-        long key = (long)index;
-        return db.get(Bytes.toBytes(key));
     }
 
     @Override
     public List<byte[]> gets(int fromIndex, int size) {
         long max = getWriteIndex();
-        if(fromIndex + size >= max){
-            throw new IndexOutOfBoundsException("Index [" + fromIndex +" - " +(fromIndex + size) +"],Size " + max);
+        if (fromIndex + size >= max) {
+            throw new IndexOutOfBoundsException("Index [" + fromIndex + " - " + (fromIndex + size) + "],Size " + max);
         }
         List<byte[]> list = new ArrayList<byte[]>(size);
-        try{
+        try {
             lock.lock();
             long maxIndex = getWriteIndex();
             for (int i = fromIndex; i < maxIndex; i++) {
@@ -90,7 +105,7 @@ public class LDBFixedFireList implements FireList{
                     break;
                 }
             }
-        }finally {
+        } finally {
             lock.unlock();
         }
         return list;
@@ -108,12 +123,12 @@ public class LDBFixedFireList implements FireList{
 
     @Override
     public void clear() {
-        try{
+        try {
             lock.lock();
             levelDB.deleteDB(name);
             levelDB.removeMeta(writeIndexKey);
             this.db = levelDB.getDB(name);
-        }finally {
+        } finally {
             lock.unlock();
         }
     }
