@@ -5,6 +5,7 @@ import com.lamfire.chimaera.response.ErrorResponse;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.serializer.Serializers;
 import com.lamfire.chimaera.service.Service;
+import com.lamfire.hydra.Message;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
 
@@ -18,14 +19,14 @@ import com.lamfire.logger.Logger;
 public class ChimaeraServiceTask implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraServiceTask.class);
     MessageContext context;
-    Command command;
+    Message message;
 
-    public ChimaeraServiceTask(MessageContext context, Command command) {
+    public ChimaeraServiceTask(MessageContext context, Message message) {
         this.context = context;
-        this.command = command;
+        this.message = message;
     }
 
-    private void checkMemory() {
+    private void checkMemory(Command command) {
         if (ServiceRegistry.getInstance().isWriteProtectedCommand(command.getCommand())) { //如果为写入操作，则检查剩余内存
             if (Chimaera.isLackOfMemory()) { //内存缺乏
                 throw new ChimaeraException("Lack of memory,available less " + Chimaera.getAvailableHeapMemory() / 1024 / 1024 + "mb");
@@ -36,12 +37,14 @@ public class ChimaeraServiceTask implements Runnable {
     @Override
     public void run() {
         Response response = null;
+        byte[] bytes = message.getBody();
+        Command cmd = Serializers.getCommandSerializer().decode(bytes, Command.class);
         try {
             if( !Chimaera.getChimaeraOpts().isStoreOnDisk()){
-                checkMemory();
+                checkMemory(cmd);
             }
-            Service<Command> service = ServiceRegistry.getInstance().getService(command.getCommand());
-            response = service.execute(context, command);
+            Service<Command> service = ServiceRegistry.getInstance().getService(cmd.getCommand());
+            response = service.execute(context, cmd);
         } catch (Throwable e) {
             LOGGER.warn(e.getMessage(), e);
             ErrorResponse err = new ErrorResponse();
