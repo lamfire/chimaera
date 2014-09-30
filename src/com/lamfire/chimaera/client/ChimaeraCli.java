@@ -39,7 +39,6 @@ public class ChimaeraCli {
             throw new ChimaeraException("The 'ChimaeraCli' already connected to " + transfer.getHost() + ":" + transfer.getPort());
         }
         this.transfer = new ChimaeraTransfer(host, port, maxConnections, waitQueue);
-        this.transfer.setExecutorService(Executors.newFixedThreadPool(maxThreads, Threads.makeThreadFactory("ChimaeraCli")));
         this.transfer.setKeepaliveConnsWithClient(maxConnections);
         this.transfer.connect();
         LOGGER.info("ChimaeraCli connected to " + transfer.getHost() + ":" + transfer.getPort());

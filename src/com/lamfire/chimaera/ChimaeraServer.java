@@ -18,6 +18,7 @@ import com.lamfire.utils.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class ChimaeraServer extends Snake {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraServer.class);
@@ -31,7 +32,6 @@ public class ChimaeraServer extends Snake {
     }
 
     public void startup() {
-        this.setExecutorService(ThreadPools.get().getExecutorService());
         this.bind();
         LOGGER.info("[startup] available memory = " + (Chimaera.getAvailableHeapMemory() / 1024 / 1024) + "mb");
         LOGGER.info("[startup] startup on - " + serverConfigure.getBind() + ":" + serverConfigure.getPort());
@@ -61,6 +61,7 @@ public class ChimaeraServer extends Snake {
                 submitTask(context, cmd);
             }
         } catch (Throwable e) {
+            LOGGER.warn(e);
             ErrorResponse err = new ErrorResponse();
             err.setError(e.getMessage());
             sendResponse(context, err);

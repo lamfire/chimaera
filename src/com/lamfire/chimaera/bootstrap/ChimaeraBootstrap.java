@@ -76,8 +76,8 @@ public class ChimaeraBootstrap {
         ChimaeraBootstrap bootstrap = new ChimaeraBootstrap();
         bootstrap.startup();
 
-        HttpServerBootstrap httpBootstrap = new HttpServerBootstrap();
-        httpBootstrap.startup();
+        //HttpServerBootstrap httpBootstrap = new HttpServerBootstrap();
+        //httpBootstrap.startup();
 
     }
 }

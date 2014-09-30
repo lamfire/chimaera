@@ -1,20 +1,10 @@
 package com.lamfire.chimaera.test.client;
 
-import com.lamfire.chimaera.client.ChimaeraCli;
-import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.chimaera.store.FireRank;
-import com.lamfire.chimaera.store.Item;
 import com.lamfire.chimaera.test.Config;
-import com.lamfire.chimaera.test.benchmark.FireQueueBenchmark;
 import com.lamfire.chimaera.test.benchmark.FireRankBenchmark;
-import com.lamfire.chimaera.test.tester.FireQueueTester;
 import com.lamfire.chimaera.test.tester.FireRankTester;
 import com.lamfire.utils.ArrayUtils;
-import com.lamfire.utils.Asserts;
-import com.lamfire.utils.StringUtils;
-
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created with IntelliJ IDEA.
