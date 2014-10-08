@@ -13,24 +13,24 @@ import java.util.concurrent.*;
  * Time: 上午10:19
  * To change this template use File | Settings | File Templates.
  */
-public class ThreadPools {
-    private static final Logger LOGGER = Logger.getLogger(ThreadPools.class);
-    private static ThreadPools pools;
+public class ChimaeraThreadPools {
+    private static final Logger LOGGER = Logger.getLogger(ChimaeraThreadPools.class);
+    private static ChimaeraThreadPools pools;
     private static final ScheduledExecutorService chimaeraScheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory("Chimaera.Scheduler"));
 
-    public synchronized static ThreadPools get() {
+    public synchronized static ChimaeraThreadPools get() {
         if (pools == null) {
-            pools = new ThreadPools();
+            pools = new ChimaeraThreadPools();
         }
         return pools;
     }
 
     private ExecutorService service;
 
-    private ThreadPools() {
+    private ChimaeraThreadPools() {
         int threads = -1;
         try {
-            threads = 16;
+            threads = 4;
         } catch (Exception e) {
 
         }

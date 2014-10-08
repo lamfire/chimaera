@@ -15,6 +15,7 @@ import com.lamfire.logger.Logger;
 
 import java.util.List;
 
+
 public class ChimaeraServer extends Snake {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraServer.class);
     private ServiceRegistry serviceRegistry = ServiceRegistry.getInstance();
@@ -24,6 +25,7 @@ public class ChimaeraServer extends Snake {
         super(serverConfigure.getBind(), serverConfigure.getPort());
         this.serverConfigure = serverConfigure;
         Chimaera.setChimaeraOpts(serverConfigure);
+
     }
 
     public void startup() {
@@ -59,7 +61,7 @@ public class ChimaeraServer extends Snake {
      */
     private void serviceAsync(MessageContext context, Message message){
         ChimaeraServiceTask task = new ChimaeraServiceTask(context, message);
-        ThreadPools.get().submit(task);
+        ChimaeraThreadPools.get().submit(task);
 
     }
 

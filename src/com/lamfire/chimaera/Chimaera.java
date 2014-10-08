@@ -15,7 +15,7 @@ public class Chimaera {
     private static  ChimaeraOpts opts;
 
     static {
-        ThreadPools.get().scheduleWithFixedDelay(new Runnable() {
+        ChimaeraThreadPools.get().scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 lackOfMemory = isLackOfMemoryCheck();
