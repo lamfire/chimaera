@@ -15,12 +15,24 @@ public class Chimaera {
     private static  ChimaeraOpts opts;
 
     static {
+
+        //check memory
+        LOGGER.info("starting memory check monitor.");
         ChimaeraThreadPools.get().scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 lackOfMemory = isLackOfMemoryCheck();
             }
         }, 15, 15, TimeUnit.SECONDS);
+
+        //execute full gc
+        LOGGER.info("starting GC monitor.");
+        ChimaeraThreadPools.get().scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                fullGC();
+            }
+        }, 60, 60, TimeUnit.MINUTES);
     }
 
     private Chimaera() {
@@ -82,5 +94,9 @@ public class Chimaera {
 
     public static boolean isLackOfMemory() {
         return lackOfMemory;
+    }
+
+    private static void fullGC(){
+        System.gc();
     }
 }
