@@ -26,6 +26,14 @@ public class LevelDB {
     public static final String META_KEY_PREFIX_WRITE_INDEX = "[WRITE_INDEX]";
     public static final String META_KEY_PREFIX_READ_INDEX = "[READ_INDEX]";
 
+    /**
+     * write_buffer调大，可以让写的次数降低，写的强度提高.
+     * 写缓冲大小，增加会提高写的性能，但是会增加启动的时间，因为有更多的数据需要恢复.
+     */
+    private static final int OPTIONS_WRITE_BUFFER_SIZE = 8 * 1024 * 1024;
+    private static final int OPTIONS_CACHE_SIZE = 16 * 1024 * 1024;
+    private static final int OPTIONS_MAX_OPEN_FILES = 1024;
+
     private static final String META_NAME = ".meta";
 	private Charset charset = Charset.forName("UTF-8");
 	private DBFactory factory = new JniDBFactory();
@@ -228,9 +236,11 @@ public class LevelDB {
             if(db != null ){
                 return db;
             }
-
             Options options = new Options();
             options.createIfMissing(true);
+            options.writeBufferSize(OPTIONS_WRITE_BUFFER_SIZE);
+            options.cacheSize(OPTIONS_CACHE_SIZE);
+            options.maxOpenFiles(OPTIONS_MAX_OPEN_FILES);
             return getDB(name,options);
         }finally {
             lock.unlock();
