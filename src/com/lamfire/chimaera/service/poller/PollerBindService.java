@@ -8,7 +8,7 @@ import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
 import com.lamfire.hydra.MessageContext;
-import com.lamfire.hydra.net.Session;
+import com.lamfire.hydra.Session;
 import com.lamfire.logger.Logger;
 
 @SERVICE(command = Command.POLLER_BIND)

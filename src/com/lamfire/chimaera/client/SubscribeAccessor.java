@@ -7,7 +7,7 @@ import com.lamfire.chimaera.command.subscribe.SubscribeBindCommand;
 import com.lamfire.chimaera.command.subscribe.SubscribePublishCommand;
 import com.lamfire.chimaera.command.subscribe.SubscribeUnbindCommand;
 import com.lamfire.chimaera.response.EmptyResponse;
-import com.lamfire.hydra.net.Session;
+import com.lamfire.hydra.Session;
 
 /**
  * 消息定阅器

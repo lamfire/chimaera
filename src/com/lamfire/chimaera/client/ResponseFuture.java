@@ -4,7 +4,7 @@ import com.lamfire.chimaera.ChimaeraException;
 import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.response.ErrorResponse;
 import com.lamfire.chimaera.response.Response;
-import com.lamfire.hydra.net.Session;
+import com.lamfire.hydra.Session;
 import com.lamfire.json.JSON;
 import com.lamfire.logger.Logger;
 

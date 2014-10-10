@@ -2,7 +2,7 @@ package com.lamfire.chimaera.client;
 
 import com.lamfire.chimaera.OnMessageListener;
 import com.lamfire.chimaera.command.Command;
-import com.lamfire.hydra.net.Session;
+import com.lamfire.hydra.Session;
 
 /**
  * Created with IntelliJ IDEA.

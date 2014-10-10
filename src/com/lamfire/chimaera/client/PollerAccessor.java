@@ -7,7 +7,7 @@ import com.lamfire.chimaera.command.poller.PollerBindCommand;
 import com.lamfire.chimaera.command.poller.PollerPublishCommand;
 import com.lamfire.chimaera.command.poller.PollerUnbindCommand;
 import com.lamfire.chimaera.response.EmptyResponse;
-import com.lamfire.hydra.net.Session;
+import com.lamfire.hydra.Session;
 
 /**
  * 消息定阅器
