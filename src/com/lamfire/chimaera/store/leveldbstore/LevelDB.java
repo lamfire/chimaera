@@ -34,7 +34,7 @@ public class LevelDB {
      * 写缓冲大小，增加会提高写的性能，但是会增加启动的时间，因为有更多的数据需要恢复.
      */
     private static final int OPTIONS_WRITE_BUFFER_SIZE = 8 * 1024 * 1024;
-    private static final int OPTIONS_CACHE_SIZE = -1;
+    private static final int OPTIONS_CACHE_SIZE = 8 * 1024 * 1024;
     private static final int OPTIONS_MAX_OPEN_FILES = 1024;
     /**
      * block默认大小为4k，由LevelDB调用open函数时传入的options.block_size参数指定；LevelDB的代码中限制的block最小大小为1k，最大大小为4M。对于频繁做scan操作的应用，可适当调大此参数，对大量小value随机读取的应用，也可尝试调小该参数；
