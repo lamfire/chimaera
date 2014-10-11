@@ -77,8 +77,6 @@ public class LevelDB {
             }
 
             //open meta db
-            Options options = new Options();
-            options.createIfMissing(true);
             try {
                 metaDb = factory.open(new File(getDBDir(META_NAME)), options);
             } catch (IOException e) {
