@@ -20,12 +20,13 @@ public class ChimaeraServer extends Snake {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraServer.class);
     private ServiceRegistry serviceRegistry = ServiceRegistry.getInstance();
     private ServerConfigure serverConfigure;
+    private ChimaeraThreadPools worker;
 
     public ChimaeraServer(ServerConfigure serverConfigure) {
         super(serverConfigure.getBind(), serverConfigure.getPort());
         this.serverConfigure = serverConfigure;
         Chimaera.setChimaeraOpts(serverConfigure);
-
+        this.worker = new ChimaeraThreadPools( serverConfigure.getThreads() );
     }
 
     public void startup() {
@@ -61,7 +62,7 @@ public class ChimaeraServer extends Snake {
      */
     private void serviceAsync(MessageContext context, Message message){
         ChimaeraServiceTask task = new ChimaeraServiceTask(context, message);
-        ChimaeraThreadPools.get().submit(task);
+        worker.submit(task);
 
     }
 

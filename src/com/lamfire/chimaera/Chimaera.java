@@ -13,12 +13,12 @@ public class Chimaera {
     private static final Map<String, FireStore> stores = Maps.newConcurrentMap();
     private static boolean lackOfMemory = false;
     private static  ChimaeraOpts opts;
+    private static ChimaeraThreadPools worker;
 
     static {
-
         //check memory
         LOGGER.info("starting memory check monitor.");
-        ChimaeraThreadPools.get().scheduleWithFixedDelay(new Runnable() {
+        ChimaeraThreadPools.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 lackOfMemory = isLackOfMemoryCheck();
@@ -27,7 +27,7 @@ public class Chimaera {
 
         //execute full gc
         LOGGER.info("starting GC monitor.");
-        ChimaeraThreadPools.get().scheduleWithFixedDelay(new Runnable() {
+        ChimaeraThreadPools.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
                 fullGC();

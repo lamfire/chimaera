@@ -18,45 +18,42 @@ public class ChimaeraThreadPools {
     private static ChimaeraThreadPools pools;
     private static final ScheduledExecutorService chimaeraScheduler = Executors.newSingleThreadScheduledExecutor(new ThreadFactory("Chimaera.Scheduler"));
 
-    public synchronized static ChimaeraThreadPools get() {
-        if (pools == null) {
-            pools = new ChimaeraThreadPools();
-        }
-        return pools;
+    private ExecutorService service;
+    private int threads = 4;
+
+    ChimaeraThreadPools(int threads) {
+        this.threads = threads;
     }
 
-    private ExecutorService service;
-
-    private ChimaeraThreadPools() {
-        int threads = -1;
-        try {
-            threads = 4;
-        } catch (Exception e) {
-
-        }
+    private ExecutorService make(int threads) {
+        ExecutorService executor;
         String name = "Chimaera Worker";
         if (threads > 0) {
-            this.service = Executors.newFixedThreadPool(threads, Threads.makeThreadFactory(name));
+            executor = Executors.newFixedThreadPool(threads, Threads.makeThreadFactory(name));
             LOGGER.info("Create thread pool[" + name + "],fixed thread pool,size = " + threads);
         } else {
-            this.service = Executors.newCachedThreadPool(Threads.makeThreadFactory(name));
+            executor = Executors.newCachedThreadPool(Threads.makeThreadFactory(name));
             LOGGER.info("Create thread pool[" + name + "],cached thread pool.");
         }
+        return executor;
     }
 
     public void submit(Runnable run) {
-        this.service.submit(run);
+        getExecutorService().submit(run);
     }
 
-    public ExecutorService getExecutorService() {
+    public synchronized ExecutorService getExecutorService() {
+        if(this.service == null){
+            this.service = make(threads);
+        }
         return this.service;
     }
 
-    public ScheduledExecutorService getScheduledExecutorService(){
+    public static ScheduledExecutorService getScheduledExecutorService(){
         return chimaeraScheduler;
     }
 
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay,  long delay, TimeUnit unit){
+    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay,  long delay, TimeUnit unit){
         return  chimaeraScheduler.scheduleWithFixedDelay(command,initialDelay,delay,unit);
     }
 
