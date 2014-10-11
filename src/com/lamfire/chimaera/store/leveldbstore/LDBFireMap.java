@@ -62,10 +62,11 @@ public class LDBFireMap implements FireMap {
 
     @Override
     public List<String> keys() {
+        DBIterator it =  getDB().iterator();
         try{
             lock.lock();
             List<String> keys = Lists.newArrayList();
-            DBIterator it =  getDB().iterator();
+
             it.seekToFirst();
             while(it.hasNext()){
                 byte[] keyBytes = it.next().getKey();
@@ -74,6 +75,7 @@ public class LDBFireMap implements FireMap {
             return keys;
         }finally {
             lock.unlock();
+            LevelDB.closeIterator(it);
         }
     }
 

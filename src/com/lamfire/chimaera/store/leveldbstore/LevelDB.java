@@ -8,10 +8,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.fusesource.leveldbjni.JniDBFactory;
-import org.iq80.leveldb.DB;
-import org.iq80.leveldb.DBFactory;
-import org.iq80.leveldb.DBIterator;
-import org.iq80.leveldb.Options;
+import org.iq80.leveldb.*;
 
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Bytes;
@@ -26,28 +23,46 @@ public class LevelDB {
     public static final String META_KEY_PREFIX_WRITE_INDEX = "[WRITE_INDEX]";
     public static final String META_KEY_PREFIX_READ_INDEX = "[READ_INDEX]";
 
+    public static final WriteOptions WriteSync = new WriteOptions();
+
+    static{
+        WriteSync.sync(true);
+    }
+
     /**
      * write_buffer调大，可以让写的次数降低，写的强度提高.
      * 写缓冲大小，增加会提高写的性能，但是会增加启动的时间，因为有更多的数据需要恢复.
      */
     private static final int OPTIONS_WRITE_BUFFER_SIZE = 8 * 1024 * 1024;
-    private static final int OPTIONS_CACHE_SIZE = 16 * 1024 * 1024;
+    private static final int OPTIONS_CACHE_SIZE = -1;
     private static final int OPTIONS_MAX_OPEN_FILES = 1024;
     /**
      * block默认大小为4k，由LevelDB调用open函数时传入的options.block_size参数指定；LevelDB的代码中限制的block最小大小为1k，最大大小为4M。对于频繁做scan操作的应用，可适当调大此参数，对大量小value随机读取的应用，也可尝试调小该参数；
      */
     private static final int OPTIONS_BLOCK_SIZE = 1024 * 1024;
 
+
+
     private static final String META_NAME = ".meta";
-	private Charset charset = Charset.forName("UTF-8");
-	private DBFactory factory = new JniDBFactory();
+	private final Charset charset = Charset.forName("UTF-8");
+
     private final Lock lock = new ReentrantLock();
-	private Map<String, DB> dbs = Maps.newHashMap(); //dbs
-	private DB metaDb; //size db
-	private String rootDir;
+	private final Map<String, DB> dbs = Maps.newHashMap(); //dbs
+	private DB metaDb;
+    private final DBFactory factory ;
+	private final String rootDir;
+    private final Options options;
 
 	public LevelDB(String rootDir) {
 		this.rootDir = rootDir;
+        this.options = new Options();
+        this.options.createIfMissing(true);
+        this.options.writeBufferSize(OPTIONS_WRITE_BUFFER_SIZE);
+        this.options.cacheSize(OPTIONS_CACHE_SIZE);
+        this.options.maxOpenFiles(OPTIONS_MAX_OPEN_FILES);
+        this.options.blockSize(OPTIONS_BLOCK_SIZE);
+
+        this.factory = new JniDBFactory();
 	}
 
 	public void open() {
@@ -64,7 +79,6 @@ public class LevelDB {
             //open meta db
             Options options = new Options();
             options.createIfMissing(true);
-            options.cacheSize(1024 * 1024);
             try {
                 metaDb = factory.open(new File(getDBDir(META_NAME)), options);
             } catch (IOException e) {
@@ -229,6 +243,7 @@ public class LevelDB {
                  map.put(key,entry.getValue());
             }
         }
+        closeIterator(it);
         return map;
     }
 
@@ -240,12 +255,6 @@ public class LevelDB {
             if(db != null ){
                 return db;
             }
-            Options options = new Options();
-            options.createIfMissing(true);
-            options.writeBufferSize(OPTIONS_WRITE_BUFFER_SIZE);
-            options.cacheSize(OPTIONS_CACHE_SIZE);
-            options.maxOpenFiles(OPTIONS_MAX_OPEN_FILES);
-            options.blockSize(OPTIONS_BLOCK_SIZE);
             return getDB(name,options);
         }finally {
             lock.unlock();
@@ -314,6 +323,14 @@ public class LevelDB {
             metaDb = null;
         }finally {
             lock.unlock();
+        }
+    }
+
+    public static void closeIterator(DBIterator it){
+        try {
+            if(it != null)it.close();
+        } catch (IOException e) {
+            LOGGER.warn(e);
         }
     }
 

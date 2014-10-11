@@ -101,9 +101,11 @@ public class LDBFireSet implements FireSet {
         if(index < 0){
             throw new IndexOutOfBoundsException("Index " + index +",Size " + size());
         }
+
+        DBIterator it = getDB().iterator();
         try {
             lock.lock();
-            DBIterator it = getDB().iterator();
+
             it.seekToFirst();
             int i = 0;
             byte[] result = null;
@@ -121,15 +123,17 @@ public class LDBFireSet implements FireSet {
             throw new IndexOutOfBoundsException("Index " + index +",Size " + size());
         } finally {
             lock.unlock();
+            LevelDB.closeIterator(it);
         }
     }
 
     @Override
     public List<byte[]> gets(int fromIndex, int size) {
+        DBIterator it = getDB().iterator();
         try {
             lock.lock();
             List<byte[]> list = Lists.newArrayList();
-            DBIterator it = getDB().iterator();
+
             it.seekToFirst();
             int i = 0;
             while(it.hasNext()){
@@ -145,6 +149,7 @@ public class LDBFireSet implements FireSet {
             return list;
         } finally {
             lock.unlock();
+            LevelDB.closeIterator(it);
         }
     }
 

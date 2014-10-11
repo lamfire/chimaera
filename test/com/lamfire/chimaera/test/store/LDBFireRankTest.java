@@ -8,6 +8,7 @@ import com.lamfire.chimaera.store.leveldbstore.LevelDB;
 import com.lamfire.chimaera.test.benchmark.FireRankBenchmark;
 import com.lamfire.chimaera.test.tester.FireRankTester;
 import com.lamfire.chimaera.test.tester.FireSetTester;
+import com.lamfire.utils.ArrayUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +20,7 @@ import com.lamfire.chimaera.test.tester.FireSetTester;
 public class LDBFireRankTest {
 
     public static void benchmark(){
-        LevelDB levelDB = new LevelDB("K:/LevelDB_TEST1");
+        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
         levelDB.open();
 
         FireRank rank = new LDBFireRank(levelDB,"rank_benchmark");
@@ -28,7 +29,7 @@ public class LDBFireRankTest {
     }
 
     public static void test() {
-        LevelDB levelDB = new LevelDB("K:/LevelDB_TEST1");
+        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
         levelDB.open();
 
         FireRank set = new LDBFireRank(levelDB,"rank_tester");
@@ -38,7 +39,10 @@ public class LDBFireRankTest {
     }
 
     public static void main(String[] args){
-        //test();
-        benchmark();
+        if(ArrayUtils.contains(args, "benchmark")){
+            benchmark();
+        }else{
+            test();
+        }
     }
 }

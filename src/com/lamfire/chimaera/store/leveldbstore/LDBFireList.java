@@ -2,10 +2,12 @@ package com.lamfire.chimaera.store.leveldbstore;
 
 import com.lamfire.chimaera.store.FireList;
 import com.lamfire.hydra.exception.NotSupportedMethodException;
+import com.lamfire.logger.Logger;
 import com.lamfire.utils.Bytes;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * To change this template use File | Settings | File Templates.
  */
 public class LDBFireList implements FireList{
+    private static final Logger LOGGER = Logger.getLogger(LDBFireList.class);
     private final Lock lock = new ReentrantLock();
     private LevelDB levelDB;
     private DB _db;
@@ -63,9 +66,10 @@ public class LDBFireList implements FireList{
     }
 
     private synchronized Map.Entry<byte[] ,byte[]> getEntry(int index){
+        DBIterator it = getDB().iterator();
         try{
             lock.lock();
-            DBIterator it = getDB().iterator();
+
             it.seekToFirst();
             int count = 0;
             while(it.hasNext()){
@@ -79,6 +83,7 @@ public class LDBFireList implements FireList{
             return entry;
         }finally {
             lock.unlock();
+            LevelDB.closeIterator(it);
         }
     }
 
@@ -129,9 +134,11 @@ public class LDBFireList implements FireList{
             throw new IndexOutOfBoundsException("Index [" + fromIndex +" - " +(fromIndex + size) +"],Size " + max);
         }
         List<byte[]> list = new ArrayList<byte[]>(size);
+
+        DBIterator it = getDB().iterator();
         try{
             lock.lock();
-            DBIterator it = getDB().iterator();
+
             it.seekToFirst();
             int count = 0;
             while(it.hasNext()){
@@ -152,6 +159,7 @@ public class LDBFireList implements FireList{
 
         }finally {
             lock.unlock();
+            LevelDB.closeIterator(it);
         }
         return list;
     }

@@ -4,12 +4,15 @@ import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.Item;
 import com.lamfire.code.MurmurHash;
 import com.lamfire.code.UUIDGen;
+import com.lamfire.logger.Logger;
 import com.lamfire.utils.ArrayUtils;
 import com.lamfire.utils.Bytes;
 import com.lamfire.utils.Lists;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
+import org.iq80.leveldb.WriteOptions;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -23,6 +26,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * To change this template use File | Settings | File Templates.
  */
 public class LDBFireRank implements FireRank {
+    private static final Logger LOGGER = Logger.getLogger(LDBFireRank.class);
     private final Lock lock = new ReentrantLock();
     private LevelDB levelDB;
     private DB _db;
@@ -217,10 +221,10 @@ public class LDBFireRank implements FireRank {
 
     @Override
     public List<Item> max(int size) {
+        List<Item> result = Lists.newArrayList();
+        DBIterator it = getDB().iterator();
         try {
             lock.lock();
-            List<Item> result = Lists.newArrayList();
-            DBIterator it = getDB().iterator();
             it.seekToLast();
 
             Map.Entry<byte[], byte[]> e = it.peekNext();
@@ -241,17 +245,18 @@ public class LDBFireRank implements FireRank {
                 }
             }
             return result;
-        } finally {
+        }finally {
             lock.unlock();
+            LevelDB.closeIterator(it);
         }
     }
 
     @Override
     public List<Item> min(int size) {
+        DBIterator it = getDB().iterator();
         try {
             lock.lock();
             List<Item> result = Lists.newArrayList();
-            DBIterator it = getDB().iterator();
             it.seekToFirst();
             while (it.hasNext()) {
                 Map.Entry<byte[], byte[]> e = it.next();
@@ -267,15 +272,17 @@ public class LDBFireRank implements FireRank {
             return result;
         } finally {
             lock.unlock();
+            LevelDB.closeIterator(it);
         }
     }
 
     @Override
     public List<Item> maxRange(int from, int size) {
+        DBIterator it = getDB().iterator();
         try {
             lock.lock();
             List<Item> result = Lists.newArrayList();
-            DBIterator it = getDB().iterator();
+
             it.seekToLast();
 
             //add last;
@@ -310,15 +317,17 @@ public class LDBFireRank implements FireRank {
             return result;
         } finally {
             lock.unlock();
+            LevelDB.closeIterator(it);
         }
     }
 
     @Override
     public List<Item> minRange(int from, int size) {
+        DBIterator it = getDB().iterator();
         try {
             lock.lock();
             List<Item> result = Lists.newArrayList();
-            DBIterator it = getDB().iterator();
+
             it.seekToFirst();
             //skip
             int i = 0;
@@ -344,6 +353,7 @@ public class LDBFireRank implements FireRank {
             return result;
         } finally {
             lock.unlock();
+            LevelDB.closeIterator(it);
         }
     }
 

@@ -59,8 +59,7 @@ public class LDBFireStoreTest {
     }
 
     public static void main(String[] args){
-        LDBFireStore store = new LDBFireStore("K:/LevelDB_STORE1","TEST1");
-        store.clear();
-        //testAll(store);
+        LDBFireStore store = new LDBFireStore("/data/LevelDB_STORE1","TEST1");
+        testAll(store);
     }
 }

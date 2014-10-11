@@ -5,6 +5,7 @@ import com.lamfire.chimaera.store.leveldbstore.LDBFireMap;
 import com.lamfire.chimaera.store.leveldbstore.LevelDB;
 import com.lamfire.chimaera.test.benchmark.FireMapBenchmark;
 import com.lamfire.chimaera.test.tester.FireMapTester;
+import com.lamfire.utils.ArrayUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,7 +17,7 @@ import com.lamfire.chimaera.test.tester.FireMapTester;
 public class LDBFireMapTest {
 
     public static void benchmark() throws Exception {
-        LevelDB levelDB = new LevelDB("K:/LevelDB_TEST1");
+        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
         levelDB.open();
 
         FireMap map = new LDBFireMap(levelDB,"map_benchmark");
@@ -25,7 +26,7 @@ public class LDBFireMapTest {
     }
 
     public static void test() throws Exception {
-        LevelDB levelDB = new LevelDB("K:/LevelDB_TEST1");
+        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
         levelDB.open();
         FireMap map = new LDBFireMap(levelDB,"map_tester");
 
@@ -35,7 +36,10 @@ public class LDBFireMapTest {
     }
 
     public static void main(String[] args) throws Exception {
-        test();
-        benchmark();
+        if(ArrayUtils.contains(args, "benchmark")){
+            benchmark();
+        }else{
+            test();
+        }
     }
 }

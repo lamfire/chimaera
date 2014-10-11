@@ -9,6 +9,7 @@ import com.lamfire.chimaera.test.benchmark.FireIncrementBenchmark;
 import com.lamfire.chimaera.test.benchmark.FireListBenchmark;
 import com.lamfire.chimaera.test.tester.FireIncrementTester;
 import com.lamfire.chimaera.test.tester.FireListTester;
+import com.lamfire.utils.ArrayUtils;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,7 +21,7 @@ import com.lamfire.chimaera.test.tester.FireListTester;
 public class LDBFireIncrementTest {
 
     public static void benchmark() {
-        LevelDB levelDB = new LevelDB("K:/LevelDB_TEST1");
+        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
         levelDB.open();
 
         FireIncrement increment = new LDBFireIncrement(levelDB,"increment_benchmark");
@@ -29,7 +30,7 @@ public class LDBFireIncrementTest {
     }
 
     public static void test() {
-        LevelDB levelDB = new LevelDB("K:/LevelDB_TEST1");
+        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
         levelDB.open();
 
         FireIncrement increment = new LDBFireIncrement(levelDB,"increment_tester");
@@ -39,6 +40,10 @@ public class LDBFireIncrementTest {
     }
 
     public static void main(String[] args){
-        benchmark();
+        if(ArrayUtils.contains(args, "benchmark")){
+            benchmark();
+        }else{
+            test();
+        }
     }
 }
