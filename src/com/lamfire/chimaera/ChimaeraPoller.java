@@ -1,8 +1,10 @@
 package com.lamfire.chimaera;
 
+import com.lamfire.chimaera.queue.BlockingQueue;
+import com.lamfire.chimaera.queue.PersistentQueue;
 import com.lamfire.chimaera.response.subscribe.PublishResponse;
 import com.lamfire.chimaera.serializer.Serializers;
-import com.lamfire.chimaera.store.FireStore;
+import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.hydra.Message;
 import com.lamfire.hydra.Session;
 import com.lamfire.hydra.SessionGroup;
@@ -11,6 +13,7 @@ import com.lamfire.logger.Logger;
 import com.lamfire.utils.Maps;
 import com.lamfire.utils.Threads;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,14 +48,18 @@ public class ChimaeraPoller {
         }
     };
 
-    private FireStore store;   //store
-    private ChimaeraBlockingQueue queue;   //消息队列
+    private BlockingQueue queue;   //消息队列
     private ExecutorService service; //消息分发服务
     private Lock lock = new ReentrantLock();
 
     private ChimaeraPoller() {
-        this.store = Chimaera.getFireStore(STORE_NAME);
-        this.queue = new ChimaeraBlockingQueue(this.store.getFireQueue(QUEUE_NAME));
+        PersistentQueue fireQueue = Chimaera.makePersistentQueue(STORE_NAME);
+        try {
+            fireQueue.open();
+        } catch (IOException e) {
+            LOGGER.warn(e.getMessage(),e);
+        }
+        this.queue = new BlockingQueue(fireQueue);
         this.service = Executors.newFixedThreadPool(1, Threads.makeThreadFactory(STORE_NAME));
         this.service.submit(executor);
     }

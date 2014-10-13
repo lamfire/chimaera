@@ -7,7 +7,9 @@ import com.lamfire.chimaera.client.ChimaeraCli;
 import com.lamfire.chimaera.client.PollerAccessor;
 import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.RandomUtils;
+import com.lamfire.utils.Threads;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -26,11 +28,27 @@ public class PollerPublishTest implements OnMessageListener {
     public PollerPublishTest(){
         ChimaeraCli cli = Config.getChimaeraCli();
         poller =cli.getPoller();
+        Threads.scheduleWithFixedDelay(new Runnable() {
+            int pre = 0;
+
+            @Override
+            public void run() {
+                synchronized (counter) {
+                    int val = counter.get();
+                    System.out.println("[COUNTER/S] : " + (val - pre) + "/s " +  " / " + val);
+                    pre = val;
+                }
+            }
+        }, 1, 1, TimeUnit.SECONDS);
     }
 
     public void publish(String message){
-        PollerAccessor accessor = (PollerAccessor)poller;
-        accessor.publish("TEST", clientId, message.getBytes());
+        try{
+            PollerAccessor accessor = (PollerAccessor)poller;
+            accessor.publish("TEST", clientId, message.getBytes());
+        }catch (Throwable t){
+            t.printStackTrace();
+        }
     }
 
     @Override
@@ -44,13 +62,6 @@ public class PollerPublishTest implements OnMessageListener {
         long startAt = System.currentTimeMillis();
         while(true){
             test.publish("POLLER[" + counter.getAndIncrement() + "]:" + RandomUtils.randomText(100));
-            if (counter.get() % 10000 == 0) {
-                System.out.println(counter.get() +"  " + (System.currentTimeMillis() - startAt) +" ms");
-                startAt = System.currentTimeMillis();
-            }
-            if(counter.get() >= 10){
-                //return;
-            }
         }
     }
 

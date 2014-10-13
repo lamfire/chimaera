@@ -1,5 +1,7 @@
 package com.lamfire.chimaera;
 
+import com.lamfire.chimaera.queue.PersistentQueue;
+import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.*;
@@ -72,6 +74,11 @@ public class Chimaera {
             }
         }
         return store;
+    }
+
+    public static final PersistentQueue makePersistentQueue(String name){
+        String dir = opts.getStoreDir();
+        return new PersistentQueue(FilenameUtils.concat(dir,name),name);
     }
 
     public static long getAvailableHeapMemory() {

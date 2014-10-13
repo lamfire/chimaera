@@ -1,4 +1,4 @@
-package com.lamfire.chimaera;
+package com.lamfire.chimaera.queue;
 
 import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.logger.Logger;
@@ -10,17 +10,17 @@ import com.lamfire.logger.Logger;
  * Time: 上午10:20
  * To change this template use File | Settings | File Templates.
  */
-public class ChimaeraBlockingQueue implements FireQueue {
-    private static final Logger LOGGER = Logger.getLogger(ChimaeraBlockingQueue.class);
-    private FireQueue storeQueue;
+public class BlockingQueue implements FireQueue {
+    private static final Logger LOGGER = Logger.getLogger(BlockingQueue.class);
+    private FireQueue queue;
 
-    public ChimaeraBlockingQueue(FireQueue queue) {
-        this.storeQueue = queue;
+    public BlockingQueue(FireQueue queue) {
+        this.queue = queue;
     }
 
     @Override
     public synchronized void push(byte[] value) {
-        this.storeQueue.push(value);
+        this.queue.push(value);
         this.notifyAll();
     }
 
@@ -29,7 +29,7 @@ public class ChimaeraBlockingQueue implements FireQueue {
         byte[] result = null;
         do{
             try {
-                result = this.storeQueue.pop();
+                result = this.queue.pop();
                 if(result == null){
                     this.wait();
                 }
@@ -45,7 +45,7 @@ public class ChimaeraBlockingQueue implements FireQueue {
         byte[] result = null;
         do{
             try {
-                result = this.storeQueue.peek();
+                result = this.queue.peek();
                 if(result == null){
                     this.wait();
                 }
@@ -58,11 +58,11 @@ public class ChimaeraBlockingQueue implements FireQueue {
 
     @Override
     public long size() {
-        return this.storeQueue.size();
+        return this.queue.size();
     }
 
     @Override
     public void clear() {
-        this.storeQueue.clear();
+        this.queue.clear();
     }
 }
