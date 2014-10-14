@@ -1,14 +1,11 @@
 package com.lamfire.chimaera.bootstrap;
 
-import com.lamfire.chimaera.ChimaeraOpts;
 import com.lamfire.chimaera.ChimaeraServer;
 import com.lamfire.chimaera.config.ChimaeraXmlParser;
 import com.lamfire.chimaera.config.ServerConfigure;
-import com.lamfire.chimaera.http.HttpServerBootstrap;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.FileUtils;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
 
@@ -36,7 +33,7 @@ public class ChimaeraBootstrap {
         try {
             serverConfigure = ChimaeraXmlParser.get().getServerConfigure();
             if((serverConfigure.isStoreOnDisk()) && serverConfigure.isRenew()){
-                String storeDir = serverConfigure.getStoreDir();
+                String storeDir = serverConfigure.getDataDir();
                 LOGGER.info("Configure store in file,setting 'renew' is true,clean store directory : " +storeDir );
                 renewStoreDir(storeDir);
             }
@@ -49,19 +46,17 @@ public class ChimaeraBootstrap {
     private void printOptions() {
         LOGGER.info("bind:" + serverConfigure.getBind());
         LOGGER.info("port:" + serverConfigure.getPort());
-        LOGGER.info("store:" + (serverConfigure.isStoreOnDisk() ? "disk":"memory"));
+        LOGGER.info("type:" + (serverConfigure.isStoreOnDisk() ? "disk":"memory"));
         if (serverConfigure.isStoreOnDisk()) {
-            LOGGER.info("StoreDir:" + serverConfigure.getStoreDir());
-            if (!FileUtils.exists(serverConfigure.getStoreDir())) {
-                FileUtils.makeDirs(serverConfigure.getStoreDir());
-                LOGGER.info("The store dir not found,make " + serverConfigure.getStoreDir());
+            LOGGER.info("DataDir:" + serverConfigure.getDataDir());
+            if (!FileUtils.exists(serverConfigure.getDataDir())) {
+                FileUtils.makeDirs(serverConfigure.getDataDir());
+                LOGGER.info("The data dir not found,make " + serverConfigure.getDataDir());
             }
-            LOGGER.info("FlushThresholdOps:" + serverConfigure.getFlushThresholdOps());
-            LOGGER.info("FlushInterval:" + serverConfigure.getFlushInterval());
-            LOGGER.info("EnableLocking:" + serverConfigure.isEnableLocking());
-            LOGGER.info("EnableCache:" + serverConfigure.isEnableCache());
+            LOGGER.info("BlockSize:" + serverConfigure.getBlockSize());
             LOGGER.info("CacheSize:" + serverConfigure.getCacheSize());
-            LOGGER.info("EnableTransactions:" + serverConfigure.isEnableTransactions());
+            LOGGER.info("MaxOpenFiles:" + serverConfigure.getMaxOpenFiles());
+            LOGGER.info("WriteBufferSize:" + serverConfigure.getWriteBufferSize());
         }
     }
 

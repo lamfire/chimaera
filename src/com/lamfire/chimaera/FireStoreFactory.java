@@ -7,6 +7,7 @@ import com.lamfire.chimaera.store.memstore.MemoryFireStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.FileUtils;
 import com.lamfire.utils.FilenameUtils;
+import org.iq80.leveldb.Options;
 
 import java.io.IOException;
 
@@ -36,12 +37,18 @@ public class FireStoreFactory {
 
 
     public synchronized static FireStore makeFireStoreWithLDB(String name,ChimaeraOpts opts) throws IOException {
-        if(!FileUtils.exists(opts.getStoreDir())){
-            FileUtils.makeDirs(opts.getStoreDir());
+        if(!FileUtils.exists(opts.getDataDir())){
+            FileUtils.makeDirs(opts.getDataDir());
         }
-        String storeDir = FilenameUtils.concat(opts.getStoreDir(),name);
-        LDBFireStore store = new LDBFireStore(storeDir,name);
-        LOGGER.info("MAKE LDB STORE[" + name + "] :" + opts.getStoreDir());
+        String storeDir = FilenameUtils.concat(opts.getDataDir(),name);
+        Options options = new Options();
+        options.cacheSize(opts.getCacheSize());
+        options.blockSize(opts.getBlockSize());
+        options.maxOpenFiles(opts.getMaxOpenFiles());
+        options.createIfMissing(true);
+        options.writeBufferSize(opts.getWriteBufferSize());
+        LDBFireStore store = new LDBFireStore(storeDir,name,options);
+        LOGGER.info("MAKE LDB STORE[" + name + "] :" + opts.getDataDir());
         return store;
     }
 }

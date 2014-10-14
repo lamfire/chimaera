@@ -3,6 +3,7 @@ package com.lamfire.chimaera.config;
 import com.lamfire.chimaera.tunnel.TunnelSetting;
 import com.lamfire.json.JSON;
 import com.lamfire.logger.Logger;
+import com.lamfire.utils.NumberUtils;
 import com.lamfire.utils.StringUtils;
 import com.lamfire.utils.XMLParser;
 import org.w3c.dom.Node;
@@ -41,6 +42,26 @@ public class ChimaeraXmlParser {
     private ServerConfigure serverConfigure;
     private List<TunnelSetting> tunnels;
 
+    static int lengthSpaceToBytes(String textSpace){
+        if(NumberUtils.isDigits(textSpace)){
+            return NumberUtils.toInt(textSpace);
+        }
+
+        String spaceStr = StringUtils.left(textSpace,textSpace.length() -2);
+        String unit = StringUtils.right(textSpace,2).toLowerCase();
+        int space = NumberUtils.toInt(spaceStr);
+        if("kb".equals(unit)){
+            return space * 1024;
+        }
+        if("mb".equals(unit)){
+              return space * 1024 * 1024;
+        }
+        if("gb".equals(unit)){
+            return space * 1024 * 1024 * 1024;
+        }
+        return space;
+    }
+
     public synchronized ServerConfigure getServerConfigure() throws XPathExpressionException {
         if(serverConfigure != null){
             return serverConfigure;
@@ -62,22 +83,20 @@ public class ChimaeraXmlParser {
         serverConfigure.setStoreOnDisk(false);
         if(!StringUtils.equalsIgnoreCase("memory",type)){
             boolean renew =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/renew"));
-            boolean enableSoftCache =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableCache"));
-            boolean enableLocking =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableLocking"));
-            boolean enableTransactions =  Boolean.parseBoolean(parser.getNodeValue("/chimaera/server/store/enableTransactions"));
-            int cacheSize = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/cacheSize"));
-            int flushThresholdOps = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/flushThresholdOps"));
-            int flushInterval = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/flushInterval"));
-            String storeDir = parser.getNodeValue("/chimaera/server/store/fileDir");
+            int cache_size =lengthSpaceToBytes(parser.getNodeValue("/chimaera/server/store/cacheSize"));
+            int write_buffer_size = lengthSpaceToBytes(parser.getNodeValue("/chimaera/server/store/writeBufferSize"));
+            int block_size = lengthSpaceToBytes(parser.getNodeValue("/chimaera/server/store/blockSize"));
+            int max_open_files = Integer.parseInt(parser.getNodeValue("/chimaera/server/store/maxOpenFiles"));
+            String dataDir = parser.getNodeValue("/chimaera/server/store/dataDir");
+
             serverConfigure.setStoreOnDisk(true);
             serverConfigure.setRenew(renew);
-            serverConfigure.setEnableLocking(enableLocking);
-            serverConfigure.setEnableCache(enableSoftCache);
-            serverConfigure.setEnableTransactions(enableTransactions);
-            serverConfigure.setFlushThresholdOps(flushThresholdOps);
-            serverConfigure.setFlushInterval(flushInterval);
-            serverConfigure.setStoreDir(storeDir);
-            serverConfigure.setCacheSize(cacheSize);
+
+            serverConfigure.setDataDir(dataDir);
+            serverConfigure.setCacheSize(cache_size);
+            serverConfigure.setBlockSize(block_size);
+            serverConfigure.setMaxOpenFiles(max_open_files);
+            serverConfigure.setWriteBufferSize(write_buffer_size);
         }
         serverConfigure.setTunnelSettings(getTunnelConfigureList());
         LOGGER.info("[SERVER]:" + JSON.toJSONString(serverConfigure));

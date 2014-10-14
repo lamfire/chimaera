@@ -3,6 +3,7 @@ package com.lamfire.chimaera.store.leveldbstore;
 import com.lamfire.chimaera.store.*;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Maps;
+import org.iq80.leveldb.Options;
 
 import java.util.Map;
 
@@ -27,6 +28,15 @@ public class LDBFireStore implements FireStore {
         this.storageDir = storageDir;
         this.name = name;
         this.levelDB = new LevelDB(storageDir);
+        this.levelDB.open();
+        init();
+    }
+
+    public LDBFireStore(String storageDir,String name,Options options){
+        LOGGER.info("Make 'LDBFireStore' : " + storageDir + " - " + name);
+        this.storageDir = storageDir;
+        this.name = name;
+        this.levelDB = new LevelDB(storageDir,options);
         this.levelDB.open();
         init();
     }

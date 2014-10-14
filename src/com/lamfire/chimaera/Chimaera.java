@@ -1,7 +1,6 @@
 package com.lamfire.chimaera;
 
 import com.lamfire.chimaera.queue.PersistentQueue;
-import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.*;
@@ -15,11 +14,10 @@ public class Chimaera {
     private static final Map<String, FireStore> stores = Maps.newConcurrentMap();
     private static boolean lackOfMemory = false;
     private static  ChimaeraOpts opts;
-    private static ChimaeraThreadPools worker;
 
     static {
         //check memory
-        LOGGER.info("starting memory check monitor.");
+        LOGGER.info("starting memory check schemer.");
         ChimaeraThreadPools.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
@@ -28,7 +26,7 @@ public class Chimaera {
         }, 15, 15, TimeUnit.SECONDS);
 
         //execute full gc
-        LOGGER.info("starting GC monitor.");
+        LOGGER.info("starting FullGC schemer.");
         ChimaeraThreadPools.scheduleWithFixedDelay(new Runnable() {
             @Override
             public void run() {
@@ -77,7 +75,7 @@ public class Chimaera {
     }
 
     public static final PersistentQueue makePersistentQueue(String name){
-        String dir = opts.getStoreDir();
+        String dir = opts.getDataDir();
         return new PersistentQueue(FilenameUtils.concat(dir,name),name);
     }
 

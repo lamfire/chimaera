@@ -65,6 +65,12 @@ public class LevelDB {
         this.factory = new JniDBFactory();
 	}
 
+    public LevelDB(String rootDir,Options options) {
+        this.rootDir = rootDir;
+        this.options = options;
+        this.factory = new JniDBFactory();
+    }
+
 	public void open() {
         lock.lock();
         try{

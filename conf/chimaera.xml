@@ -10,13 +10,11 @@
         <!--  file store sample -->
         <store type="file">
             <renew>false</renew>
-            <enableCache>true</enableCache>
-            <cacheSize>100000</cacheSize>
-            <enableLocking>false</enableLocking>
-            <enableTransactions>false</enableTransactions>
-            <flushThresholdOps>-1</flushThresholdOps>
-            <flushInterval>5</flushInterval>
-            <fileDir>/data/chimaera/</fileDir>
+            <cacheSize>16mb</cacheSize>
+            <writeBufferSize>8mb</writeBufferSize>
+            <blockSize>1mb</blockSize>
+            <maxOpenFiles>100</maxOpenFiles>
+            <dataDir>/data/chimaera/</dataDir>
         </store>
 
     </server>
