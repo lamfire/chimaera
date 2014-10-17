@@ -5,6 +5,7 @@ import com.lamfire.utils.Bytes;
 import org.iq80.leveldb.DB;
 
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -22,6 +23,9 @@ public class LDBFireQueue implements FireQueue {
     private byte[] writeIndexKey;
     private byte[] readIndexKey;
 
+    private AtomicLong writeAtome;
+    private AtomicLong readAtome;
+
     private String name;
 
     public LDBFireQueue(LevelDB levelDB, String name) {
@@ -30,6 +34,12 @@ public class LDBFireQueue implements FireQueue {
         this._db = levelDB.getDB(name);
         this.readIndexKey = levelDB.encodeReadIndexKey(name);
         this.writeIndexKey = levelDB.encodeWriteIndexKey(name);
+
+        long writeIndex = levelDB.getMetaValueAsLong(writeIndexKey);
+        this.writeAtome = new AtomicLong(writeIndex);
+
+        long readIndex =  levelDB.getMetaValueAsLong(readIndexKey);
+        this.readAtome = new AtomicLong(readIndex);
     }
 
     private synchronized DB getDB() {
@@ -40,19 +50,21 @@ public class LDBFireQueue implements FireQueue {
     }
 
     public long getWriteIndex() {
-        return levelDB.getMetaValueAsLong(writeIndexKey);
+        return writeAtome.get();
     }
 
     public long getReadIndex() {
-        return levelDB.getMetaValueAsLong(readIndexKey);
+        return readAtome.get();
     }
 
     void incrementWriteIndex() {
-        levelDB.incrementMeta(writeIndexKey);
+        long val = this.writeAtome.incrementAndGet();
+        levelDB.setMetaValue(writeIndexKey,Bytes.toBytes(val));
     }
 
     void incrementReadIndex() {
-        levelDB.incrementMeta(readIndexKey);
+        long val = this.readAtome.incrementAndGet();
+        levelDB.setMetaValue(readIndexKey,Bytes.toBytes(val));
     }
 
     @Override
