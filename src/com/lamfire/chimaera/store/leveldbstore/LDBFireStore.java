@@ -32,7 +32,7 @@ public class LDBFireStore implements FireStore {
         init();
     }
 
-    public LDBFireStore(String storageDir,String name,Options options){
+    public LDBFireStore(String storageDir,String name,LDBOptions options){
         LOGGER.info("Make 'LDBFireStore' : " + storageDir + " - " + name);
         this.storageDir = storageDir;
         this.name = name;
