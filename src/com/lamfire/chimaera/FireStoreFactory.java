@@ -3,6 +3,7 @@ package com.lamfire.chimaera;
 import com.lamfire.chimaera.store.FireStore;
 
 import com.lamfire.chimaera.store.leveldbstore.LDBFireStore;
+import com.lamfire.chimaera.store.leveldbstore.LDBOptions;
 import com.lamfire.chimaera.store.memstore.MemoryFireStore;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.FileUtils;
@@ -41,7 +42,7 @@ public class FireStoreFactory {
             FileUtils.makeDirs(opts.getDataDir());
         }
         String storeDir = FilenameUtils.concat(opts.getDataDir(),name);
-        Options options = new Options();
+        LDBOptions options = new LDBOptions();
         options.cacheSize(opts.getCacheSize());
         options.blockSize(opts.getBlockSize());
         options.maxOpenFiles(opts.getMaxOpenFiles());
