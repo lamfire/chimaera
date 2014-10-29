@@ -79,6 +79,9 @@ public class LDBManager {
             }
             try {
                 String databaseDir = getDatabaseDir(name);
+                if(!FileUtils.exists(databaseDir)){
+                    FileUtils.makeDirs(databaseDir);
+                }
                 db =  factory.open(new File(databaseDir), options);
                 dbs.put(name, db);
                 LOGGER.info("[OPEN]:" + databaseDir);
