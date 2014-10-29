@@ -80,6 +80,7 @@ public class LDBManager {
             try {
                 String databaseDir = getDatabaseDir(name);
                 if(!FileUtils.exists(databaseDir)){
+                    LOGGER.info("Path not found,make dir - " + databaseDir);
                     FileUtils.makeDirs(databaseDir);
                 }
                 db =  factory.open(new File(databaseDir), options);
