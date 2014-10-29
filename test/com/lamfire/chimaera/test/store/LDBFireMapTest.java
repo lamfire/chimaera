@@ -19,7 +19,7 @@ import com.lamfire.utils.ArrayUtils;
 public class LDBFireMapTest {
 
     public static void benchmark() throws Exception {
-        LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
+        LDBManager manager = new LDBManager("k:/data/LevelDB_TEST1");
         String name = "map_benchmark";
         LDBMeta meta = new LDBMeta(manager);
         LDBDatabase db = new LDBDatabase(manager,name);
@@ -27,6 +27,17 @@ public class LDBFireMapTest {
         FireMap map = new LDBFireMap(meta,db,"map_benchmark");
         FireMapBenchmark benchmark = new FireMapBenchmark(map);
         benchmark.startupBenchmarkWrite(1);
+    }
+
+    public static void benchmarkRead() throws Exception {
+        LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
+        String name = "map_benchmark";
+        LDBMeta meta = new LDBMeta(manager);
+        LDBDatabase db = new LDBDatabase(manager,name);
+
+        FireMap map = new LDBFireMap(meta,db,"map_benchmark");
+        FireMapBenchmark benchmark = new FireMapBenchmark(map);
+        benchmark.startupBenchmarkRead(1);
     }
 
     public static void test() throws Exception {

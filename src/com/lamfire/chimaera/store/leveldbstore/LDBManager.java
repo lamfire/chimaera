@@ -18,17 +18,7 @@ public class LDBManager {
 	private static final Logger LOGGER = Logger.getLogger(LDBManager.class);
     public static final String META_KEY_PREFIX_DATABASE = "[DATABASE]";
     public static final WriteOptions WRITE_SYNC = new WriteOptions();
-    /**
-     * write_buffer调大，可以让写的次数降低，写的强度提高.
-     * 写缓冲大小，增加会提高写的性能，但是会增加启动的时间，因为有更多的数据需要恢复.
-     */
-    private static final int OPTIONS_WRITE_BUFFER_SIZE = 8 * 1024 * 1024;
-    private static final int OPTIONS_CACHE_SIZE = 8 * 1024 * 1024;
-    private static final int OPTIONS_MAX_OPEN_FILES = 1024;
-    /**
-     * block默认大小为4k，由LevelDB调用open函数时传入的options.block_size参数指定；LevelDB的代码中限制的block最小大小为1k，最大大小为4M。对于频繁做scan操作的应用，可适当调大此参数，对大量小value随机读取的应用，也可尝试调小该参数；
-     */
-    private static final int OPTIONS_BLOCK_SIZE = 1024 * 1024;
+
 	public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
     private final Lock lock = new ReentrantLock();
@@ -43,10 +33,6 @@ public class LDBManager {
 		this.rootDir = rootDir;
         this.options = new Options();
         this.options.createIfMissing(true);
-        this.options.writeBufferSize(OPTIONS_WRITE_BUFFER_SIZE);
-        this.options.cacheSize(OPTIONS_CACHE_SIZE);
-        this.options.maxOpenFiles(OPTIONS_MAX_OPEN_FILES);
-        this.options.blockSize(OPTIONS_BLOCK_SIZE);
         this.factory = new JniDBFactory();
         Threads.scheduleWithFixedDelay(new AutoCloseIdleDatabaseTask(),5,5, TimeUnit.MINUTES);
 	}
