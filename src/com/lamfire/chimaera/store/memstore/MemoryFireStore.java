@@ -4,6 +4,7 @@ import com.lamfire.chimaera.ChimaeraException;
 import com.lamfire.chimaera.store.*;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MemoryFireStore implements FireStore {
@@ -24,15 +25,6 @@ public class MemoryFireStore implements FireStore {
         return type.isInstance(obj);
     }
 
-    @Override
-    public long size() {
-        return store.size();
-    }
-
-    @Override
-    public void clear() {
-        store.clear();
-    }
 
     @SuppressWarnings("unchecked")
     private <T> T assertInstance(String key, Class<T> type) {
@@ -107,33 +99,18 @@ public class MemoryFireStore implements FireStore {
     }
 
     @Override
-    public void defrag() {
-        //数据在内存中,无需整理
-    }
-
-    @Override
     public void remove(String key) {
         store.remove(key);
     }
 
     @Override
-    public long size(String key) {
-        try {
-            FireCollection c = assertInstance(key, FireCollection.class);
-            return c.size();
-        } catch (Exception e) {
-            throw new ChimaeraException("The key[" + key + "] cannot read size,must be instanceof 'FireCollection'");
-        }
+    public long count() {
+        return store.size();
     }
 
     @Override
-    public void clear(String key) {
-        try {
-            FireCollection c = assertInstance(key, FireCollection.class);
-            c.clear();
-        } catch (Exception e) {
-            throw new ChimaeraException("The key[" + key + "] cannot read size,must be instanceof 'FireCollection'");
-        }
+    public Set<String> keys() {
+        return store.keySet();
     }
 
     @Override

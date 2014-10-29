@@ -19,31 +19,28 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class LDBFixedFireList implements FireList {
     private final Lock lock = new ReentrantLock();
-    private LevelDB levelDB;
-    private DB db;
-    private byte[] writeIndexKey;
-    private String name;
+    private final LDBMeta meta;
+    private final LDBDatabase _db;
+    private final byte[] writeIndexKey;
+    private final String name;
 
-    public LDBFixedFireList(LevelDB levelDB, String name) {
-        this.levelDB = levelDB;
+    public LDBFixedFireList(LDBMeta meta,LDBDatabase db,String name) {
+        this.meta = meta;
         this.name = name;
-        this.db = levelDB.getDB(name);
-        this.writeIndexKey = levelDB.encodeWriteIndexKey(name);
+        this._db =db;
+        this.writeIndexKey = meta.getWriteIndexKey(name);
     }
 
     private synchronized DB getDB() {
-        if (this.db == null) {
-            db = levelDB.getDB(name);
-        }
-        return db;
+        return _db;
     }
 
     public long getWriteIndex() {
-        return levelDB.getMetaValueAsLong(writeIndexKey);
+        return meta.getValueAsLong(writeIndexKey);
     }
 
     void incrementWriteIndex() {
-        levelDB.incrementMeta(writeIndexKey);
+        meta.increment(writeIndexKey);
     }
 
     @Override
@@ -51,7 +48,7 @@ public class LDBFixedFireList implements FireList {
         try {
             lock.lock();
             long index = getWriteIndex();
-            db.put(Bytes.toBytes(index), value);
+            getDB().put(Bytes.toBytes(index), value);
             incrementWriteIndex();
             return true;
         } finally {
@@ -68,7 +65,7 @@ public class LDBFixedFireList implements FireList {
                 throw new IndexOutOfBoundsException("Index " + index + ",Size " + size);
             }
             long key = (long) index;
-            db.put(Bytes.toBytes(key), value);
+            getDB().put(Bytes.toBytes(key), value);
         } finally {
             lock.unlock();
         }
@@ -83,7 +80,7 @@ public class LDBFixedFireList implements FireList {
                 throw new IndexOutOfBoundsException("Index " + index + ",Size " + size);
             }
             long key = (long) index;
-            return db.get(Bytes.toBytes(key));
+            return getDB().get(Bytes.toBytes(key));
         } finally {
             lock.unlock();
         }
@@ -125,9 +122,8 @@ public class LDBFixedFireList implements FireList {
     public void clear() {
         try {
             lock.lock();
-            levelDB.deleteDB(name);
-            levelDB.removeMeta(writeIndexKey);
-            this.db = levelDB.getDB(name);
+            _db.clear();
+            meta.remove(writeIndexKey);
         } finally {
             lock.unlock();
         }

@@ -8,6 +8,7 @@ import com.lamfire.chimaera.response.rank.RankScoreResponse;
 import com.lamfire.chimaera.store.Item;
 
 import java.util.List;
+import java.util.Set;
 
 public class Responses {
 
@@ -47,6 +48,13 @@ public class Responses {
 
     public static ClearResponse makeClearResponse(Command command) {
         ClearResponse res = new ClearResponse();
+        fillResponse(command, res);
+        return res;
+    }
+
+    public static KeysResponse makeKeysResponse(Command command,Set<String> keys) {
+        KeysResponse res = new KeysResponse();
+        res.setKeys(keys);
         fillResponse(command, res);
         return res;
     }

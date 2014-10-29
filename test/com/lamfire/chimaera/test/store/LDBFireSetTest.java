@@ -1,15 +1,11 @@
 package com.lamfire.chimaera.test.store;
 
-import com.lamfire.chimaera.store.FireList;
-import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.FireSet;
-import com.lamfire.chimaera.store.leveldbstore.LDBFireList;
-import com.lamfire.chimaera.store.leveldbstore.LDBFireRank;
+import com.lamfire.chimaera.store.leveldbstore.LDBDatabase;
 import com.lamfire.chimaera.store.leveldbstore.LDBFireSet;
-import com.lamfire.chimaera.store.leveldbstore.LevelDB;
-import com.lamfire.chimaera.test.benchmark.FireRankBenchmark;
+import com.lamfire.chimaera.store.leveldbstore.LDBManager;
+import com.lamfire.chimaera.store.leveldbstore.LDBMeta;
 import com.lamfire.chimaera.test.benchmark.FireSetBenchmark;
-import com.lamfire.chimaera.test.tester.FireListTester;
 import com.lamfire.chimaera.test.tester.FireSetTester;
 import com.lamfire.utils.ArrayUtils;
 
@@ -23,22 +19,24 @@ import com.lamfire.utils.ArrayUtils;
 public class LDBFireSetTest {
 
     public static void benchmark(){
-        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
-        levelDB.open();
-
-        FireSet rank = new LDBFireSet(levelDB,"set_benchmark");
+        LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
+        String name = "set_benchmark";
+        LDBMeta meta = new LDBMeta(manager);
+        LDBDatabase db = new LDBDatabase(manager,name);
+        FireSet rank = new LDBFireSet(meta,db,name);
         FireSetBenchmark benchmark = new FireSetBenchmark(rank);
         benchmark.startupBenchmarkWrite(1);
     }
 
     public static void test() {
-        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
-        levelDB.open();
-
-        FireSet set = new LDBFireSet(levelDB,"set_tester");
+        LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
+        String name = "set_tester";
+        LDBMeta meta = new LDBMeta(manager);
+        LDBDatabase db = new LDBDatabase(manager,name);
+        FireSet set = new LDBFireSet(meta,db,name);
         FireSetTester tester = new FireSetTester(set);
         tester.test();
-        levelDB.close();
+        manager.closeAll();
     }
 
     public static void main(String[] args){

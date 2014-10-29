@@ -1,8 +1,12 @@
 package com.lamfire.chimaera.test.tester;
 
+import com.lamfire.chimaera.store.FireMap;
+import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.chimaera.test.Config;
 import com.lamfire.utils.Asserts;
+
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,27 +23,43 @@ public class FireStoreTester {
     }
 
     public long size(){
-        long size = store.size();
+        long size = store.count();
         System.out.println("store.size() = " + size);
         return size;
     }
 
-    public void defrag(){
-        this.store.defrag();
+    public void keys(){
+        Set<String> keys = store.keys();
+        System.out.println("store.keys() = " + keys);
+    }
+
+    public void remove(String key){
+        store.remove(key);
     }
 
     public void test() {
         System.out.println("==>> startup : " + this.getClass().getName());
-        store.clear();
-        System.out.println("store.clear()");
+        keys();
 
-        long size = size();
+        size();
         //Asserts.assertEquals(size,0);
 
-        store.getFireRank("STORE_RANK_TEST");
-        size = size();
+        FireRank rank = store.getFireRank("STORE_RANK_TEST");
+        rank.put("1");
+        keys();
+        size();
 
-        store.getFireMap("STORE_MAP_TEST");
+        FireMap map = store.getFireMap("STORE_MAP_TEST");
+        map.put("1","1".getBytes());
+        keys();
+        size();
+
+        remove("STORE_RANK_TEST");
+        keys();
+        size();
+
+        remove("STORE_MAP_TEST");
+        keys();
         size();
 
         System.out.println("<<== finish : " + this.getClass().getName());

@@ -49,6 +49,11 @@ public class LDBFireStoreTest {
         tester.test();
     }
 
+    public static void testStore(FireStore store){
+        FireStoreTester tester  = new FireStoreTester(store);
+        tester.test();
+    }
+
     public static void testAll(FireStore store){
         testIncrement(store);
         testList(store);
@@ -56,10 +61,12 @@ public class LDBFireStoreTest {
         testQueue(store);
         testRank(store);
         testSet(store);
+        testStore(store);
     }
 
     public static void main(String[] args){
         LDBFireStore store = new LDBFireStore("/data/LevelDB_STORE1","TEST1");
-        testAll(store);
+        //testAll(store);
+        testStore(store);
     }
 }

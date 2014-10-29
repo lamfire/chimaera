@@ -18,38 +18,43 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class LDBFireMap implements FireMap {
     private final Lock lock = new ReentrantLock();
-    private LevelDB levelDB;
-    private DB _db;
-    private byte[] sizeKey;
-    private String name;
+    private final LDBMeta meta;
+    private final LDBDatabase _db;
+    private final byte[] sizeKey;
+    private final String name;
 
-    public LDBFireMap(LevelDB levelDB,String name){
-        this.levelDB = levelDB;
+    public LDBFireMap(LDBMeta meta,LDBDatabase db,String name){
+        this.meta = meta;
         this.name = name;
-        _db = levelDB.getDB(name);
-        this.sizeKey = levelDB.encodeSizeKey(name);
+        this._db = db;
+        this.sizeKey = meta.getSizeKey(name);
     }
 
-    private synchronized DB getDB(){
-        if(this._db == null){
-            _db = levelDB.getDB(name);
-        }
+    private synchronized LDBDatabase getDB(){
         return _db;
     }
 
     private void incrSize(long incr){
-        levelDB.incrementMeta(this.sizeKey,incr);
+        meta.increment(this.sizeKey,incr);
+    }
+
+    byte[] asBytes(String message) {
+        return LDBManager.asBytes(message);
+    }
+
+    String asString(byte[] message) {
+        return LDBManager.asString(message);
     }
 
     @Override
     public void put(String key, byte[] value) {
         try{
             lock.lock();
-            byte[] keyBytes =levelDB.asBytes(key);
+            byte[] keyBytes =asBytes(key);
             byte[] oldValue = getDB().get(keyBytes);
 
             if(!value.equals(oldValue)){
-                getDB().put(levelDB.asBytes(key),value);
+                getDB().put(asBytes(key),value);
             }
 
             if(oldValue == null && value != null){
@@ -70,12 +75,12 @@ public class LDBFireMap implements FireMap {
             it.seekToFirst();
             while(it.hasNext()){
                 byte[] keyBytes = it.next().getKey();
-                keys.add(levelDB.asString(keyBytes));
+                keys.add(asString(keyBytes));
             }
             return keys;
         }finally {
             lock.unlock();
-            LevelDB.closeIterator(it);
+            LDBManager.closeIterator(it);
         }
     }
 
@@ -83,7 +88,7 @@ public class LDBFireMap implements FireMap {
     public byte[] get(String key) {
         try{
             lock.lock();
-            return getDB().get(levelDB.asBytes(key));
+            return getDB().get(asBytes(key));
         }finally {
             lock.unlock();
         }
@@ -93,7 +98,7 @@ public class LDBFireMap implements FireMap {
     public synchronized void remove(String key) {
         try{
             lock.lock();
-            byte[] keyBytes =levelDB.asBytes(key);
+            byte[] keyBytes =asBytes(key);
             byte[] oldValue = getDB().get(keyBytes);
             getDB().delete(keyBytes);
             if(oldValue != null){
@@ -118,7 +123,7 @@ public class LDBFireMap implements FireMap {
     public long size() {
         try{
             lock.lock();
-            return levelDB.getMetaValueAsLong(this.sizeKey);
+            return meta.getValueAsLong(this.sizeKey);
         }finally {
             lock.unlock();
         }
@@ -128,9 +133,8 @@ public class LDBFireMap implements FireMap {
     public void clear() {
         try{
             lock.lock();
-            levelDB.deleteDB(name);
-            levelDB.removeMeta(sizeKey);
-            this._db = null;
+            meta.remove(sizeKey);
+            _db.clear();
         }finally {
             lock.unlock();
         }

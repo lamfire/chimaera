@@ -1,11 +1,10 @@
 package com.lamfire.chimaera.client;
 
 import com.lamfire.chimaera.command.*;
-import com.lamfire.chimaera.response.ClearResponse;
-import com.lamfire.chimaera.response.EmptyResponse;
-import com.lamfire.chimaera.response.ExistsResponse;
-import com.lamfire.chimaera.response.SizeResponse;
+import com.lamfire.chimaera.response.*;
 import com.lamfire.chimaera.store.*;
+
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,35 +32,25 @@ public class FireStoreAccessor implements FireStore {
         future.waitResponse();
     }
 
+
     @Override
-    public long size(String key) {
-        SizeCommand cmd = new SizeCommand();
+    public long count() {
+        CountCommand cmd = new CountCommand();
         cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setCommand(Command.SIZE);
+        cmd.setCommand(Command.COUNT);
         ResponseFuture<SizeResponse> future = transfer.sendCommand(cmd, SizeResponse.class);
         SizeResponse res = future.waitResponse();
         return res.getSize();
     }
 
     @Override
-    public void clear(String key) {
-        ClearCommand cmd = new ClearCommand();
+    public Set<String> keys() {
+        KeysCommand cmd = new KeysCommand();
         cmd.setStore(this.store);
-        cmd.setKey(key);
-        cmd.setCommand(Command.CLEAR);
-        ResponseFuture<ClearResponse> future = transfer.sendCommand(cmd, ClearResponse.class);
-        future.waitResponse();
-    }
-
-    @Override
-    public long size() {
-        return size(null);
-    }
-
-    @Override
-    public void clear() {
-        clear(null);
+        cmd.setCommand(Command.KEYS);
+        ResponseFuture<KeysResponse> future = transfer.sendCommand(cmd,KeysResponse.class);
+        KeysResponse res = future.waitResponse();
+        return res.getKeys();
     }
 
     @Override
@@ -103,14 +92,6 @@ public class FireStoreAccessor implements FireStore {
     @Override
     public FireRank getFireRank(String key) {
         return new FireRankAccessor(transfer, this.store, key);
-    }
-
-    @Override
-    public void defrag() {
-        DefragCommand cmd = new DefragCommand();
-        cmd.setStore(this.store);
-        cmd.setCommand(Command.DEFRAGE);
-        transfer.sendCommand(cmd);
     }
 
 }

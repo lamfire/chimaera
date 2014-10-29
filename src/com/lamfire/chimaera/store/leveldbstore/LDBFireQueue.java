@@ -2,7 +2,6 @@ package com.lamfire.chimaera.store.leveldbstore;
 
 import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.utils.Bytes;
-import org.iq80.leveldb.DB;
 
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,53 +17,50 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class LDBFireQueue implements FireQueue {
     private final Lock lock = new ReentrantLock();
-    private LevelDB levelDB;
-    private DB _db;
-    private byte[] writeIndexKey;
-    private byte[] readIndexKey;
+    private final LDBMeta meta;
+    private final LDBDatabase _db;
+    private final byte[] writeIndexKey;
+    private final byte[] readIndexKey;
 
-    private AtomicLong writeAtome;
-    private AtomicLong readAtome;
+    private final AtomicLong writeCounter;
+    private final AtomicLong readCounter;
 
-    private String name;
+    private final String name;
 
-    public LDBFireQueue(LevelDB levelDB, String name) {
-        this.levelDB = levelDB;
+    public LDBFireQueue(LDBMeta meta,LDBDatabase db,String name) {
+        this.meta = meta;
         this.name = name;
-        this._db = levelDB.getDB(name);
-        this.readIndexKey = levelDB.encodeReadIndexKey(name);
-        this.writeIndexKey = levelDB.encodeWriteIndexKey(name);
+        this._db = db;
+        this.readIndexKey = meta.getReadIndexKey(name);
+        this.writeIndexKey = meta.getWriteIndexKey(name);
 
-        long writeIndex = levelDB.getMetaValueAsLong(writeIndexKey);
-        this.writeAtome = new AtomicLong(writeIndex);
+        long writeIndex = meta.getValueAsLong(writeIndexKey);
+        this.writeCounter = new AtomicLong(writeIndex);
 
-        long readIndex =  levelDB.getMetaValueAsLong(readIndexKey);
-        this.readAtome = new AtomicLong(readIndex);
+        long readIndex =  meta.getValueAsLong(readIndexKey);
+        this.readCounter = new AtomicLong(readIndex);
     }
 
-    private synchronized DB getDB() {
-        if (this._db == null) {
-            _db = levelDB.getDB(name);
-        }
+    private synchronized LDBDatabase getDB() {
         return _db;
     }
 
     public long getWriteIndex() {
-        return writeAtome.get();
+        return writeCounter.get();
     }
 
     public long getReadIndex() {
-        return readAtome.get();
+        return readCounter.get();
     }
 
     void incrementWriteIndex() {
-        long val = this.writeAtome.incrementAndGet();
-        levelDB.setMetaValue(writeIndexKey,Bytes.toBytes(val));
+        long val = this.writeCounter.incrementAndGet();
+        meta.setValue(writeIndexKey, Bytes.toBytes(val));
     }
 
     void incrementReadIndex() {
-        long val = this.readAtome.incrementAndGet();
-        levelDB.setMetaValue(readIndexKey,Bytes.toBytes(val));
+        long val = this.readCounter.incrementAndGet();
+        meta.setValue(readIndexKey, Bytes.toBytes(val));
     }
 
     @Override
@@ -124,10 +120,9 @@ public class LDBFireQueue implements FireQueue {
     public void clear() {
         try {
             lock.lock();
-            levelDB.deleteDB(name);
-            levelDB.removeMeta(writeIndexKey);
-            levelDB.removeMeta(readIndexKey);
-            this._db = null;
+            _db.clear();
+            meta.remove(writeIndexKey);
+            meta.remove(readIndexKey);
         } finally {
             lock.unlock();
         }

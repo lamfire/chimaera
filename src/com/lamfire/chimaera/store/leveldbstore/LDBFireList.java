@@ -1,13 +1,11 @@
 package com.lamfire.chimaera.store.leveldbstore;
 
 import com.lamfire.chimaera.store.FireList;
-import com.lamfire.hydra.exception.NotSupportedMethodException;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Bytes;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,45 +22,42 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LDBFireList implements FireList{
     private static final Logger LOGGER = Logger.getLogger(LDBFireList.class);
     private final Lock lock = new ReentrantLock();
-    private LevelDB levelDB;
-    private DB _db;
-    private byte[] writeIndexKey;
-    private byte[] sizeKey;
-    private String name;
+    private final LDBMeta meta;
+    private final LDBDatabase _db;
+    private final byte[] writeIndexKey;
+    private final byte[] sizeKey;
+    private final String name;
 
-    public LDBFireList(LevelDB levelDB,String name){
-        this.levelDB = levelDB;
+    public LDBFireList(LDBMeta meta,LDBDatabase db,String name){
+        this.meta = meta;
         this.name = name;
-        this._db = levelDB.getDB(name);
-        this.writeIndexKey = levelDB.encodeWriteIndexKey(name);
-        this.sizeKey = levelDB.encodeSizeKey(name);
+        this._db = db;
+        this.writeIndexKey = meta.getWriteIndexKey(name);
+        this.sizeKey = meta.getSizeKey(name);
     }
 
-    private synchronized DB getDB(){
-        if(this._db == null){
-            _db = levelDB.getDB(name);
-        }
+    private synchronized LDBDatabase getDB(){
         return _db;
     }
 
     public long getWriteIndex(){
-        return levelDB.getMetaValueAsLong(writeIndexKey);
+        return meta.getValueAsLong(writeIndexKey);
     }
 
     void incrementWriteIndex(){
-        levelDB.incrementMeta(writeIndexKey);
+        meta.increment(writeIndexKey);
     }
 
     public long getSize(){
-        return levelDB.getMetaValueAsLong(sizeKey);
+        return meta.getValueAsLong(sizeKey);
     }
 
     void incrementSize(){
-        levelDB.incrementMeta(sizeKey);
+        meta.increment(sizeKey);
     }
 
     void decrementSize(){
-        levelDB.incrementMeta(sizeKey,-1);
+        meta.increment(sizeKey,-1);
     }
 
     private synchronized Map.Entry<byte[] ,byte[]> getEntry(int index){
@@ -83,7 +78,7 @@ public class LDBFireList implements FireList{
             return entry;
         }finally {
             lock.unlock();
-            LevelDB.closeIterator(it);
+            LDBManager.closeIterator(it);
         }
     }
 
@@ -159,7 +154,7 @@ public class LDBFireList implements FireList{
 
         }finally {
             lock.unlock();
-            LevelDB.closeIterator(it);
+            LDBManager.closeIterator(it);
         }
         return list;
     }
@@ -190,10 +185,9 @@ public class LDBFireList implements FireList{
     public void clear() {
         try{
             lock.lock();
-            levelDB.deleteDB(name);
-            levelDB.removeMeta(writeIndexKey);
-            levelDB.removeMeta(sizeKey);
-            this._db = null;
+            _db.clear();
+            meta.remove(writeIndexKey);
+            meta.remove(sizeKey);
         }finally {
             lock.unlock();
         }

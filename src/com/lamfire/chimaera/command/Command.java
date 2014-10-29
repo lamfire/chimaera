@@ -5,10 +5,11 @@ public class Command {
     public static final String PUT = "PUT";
     public static final String GET = "GET";
     public static final String REMOVE = "REMOVE";
+    public static final String KEYS = "KEYS";
     public static final String SIZE = "SIZE";
     public static final String CLEAR = "CLEAR";
     public static final String EXISTS = "EXISTS";
-    public static final String DEFRAGE = "DEFRAGE";
+    public static final String COUNT = "COUNT";
 
     public static final String INCREMENT_INCR = "INCREMENT_INCR";
     public static final String INCREMENT_INCR_GET = "INCREMENT_INCR_GET";

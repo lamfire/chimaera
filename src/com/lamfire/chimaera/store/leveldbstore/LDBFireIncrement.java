@@ -16,35 +16,32 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class LDBFireIncrement implements FireIncrement {
     private final Lock lock = new ReentrantLock();
-    private LevelDB levelDB;
-    private DB _db;
-    private byte[] sizeKey;
-    private String name;
+    private final LDBMeta meta;
+    private final LDBDatabase _db;
+    private final byte[] sizeKey;
+    private final String name;
 
-    public LDBFireIncrement(LevelDB levelDB, String name) {
-        this.levelDB = levelDB;
+    public LDBFireIncrement(LDBMeta meta,LDBDatabase db,String name) {
+        this.meta = meta;
         this.name = name;
-        _db = levelDB.getDB(name);
-        this.sizeKey = levelDB.encodeSizeKey(name);
+        this._db = db;
+        this.sizeKey = meta.getSizeKey(name);
     }
 
-    private synchronized DB getDB(){
-        if(this._db == null){
-            _db = levelDB.getDB(name);
-        }
+    private synchronized LDBDatabase getDB(){
         return _db;
     }
 
     private void incrSize() {
-        levelDB.incrementMeta(this.sizeKey);
+        meta.increment(this.sizeKey);
     }
 
     private void decrSize() {
-        levelDB.incrementMeta(this.sizeKey,-1);
+        meta.increment(this.sizeKey,-1);
     }
 
     byte[] asBytes(String message) {
-        return levelDB.asBytes(message);
+        return LDBManager.asBytes(message);
     }
 
     @Override
@@ -135,7 +132,7 @@ public class LDBFireIncrement implements FireIncrement {
     public long size() {
         try {
             lock.lock();
-            return levelDB.getMetaValueAsLong(this.sizeKey);
+            return meta.getValueAsLong(this.sizeKey);
         } finally {
             lock.unlock();
         }
@@ -145,9 +142,8 @@ public class LDBFireIncrement implements FireIncrement {
     public void clear() {
         try {
             lock.lock();
-            levelDB.deleteDB(name);
-            levelDB.removeMeta(sizeKey);
-            this._db = null;
+            getDB().clear();
+            meta.remove(sizeKey);
         } finally {
             lock.unlock();
         }

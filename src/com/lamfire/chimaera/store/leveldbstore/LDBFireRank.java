@@ -10,9 +10,7 @@ import com.lamfire.utils.Bytes;
 import com.lamfire.utils.Lists;
 import org.iq80.leveldb.DB;
 import org.iq80.leveldb.DBIterator;
-import org.iq80.leveldb.WriteOptions;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -28,48 +26,50 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LDBFireRank implements FireRank {
     private static final Logger LOGGER = Logger.getLogger(LDBFireRank.class);
     private final Lock lock = new ReentrantLock();
-    private LevelDB levelDB;
-    private DB _db;
-    private DB _indexDB;
-    private byte[] sizeKey;
-    private String name;
-    private String indexName;
+    private final LDBMeta meta;
+    private final LDBDatabase _db;
+    private final LDBDatabase _indexDB;
+    private final byte[] sizeKey;
+    private final String name;
     private int seed = 11;
 
-    public LDBFireRank(LevelDB levelDB, String name) {
-        this.levelDB = levelDB;
+    public LDBFireRank(LDBMeta meta,LDBDatabase db,LDBDatabase indexDB,String name) {
+        this.meta = meta;
+        this._db = db;
+        this._indexDB = indexDB;
         this.name = name;
-        this.indexName = name + "_idx";
-        this.sizeKey = levelDB.encodeSizeKey(name);
-        this.seed = MurmurHash.hash32(levelDB.asBytes(name), seed);
+        this.sizeKey = meta.getSizeKey(name);
+        this.seed = MurmurHash.hash32(LDBManager.asBytes(name), seed);
     }
 
 
     private synchronized DB getDB() {
-        if (this._db == null) {
-            _db = levelDB.getDB(name);
-        }
         return _db;
     }
 
     private synchronized DB getIndexDB() {
-        if (this._indexDB == null) {
-            _indexDB = levelDB.getDB(indexName);
-        }
         return _indexDB;
     }
 
     private void incrSize() {
-        levelDB.incrementMeta(this.sizeKey);
+        meta.increment(this.sizeKey);
     }
 
     private void decrSize() {
-        levelDB.incrementMeta(this.sizeKey, -1);
+        meta.increment(this.sizeKey, -1);
+    }
+
+    byte[] asBytes(String message) {
+        return LDBManager.asBytes(message);
+    }
+
+    String asString(byte[] message) {
+        return LDBManager.asString(message);
     }
 
     public byte[] encodeScoreKey(String scoreKey, long score) {
         long time = UUIDGen.getTimeSafe();
-        long hash = MurmurHash.hash64(levelDB.asBytes(scoreKey), seed);
+        long hash = MurmurHash.hash64(asBytes(scoreKey), seed);
 
         byte[] scoreBytes = Bytes.toBytes(score);
         byte[] timeBytes = Bytes.toBytes(time);
@@ -85,7 +85,7 @@ public class LDBFireRank implements FireRank {
     }
 
     public byte[] encodeIndexKey(String scoreKey) {
-        return levelDB.asBytes(scoreKey);
+        return asBytes(scoreKey);
     }
 
     private long getScore(byte[] scoreKey) {
@@ -120,7 +120,7 @@ public class LDBFireRank implements FireRank {
         try {
             lock.lock();
             long score = 0;
-            byte[] nameKey = levelDB.asBytes(name);
+            byte[] nameKey = asBytes(name);
             byte[] scoreKey = getIndexDB().get(nameKey);
             if (scoreKey == null) {
                 score = 1;
@@ -144,7 +144,7 @@ public class LDBFireRank implements FireRank {
         try {
             lock.lock();
             long score = 0;
-            byte[] nameKey = levelDB.asBytes(name);
+            byte[] nameKey = asBytes(name);
             byte[] scoreKey = getIndexDB().get(nameKey);
             if (scoreKey == null) {
                 score = step;
@@ -167,7 +167,7 @@ public class LDBFireRank implements FireRank {
     public void set(String name, long score) {
         try {
             lock.lock();
-            byte[] nameKey = levelDB.asBytes(name);
+            byte[] nameKey = asBytes(name);
             byte[] scoreKey = getIndexDB().get(nameKey);
             if (scoreKey == null) {
                 scoreKey = encodeScoreKey(name, score);
@@ -188,7 +188,7 @@ public class LDBFireRank implements FireRank {
     public long score(String name) {
         try {
             lock.lock();
-            byte[] nameKey = levelDB.asBytes(name);
+            byte[] nameKey = asBytes(name);
             byte[] scoreKey = getIndexDB().get(nameKey);
             if (scoreKey != null) {
                 return decodeScore(scoreKey);
@@ -204,7 +204,7 @@ public class LDBFireRank implements FireRank {
         try {
             lock.lock();
             long score = 0;
-            byte[] nameKey = levelDB.asBytes(name);
+            byte[] nameKey = asBytes(name);
             byte[] scoreKey = getIndexDB().get(nameKey);
             if (scoreKey != null) {
                 score = decodeScore(scoreKey);
@@ -229,14 +229,14 @@ public class LDBFireRank implements FireRank {
 
             Map.Entry<byte[], byte[]> e = it.peekNext();
             Item item = new Item();
-            item.setName(levelDB.asString(e.getValue()));
+            item.setName(asString(e.getValue()));
             item.setValue(decodeScore(e.getKey()));
             result.add(item);
 
             while (it.hasPrev()) {
                 e = it.prev();
                 item = new Item();
-                item.setName(levelDB.asString(e.getValue()));
+                item.setName(asString(e.getValue()));
                 long score = decodeScore(e.getKey());
                 item.setValue(score);
                 result.add(item);
@@ -247,7 +247,7 @@ public class LDBFireRank implements FireRank {
             return result;
         }finally {
             lock.unlock();
-            LevelDB.closeIterator(it);
+            LDBManager.closeIterator(it);
         }
     }
 
@@ -261,7 +261,7 @@ public class LDBFireRank implements FireRank {
             while (it.hasNext()) {
                 Map.Entry<byte[], byte[]> e = it.next();
                 Item item = new Item();
-                item.setName(levelDB.asString(e.getValue()));
+                item.setName(asString(e.getValue()));
                 long score = decodeScore(e.getKey());
                 item.setValue(score);
                 result.add(item);
@@ -272,7 +272,7 @@ public class LDBFireRank implements FireRank {
             return result;
         } finally {
             lock.unlock();
-            LevelDB.closeIterator(it);
+            LDBManager.closeIterator(it);
         }
     }
 
@@ -289,7 +289,7 @@ public class LDBFireRank implements FireRank {
             if (from == 0) {
                 Map.Entry<byte[], byte[]> e = it.next();
                 Item item = new Item();
-                item.setName(levelDB.asString(e.getValue()));
+                item.setName(asString(e.getValue()));
                 long score = decodeScore(e.getKey());
                 item.setValue(score);
                 result.add(item);
@@ -306,7 +306,7 @@ public class LDBFireRank implements FireRank {
             while (it.hasPrev()) {
                 Map.Entry<byte[], byte[]> e = it.prev();
                 Item item = new Item();
-                item.setName(levelDB.asString(e.getValue()));
+                item.setName(asString(e.getValue()));
                 long score = decodeScore(e.getKey());
                 item.setValue(score);
                 result.add(item);
@@ -317,7 +317,7 @@ public class LDBFireRank implements FireRank {
             return result;
         } finally {
             lock.unlock();
-            LevelDB.closeIterator(it);
+            LDBManager.closeIterator(it);
         }
     }
 
@@ -342,7 +342,7 @@ public class LDBFireRank implements FireRank {
             while (it.hasNext()) {
                 Map.Entry<byte[], byte[]> e = it.next();
                 Item item = new Item();
-                item.setName(levelDB.asString(e.getValue()));
+                item.setName(asString(e.getValue()));
                 long score = decodeScore(e.getKey());
                 item.setValue(score);
                 result.add(item);
@@ -353,7 +353,7 @@ public class LDBFireRank implements FireRank {
             return result;
         } finally {
             lock.unlock();
-            LevelDB.closeIterator(it);
+            LDBManager.closeIterator(it);
         }
     }
 
@@ -361,7 +361,7 @@ public class LDBFireRank implements FireRank {
     public long size() {
         try {
             lock.lock();
-            return levelDB.getMetaValueAsLong(this.sizeKey);
+            return meta.getValueAsLong(this.sizeKey);
         } finally {
             lock.unlock();
         }
@@ -371,11 +371,9 @@ public class LDBFireRank implements FireRank {
     public void clear() {
         try {
             lock.lock();
-            levelDB.deleteDB(name);
-            levelDB.deleteDB(indexName);
-            levelDB.removeMeta(sizeKey);
-            this._db = null;
-            this._indexDB = null;
+            _db.clear();
+            _indexDB.clear();
+            meta.remove(sizeKey);
         } finally {
             lock.unlock();
         }

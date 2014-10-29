@@ -3,9 +3,11 @@ package com.lamfire.chimaera.store.leveldbstore;
 import com.lamfire.chimaera.store.*;
 import com.lamfire.logger.Logger;
 import com.lamfire.utils.Maps;
-import org.iq80.leveldb.Options;
+import com.lamfire.utils.Sets;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,41 +20,42 @@ public class LDBFireStore implements FireStore {
     private static final Logger LOGGER = Logger.getLogger(LDBFireStore.class);
 
     private final Map<String, FireCollection> dbs = Maps.newHashMap();
-
-    private String name;
-    private String storageDir;
-    private LevelDB levelDB;
+    private final Map<String,String> databaseNames = Maps.newHashMap();
+    private final String name;
+    private final String storageDir;
+    private final LDBManager manager;
+    private final LDBMeta meta;
 
     public LDBFireStore(String storageDir,String name){
         LOGGER.info("Make 'LDBFireStore' : " + storageDir + " - " + name);
         this.storageDir = storageDir;
         this.name = name;
-        this.levelDB = new LevelDB(storageDir);
-        this.levelDB.open();
-        init();
+        this.manager = new LDBManager(storageDir);
+        this.meta = new LDBMeta(this.manager);
+        loadExistsDatabaseInfo();
     }
 
     public LDBFireStore(String storageDir,String name,LDBOptions options){
         LOGGER.info("Make 'LDBFireStore' : " + storageDir + " - " + name);
         this.storageDir = storageDir;
         this.name = name;
-        this.levelDB = new LevelDB(storageDir,options);
-        this.levelDB.open();
-        init();
+        this.manager = new LDBManager(storageDir,options);
+        this.meta = new LDBMeta(this.manager);
+        loadExistsDatabaseInfo();
     }
 
-    private void init(){
+    private void loadExistsDatabaseInfo(){
         //读取已经存在的DB
-        byte[] prefix = levelDB.asBytes(LevelDB.META_KEY_PREFIX_DATABASE);
-        Map<byte[],byte[]> map = levelDB.findMetaByPrefix(prefix);
+        byte[] prefix = manager.asBytes(LDBManager.META_KEY_PREFIX_DATABASE);
+        Map<byte[],byte[]> map = meta.findByPrefix(prefix);
         for(Map.Entry<byte[] ,byte[]> e : map.entrySet()){
-            String dbName = levelDB.decodeDatabaseKey(e.getKey());
-            String clsName = levelDB.asString(e.getValue());
-            load(dbName,clsName);
+            String dbName = meta.getDatabaseNameByKey(e.getKey());
+            String clsName = manager.asString(e.getValue());
+            databaseNames.put(dbName,clsName);
         }
     }
 
-    private void load(String name,String className){
+    private void preLoadDatabase(String name,String className){
         LOGGER.info("Loading data collection [" + name +"] : " + className);
         if ("LDBFireSet".equals(className)){
                 getFireSet(name);
@@ -71,46 +74,37 @@ public class LDBFireStore implements FireStore {
 
     private void register(String name,FireCollection col){
         String clsName = col.getClass().getSimpleName();
-        byte[] dbKey = levelDB.encodeDatabaseKey(name);
-        levelDB.setMetaValue(dbKey,levelDB.asBytes(clsName));
+        byte[] dbKey = meta.getDatabaseKeyByName(name);
+        meta.setValue(dbKey, manager.asBytes(clsName));
+        databaseNames.put(name,clsName);
         dbs.put(name,col);
+    }
+
+    private void unregister(String name){
+        byte[] dbKey = meta.getDatabaseKeyByName(name);
+
+        FireCollection col = dbs.remove(name);
+        if(col != null){
+            col.clear();
+        }
+        this.meta.delete(dbKey);
+        this.databaseNames.remove(name);
+
     }
 
     @Override
     public void remove(String key) {
-        FireCollection col = dbs.remove(key);
-        col.clear();
-        this.levelDB.deleteDB(key);
-        this.levelDB.removeMeta(levelDB.encodeDatabaseKey(name));
+        unregister(key);
     }
 
     @Override
-    public long size(String key) {
-        FireCollection col = dbs.get(key);
-        if(col != null){
-            return col.size();
-        }
-        return 0;
+    public long count() {
+        return databaseNames.size();
     }
 
     @Override
-    public void clear(String key) {
-        FireCollection col = dbs.get(key);
-        col.clear();
-    }
-
-    @Override
-    public long size() {
-        return dbs.size();
-    }
-
-    @Override
-    public synchronized void clear() {
-       for(Map.Entry<String,FireCollection> e : dbs.entrySet()){
-           e.getValue().clear();
-       }
-       dbs.clear();
-       levelDB.clearMeta();
+    public Set<String> keys() {
+        return databaseNames.keySet();  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -122,7 +116,7 @@ public class LDBFireStore implements FireStore {
     public synchronized FireIncrement getFireIncrement(String key) {
         FireIncrement result = (FireIncrement)dbs.get(key);
         if (result == null) {
-            result = new LDBFireIncrement(this.levelDB, key);
+            result = new LDBFireIncrement(this.meta,new LDBDatabase(this.manager,key),key);
             register(key, result);
         }
         return result;
@@ -132,7 +126,7 @@ public class LDBFireStore implements FireStore {
     public synchronized FireList getFireList(String key) {
         FireList result = (FireList)dbs.get(key);
         if (result == null) {
-            result = new LDBFireList(this.levelDB,key);
+            result = new LDBFireList(this.meta,new LDBDatabase(this.manager,key),key);
             register(key, result);
         }
         return result;
@@ -142,7 +136,7 @@ public class LDBFireStore implements FireStore {
     public synchronized FireMap getFireMap(String key) {
         FireMap result = (FireMap)dbs.get(key);
         if (result == null) {
-            result = new LDBFireMap(this.levelDB, key);
+            result = new LDBFireMap(this.meta,new LDBDatabase(this.manager,key),key);
             register(key, result);
         }
         return result;
@@ -152,7 +146,7 @@ public class LDBFireStore implements FireStore {
     public synchronized FireQueue getFireQueue(String key) {
         FireQueue result = (FireQueue)dbs.get(key);
         if (result == null) {
-            result = new LDBFireQueue(this.levelDB,key);
+            result = new LDBFireQueue(this.meta,new LDBDatabase(this.manager,key),key);
             register(key, result);
         }
         return result;
@@ -162,7 +156,7 @@ public class LDBFireStore implements FireStore {
     public synchronized FireSet getFireSet(String key) {
         FireSet result = (FireSet)dbs.get(key);
         if (result == null) {
-            result = new LDBFireSet(this.levelDB, key);
+            result = new LDBFireSet(this.meta,new LDBDatabase(this.manager,key),key);
             register(key, result);
         }
         return result;
@@ -172,14 +166,10 @@ public class LDBFireStore implements FireStore {
     public synchronized FireRank getFireRank(String key) {
         FireRank result = (FireRank)dbs.get(key);
         if (result == null) {
-            result = new LDBFireRank(levelDB,key);
+            result = new LDBFireRank(this.meta,new LDBDatabase(this.manager,key),new LDBDatabase(this.manager,key+"_idx"),key);
             register(key, result);
         }
         return result;
     }
 
-    @Override
-    public void defrag() {
-
-    }
 }

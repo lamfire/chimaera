@@ -22,24 +22,29 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LDBFireSet implements FireSet {
     private final Lock lock = new ReentrantLock();
     private int hashSeed = 13;
-    private LevelDB levelDB;
-    private DB _db;
-    private byte[] sizeKey;
-    private String name;
+    private final LDBMeta meta;
+    private final LDBDatabase _db;
+    private final byte[] sizeKey;
+    private final String name;
 
-    public LDBFireSet(LevelDB levelDB, String name) {
-        this.levelDB = levelDB;
+    public LDBFireSet(LDBMeta meta,LDBDatabase db,String name) {
+        this.meta = meta;
         this.name = name;
-        _db = levelDB.getDB(name);
-        this.sizeKey = levelDB.encodeSizeKey(name);
-        this.hashSeed = MurmurHash.hash32(levelDB.asBytes(name), 11);
+        this._db = db;
+        this.sizeKey = meta.getSizeKey(name);
+        this.hashSeed = MurmurHash.hash32(asBytes(name), hashSeed);
     }
 
     private synchronized DB getDB(){
-        if(this._db == null){
-            _db = levelDB.getDB(name);
-        }
         return _db;
+    }
+
+    byte[] asBytes(String message) {
+        return LDBManager.asBytes(message);
+    }
+
+    String asString(byte[] message) {
+        return LDBManager.asString(message);
     }
 
     private long hash(byte[] bytes) {
@@ -47,11 +52,11 @@ public class LDBFireSet implements FireSet {
     }
 
     private void incrSize() {
-        levelDB.incrementMeta(this.sizeKey);
+        meta.increment(this.sizeKey);
     }
 
     private void decrSize() {
-        levelDB.incrementMeta(this.sizeKey, -1);
+        meta.increment(this.sizeKey, -1);
     }
 
     private byte[] makeHashKey(byte[] bytes) {
@@ -123,7 +128,7 @@ public class LDBFireSet implements FireSet {
             throw new IndexOutOfBoundsException("Index " + index +",Size " + size());
         } finally {
             lock.unlock();
-            LevelDB.closeIterator(it);
+            LDBManager.closeIterator(it);
         }
     }
 
@@ -149,7 +154,7 @@ public class LDBFireSet implements FireSet {
             return list;
         } finally {
             lock.unlock();
-            LevelDB.closeIterator(it);
+            LDBManager.closeIterator(it);
         }
     }
 
@@ -172,7 +177,7 @@ public class LDBFireSet implements FireSet {
     public long size() {
         try {
             lock.lock();
-            return levelDB.getMetaValueAsLong(this.sizeKey);
+            return meta.getValueAsLong(this.sizeKey);
         } finally {
             lock.unlock();
         }
@@ -182,9 +187,8 @@ public class LDBFireSet implements FireSet {
     public void clear() {
         try {
             lock.lock();
-            levelDB.deleteDB(name);
-            levelDB.removeMeta(sizeKey);
-            this._db = null;
+            _db.clear();
+            meta.remove(sizeKey);
         } finally {
             lock.unlock();
         }

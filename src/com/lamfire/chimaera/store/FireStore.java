@@ -1,15 +1,13 @@
 package com.lamfire.chimaera.store;
 
+import java.util.Set;
+
 public interface FireStore {
     public void remove(String key);
 
-    public long size(String key);
+    public long count();
 
-    public void clear(String key);
-
-    public long size();
-
-    public void clear();
+    public Set<String> keys();
 
     public boolean exists(String key);
 
@@ -24,7 +22,5 @@ public interface FireStore {
     public FireSet getFireSet(String key);
 
     public FireRank getFireRank(String key);
-
-    public void defrag();
 
 }

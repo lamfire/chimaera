@@ -1,14 +1,12 @@
 package com.lamfire.chimaera.test.store;
 
 import com.lamfire.chimaera.store.FireList;
-import com.lamfire.chimaera.store.FireQueue;
+import com.lamfire.chimaera.store.leveldbstore.LDBDatabase;
 import com.lamfire.chimaera.store.leveldbstore.LDBFireList;
-import com.lamfire.chimaera.store.leveldbstore.LDBFireQueue;
-import com.lamfire.chimaera.store.leveldbstore.LevelDB;
+import com.lamfire.chimaera.store.leveldbstore.LDBManager;
+import com.lamfire.chimaera.store.leveldbstore.LDBMeta;
 import com.lamfire.chimaera.test.benchmark.FireListBenchmark;
-import com.lamfire.chimaera.test.benchmark.FireQueueBenchmark;
 import com.lamfire.chimaera.test.tester.FireListTester;
-import com.lamfire.chimaera.test.tester.FireQueueTester;
 import com.lamfire.utils.ArrayUtils;
 
 /**
@@ -20,19 +18,23 @@ import com.lamfire.utils.ArrayUtils;
  */
 public class LDBFireListTest {
     public static void benchmark() {
-        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
-        levelDB.open();
+        LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
+        String name = "list_benchmark";
+        LDBMeta meta = new LDBMeta(manager);
+        LDBDatabase db = new LDBDatabase(manager,name);
 
-        FireList list = new LDBFireList(levelDB,"list_benchmark");
+        FireList list = new LDBFireList(meta,db,"list_benchmark");
         FireListBenchmark benchmark = new FireListBenchmark(list);
         benchmark.startupBenchmarkWrite(1);
     }
 
     public static void test() {
-        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
-        levelDB.open();
+        LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
+        String name = "list_tester";
+        LDBMeta meta = new LDBMeta(manager);
+        LDBDatabase db = new LDBDatabase(manager,name);
 
-        FireList list = new LDBFireList(levelDB,"list_tester");
+        FireList list = new LDBFireList(meta,db,"list_tester");
         FireListTester tester = new FireListTester(list);
         tester.test();
     }

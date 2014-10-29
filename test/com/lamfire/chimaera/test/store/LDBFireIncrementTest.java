@@ -1,14 +1,12 @@
 package com.lamfire.chimaera.test.store;
 
 import com.lamfire.chimaera.store.FireIncrement;
-import com.lamfire.chimaera.store.FireList;
+import com.lamfire.chimaera.store.leveldbstore.LDBDatabase;
 import com.lamfire.chimaera.store.leveldbstore.LDBFireIncrement;
-import com.lamfire.chimaera.store.leveldbstore.LDBFireList;
-import com.lamfire.chimaera.store.leveldbstore.LevelDB;
+import com.lamfire.chimaera.store.leveldbstore.LDBManager;
+import com.lamfire.chimaera.store.leveldbstore.LDBMeta;
 import com.lamfire.chimaera.test.benchmark.FireIncrementBenchmark;
-import com.lamfire.chimaera.test.benchmark.FireListBenchmark;
 import com.lamfire.chimaera.test.tester.FireIncrementTester;
-import com.lamfire.chimaera.test.tester.FireListTester;
 import com.lamfire.utils.ArrayUtils;
 
 /**
@@ -21,22 +19,25 @@ import com.lamfire.utils.ArrayUtils;
 public class LDBFireIncrementTest {
 
     public static void benchmark() {
-        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
-        levelDB.open();
+        LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
+        String name = "increment_benchmark";
+        LDBMeta meta = new LDBMeta(manager);
+        LDBDatabase db = new LDBDatabase(manager,name);
 
-        FireIncrement increment = new LDBFireIncrement(levelDB,"increment_benchmark");
+        FireIncrement increment = new LDBFireIncrement(meta,db,"increment_benchmark");
         FireIncrementBenchmark benchmark = new FireIncrementBenchmark(increment);
         benchmark.startupBenchmarkRead(1);
     }
 
     public static void test() {
-        LevelDB levelDB = new LevelDB("/data/LevelDB_TEST1");
-        levelDB.open();
+        LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
+        String name = "increment_tester";
+        LDBMeta meta = new LDBMeta(manager);
+        LDBDatabase db = new LDBDatabase(manager,name);
 
-        FireIncrement increment = new LDBFireIncrement(levelDB,"increment_tester");
+        FireIncrement increment = new LDBFireIncrement(meta,db,"increment_tester");
         FireIncrementTester tester = new FireIncrementTester(increment);
         tester.test();
-        levelDB.close();
     }
 
     public static void main(String[] args){
