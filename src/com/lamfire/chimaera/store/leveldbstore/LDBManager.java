@@ -92,8 +92,10 @@ public class LDBManager {
                 return db;
             }
             try {
-                db =  factory.open(new File(getDatabaseDir(name)), options);
+                String databaseDir = getDatabaseDir(name);
+                db =  factory.open(new File(databaseDir), options);
                 dbs.put(name, db);
+                LOGGER.info("[OPEN]:" + databaseDir);
                 return db;
             } catch (IOException e) {
                 LOGGER.error(e);
@@ -115,9 +117,10 @@ public class LDBManager {
                     LOGGER.warn(e);
                 }
             }
-            String dbDir = getDatabaseDir(name);
+            String databaseDir = getDatabaseDir(name);
             try {
-                FileUtils.deleteDirectory(new File(dbDir));
+                FileUtils.deleteDirectory(new File(databaseDir));
+                LOGGER.info("[DELETE]:" + databaseDir);
             } catch (IOException e) {
                 LOGGER.warn(e);
             }
@@ -133,6 +136,7 @@ public class LDBManager {
             if(db != null){
                 try {
                     db.close();
+                    LOGGER.info("[CLOSED]:" + name);
                 } catch (IOException e) {
                     LOGGER.warn(e);
                 }
@@ -174,9 +178,11 @@ public class LDBManager {
     class AutoCloseIdleDatabaseTask implements Runnable{
         @Override
         public void run() {
+
             for(Map.Entry<String,Long> e :lastAccessTimeRecorder.entrySet() ){
                 String name = e.getKey();
                 long accessTime = e.getValue();
+                LOGGER.debug("[IDLE_CHECK]:" + name + " last access time " + DateFormatUtils.format(accessTime,"yyyy-MM-dd hh:mm:ss"));
                 executeIdle(name,accessTime);
             }
         }
@@ -184,8 +190,9 @@ public class LDBManager {
         private void executeIdle(String name,long lastAccessTime){
             try{
                 if((System.currentTimeMillis() - lastAccessTime) > DateUtils.MILLIS_PER_MINUTE * 5){
+                    lastAccessTimeRecorder.remove(name);
                     closeDB(name);
-                    LOGGER.info("the db["+name+"] exceeded the allowed maximum idle time.(closed) ");
+                    LOGGER.info("[CLOSED]:the db["+name+"] exceeded the allowed maximum idle time.");
                 }
             }catch (Throwable t){
                 LOGGER.warn(t);
