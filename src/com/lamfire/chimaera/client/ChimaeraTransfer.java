@@ -28,14 +28,12 @@ public class ChimaeraTransfer extends Snake {
     private final Map<String, OnMessageListener> pollerMessageListeners = Maps.newHashMap();
     private static final AtomicInteger MessageID = new AtomicInteger();
     private ResponseWaitQueue waitQueue;
-    private CycleSessionIterator sessionIt;
 
     public ChimaeraTransfer(String host, int port, ResponseWaitQueue waitQueue) {
         super(host, port);
         super.setAutoConnectRetry(true);
         super.setKeepAlive(true);
         this.waitQueue = waitQueue;
-        this.sessionIt = new CycleSessionIterator(this);
     }
 
     public ChimaeraTransfer(String host, int port, int threads, ResponseWaitQueue waitQueue) {
@@ -76,7 +74,7 @@ public class ChimaeraTransfer extends Snake {
         if (sessions == null) {
             throw new ChimaeraException("not connection found.");
         }
-        Session s = sessionIt.nextAvailableSession();
+        Session s = awaitAvailableSession();
         if (s == null) {
             throw new ChimaeraException("not available sessions");
         }
