@@ -41,7 +41,7 @@ public class ChimaeraCli {
         this.transfer = new ChimaeraTransfer(host, port, maxConnections, waitQueue);
         this.transfer.setKeepaliveConnsWithClient(maxConnections);
         this.transfer.connect();
-        LOGGER.info("ChimaeraCli connected to " + transfer.getHost() + ":" + transfer.getPort());
+        LOGGER.info("Trying to connect to " + transfer.getHost() + ":" + transfer.getPort());
     }
 
     public FireStore getFireStore(String storeName) {
