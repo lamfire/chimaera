@@ -57,7 +57,7 @@ public class LDBManager {
 		return new String(bytes,DEFAULT_CHARSET);
 	}
 
-	synchronized DB borrowDB(String name){
+    DB _db(String name){
         lock.lock();
         try{
             lastAccessTimeRecorder.put(name,System.currentTimeMillis());
@@ -65,13 +65,13 @@ public class LDBManager {
             if(db != null ){
                 return db;
             }
-            return makeDB(name, options);
+            return _makeDB(name, options);
         }finally {
             lock.unlock();
         }
 	}
 
-    public LDBDatabase database(String name){
+    public LDBDatabase getDB(String name){
         lock.lock();
         try{
             LDBDatabase database = databases.get(name);
@@ -85,7 +85,7 @@ public class LDBManager {
         }
     }
 	
-	private synchronized DB makeDB(String name,Options options){
+	private DB _makeDB(String name,Options options){
         lock.lock();
         try{
             DB db = dbs.get(name);
@@ -111,7 +111,7 @@ public class LDBManager {
         }
 	}
 
-    public synchronized void deleteDB(String name){
+    public void deleteDB(String name){
         lock.lock();
         try{
             DB db = dbs.remove(name);
@@ -135,7 +135,7 @@ public class LDBManager {
         }
     }
 
-    public synchronized void closeDB(String name){
+    public  void closeDB(String name){
         lock.lock();
         try{
             DB db = dbs.remove(name);

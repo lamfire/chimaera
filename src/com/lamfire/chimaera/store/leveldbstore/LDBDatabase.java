@@ -21,23 +21,23 @@ public class LDBDatabase implements DB {
         this.name = name;
     }
 
-    private DB getDB(){
-         return manager.borrowDB(name);
+    DB _db(){
+         return manager._db(name);
     }
 
     @Override
     public byte[] get(byte[] bytes) throws DBException {
-        return getDB().get(bytes);
+        return _db().get(bytes);
     }
 
     @Override
     public byte[] get(byte[] bytes, ReadOptions readOptions) throws DBException {
-        return getDB().get(bytes,readOptions);
+        return _db().get(bytes,readOptions);
     }
 
     @Override
     public DBIterator iterator() {
-        return getDB().iterator();
+        return _db().iterator();
     }
 
     public void closeIterator(DBIterator it){
@@ -50,72 +50,72 @@ public class LDBDatabase implements DB {
 
     @Override
     public DBIterator iterator(ReadOptions readOptions) {
-        return getDB().iterator(readOptions);
+        return _db().iterator(readOptions);
     }
 
     @Override
     public void put(byte[] key, byte[] value) throws DBException {
-        getDB().put(key,value);
+        _db().put(key,value);
     }
 
     @Override
     public void delete(byte[] key) throws DBException {
-        getDB().delete(key);
+        _db().delete(key);
     }
 
     @Override
     public void write(WriteBatch writeBatch) throws DBException {
-        getDB().write(writeBatch);
+        _db().write(writeBatch);
     }
 
     @Override
     public WriteBatch createWriteBatch() {
-        return getDB().createWriteBatch();
+        return _db().createWriteBatch();
     }
 
     @Override
     public Snapshot put(byte[] key, byte[] value, WriteOptions writeOptions) throws DBException {
-        return getDB().put(key,value,writeOptions);
+        return _db().put(key,value,writeOptions);
     }
 
     @Override
     public Snapshot delete(byte[] key, WriteOptions writeOptions) throws DBException {
-        return getDB().delete(key, writeOptions);
+        return _db().delete(key, writeOptions);
     }
 
     @Override
     public Snapshot write(WriteBatch writeBatch, WriteOptions writeOptions) throws DBException {
-        return getDB().write(writeBatch,writeOptions);
+        return _db().write(writeBatch,writeOptions);
     }
 
     @Override
     public Snapshot getSnapshot() {
-        return getDB().getSnapshot();
+        return _db().getSnapshot();
     }
 
     @Override
     public long[] getApproximateSizes(Range... ranges) {
-        return getDB().getApproximateSizes(ranges);
+        return _db().getApproximateSizes(ranges);
     }
 
     @Override
     public String getProperty(String name) {
-        return getDB().getProperty(name);
+        return _db().getProperty(name);
     }
 
     @Override
     public void suspendCompactions() throws InterruptedException {
-        getDB().suspendCompactions();
+        _db().suspendCompactions();
     }
 
     @Override
     public void resumeCompactions() {
-        getDB().resumeCompactions();
+        _db().resumeCompactions();
     }
 
     @Override
     public void compactRange(byte[] from, byte[] to) throws DBException {
-        getDB().compactRange(from,to);
+        _db().compactRange(from,to);
     }
 
     @Override
@@ -124,6 +124,10 @@ public class LDBDatabase implements DB {
     }
 
     public void clear(){
+        manager.deleteDB(name);
+    }
+
+    public void delete(){
         manager.deleteDB(name);
     }
 }
