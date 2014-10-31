@@ -22,7 +22,7 @@ public class LDBFireSetTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "set_benchmark";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = manager.database(name);
+        LDBDatabase db = manager.getDB(name);
         FireSet rank = new LDBFireSet(meta,db,name);
         FireSetBenchmark benchmark = new FireSetBenchmark(rank);
         benchmark.startupBenchmarkWrite(1);
@@ -32,7 +32,7 @@ public class LDBFireSetTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "set_tester";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = manager.database(name);
+        LDBDatabase db = manager.getDB(name);
         FireSet set = new LDBFireSet(meta,db,name);
         FireSetTester tester = new FireSetTester(set);
         tester.test();

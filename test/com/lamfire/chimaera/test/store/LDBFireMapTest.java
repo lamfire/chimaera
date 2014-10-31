@@ -22,7 +22,7 @@ public class LDBFireMapTest {
         LDBManager manager = new LDBManager("k:/data/LevelDB_TEST1");
         String name = "map_benchmark";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = manager.database(name);
+        LDBDatabase db = manager.getDB(name);
 
         FireMap map = new LDBFireMap(meta,db,"map_benchmark");
         FireMapBenchmark benchmark = new FireMapBenchmark(map);
@@ -33,7 +33,7 @@ public class LDBFireMapTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "map_benchmark";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = manager.database(name);
+        LDBDatabase db = manager.getDB(name);
 
         FireMap map = new LDBFireMap(meta,db,"map_benchmark");
         FireMapBenchmark benchmark = new FireMapBenchmark(map);
@@ -44,7 +44,7 @@ public class LDBFireMapTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "map_tester";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = manager.database(name);
+        LDBDatabase db = manager.getDB(name);
 
         FireMap map = new LDBFireMap(meta,db,name);
 

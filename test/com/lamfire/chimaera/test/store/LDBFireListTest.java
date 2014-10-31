@@ -21,7 +21,7 @@ public class LDBFireListTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "list_benchmark";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = manager.database(name);
+        LDBDatabase db = manager.getDB(name);
 
         FireList list = new LDBFireList(meta,db,"list_benchmark");
         FireListBenchmark benchmark = new FireListBenchmark(list);
@@ -32,7 +32,7 @@ public class LDBFireListTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "list_tester";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = manager.database(name);
+        LDBDatabase db = manager.getDB(name);
 
         FireList list = new LDBFireList(meta,db,"list_tester");
         FireListTester tester = new FireListTester(list);

@@ -22,8 +22,8 @@ public class LDBFireRankTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "rank_benchmark";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = manager.database(name);
-        LDBDatabase idx = manager.database(name+"_idx");
+        LDBDatabase db = manager.getDB(name);
+        LDBDatabase idx = manager.getDB(name+"_idx");
 
         FireRank rank = new LDBFireRank(meta,db,idx,name);
         FireRankBenchmark benchmark = new FireRankBenchmark(rank);
@@ -34,8 +34,8 @@ public class LDBFireRankTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "rank_tester";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = manager.database(name);
-        LDBDatabase idx = manager.database(name+"_idx");
+        LDBDatabase db = manager.getDB(name);
+        LDBDatabase idx = manager.getDB(name+"_idx");
 
         FireRank set = new LDBFireRank(meta,db,idx,name);
         FireRankTester tester = new FireRankTester(set);
