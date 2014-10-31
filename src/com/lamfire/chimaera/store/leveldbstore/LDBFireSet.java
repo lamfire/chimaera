@@ -69,12 +69,11 @@ public class LDBFireSet implements FireSet {
         try {
             lock.lock();
             byte[] key = makeHashKey(value);
-            byte[] oldValue = getDB().get(key);
-            if (oldValue != null) {
-                return;
+            byte[] exists = getDB().get(key);
+            if (exists == null) {
+                getDB().put(key, value);
+                incrSize();
             }
-            getDB().put(key, value);
-            incrSize();
         } finally {
             lock.unlock();
         }

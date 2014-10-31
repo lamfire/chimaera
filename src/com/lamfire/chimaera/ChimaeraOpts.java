@@ -13,10 +13,10 @@ public class ChimaeraOpts {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraOpts.class);
     private boolean storeOnDisk = false;
     private String dataDir;
-    private int cacheSize = 8*1024*1024;
+    private int cacheSize = 8 * 1024 * 1024;
     private int maxOpenFiles = 100;
-    private int blockSize = 1024 * 1024;
-    private int writeBufferSize = 8 *1024 *1024;
+    private int blockSize = 4 * 1024;
+    private int writeBufferSize = 8 * 1024 * 1024;
 
     public boolean isStoreOnDisk() {
         return storeOnDisk;
