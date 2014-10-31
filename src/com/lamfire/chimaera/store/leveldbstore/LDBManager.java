@@ -23,6 +23,7 @@ public class LDBManager {
 
     private final Lock lock = new ReentrantLock();
 	private final Map<String, DB> dbs = Maps.newHashMap(); //dbs
+    private final Map<String, LDBDatabase> databases = Maps.newHashMap(); //dbs
     private final Map<String,Long> lastAccessTimeRecorder = Maps.newHashMap();
 
     private final DBFactory factory ;
@@ -56,7 +57,7 @@ public class LDBManager {
 		return new String(bytes,DEFAULT_CHARSET);
 	}
 
-	public synchronized DB borrowDB(String name){
+	synchronized DB borrowDB(String name){
         lock.lock();
         try{
             lastAccessTimeRecorder.put(name,System.currentTimeMillis());
@@ -69,6 +70,20 @@ public class LDBManager {
             lock.unlock();
         }
 	}
+
+    public LDBDatabase database(String name){
+        lock.lock();
+        try{
+            LDBDatabase database = databases.get(name);
+            if(database == null){
+                database = new LDBDatabase(this,name);
+                databases.put(name,database);
+            }
+            return database;
+        }finally {
+            lock.unlock();
+        }
+    }
 	
 	private synchronized DB makeDB(String name,Options options){
         lock.lock();
@@ -103,6 +118,7 @@ public class LDBManager {
             if(db != null){
                 try {
                     db.close();
+                    databases.remove(name);
                 } catch (IOException e) {
                     LOGGER.warn(e);
                 }
@@ -126,7 +142,8 @@ public class LDBManager {
             if(db != null){
                 try {
                     db.close();
-                    LOGGER.info("[CLOSED]:" + name);
+                    databases.remove(name);
+                    LOGGER.debug("[CLOSED]:" + name);
                 } catch (IOException e) {
                     LOGGER.warn(e);
                 }
@@ -139,6 +156,7 @@ public class LDBManager {
     public void closeAll(){
         lock.lock();
         try{
+            databases.clear();
             for(DB db : dbs.values()){
                 try {
                     db.close();

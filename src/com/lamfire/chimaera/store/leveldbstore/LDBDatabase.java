@@ -16,7 +16,7 @@ public class LDBDatabase implements DB {
     private final LDBManager manager;
     private final String name;
 
-    public LDBDatabase(LDBManager manager,String name){
+    LDBDatabase(LDBManager manager,String name){
         this.manager = manager;
         this.name = name;
     }

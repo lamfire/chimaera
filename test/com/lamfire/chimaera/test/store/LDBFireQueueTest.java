@@ -21,7 +21,7 @@ public class LDBFireQueueTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "queue_tester";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = new LDBDatabase(manager,name);
+        LDBDatabase db = manager.database(name);
 
         FireQueue queue = new LDBFireQueue(meta,db,name);
         FireQueueBenchmark benchmark = new FireQueueBenchmark(queue);
@@ -32,7 +32,7 @@ public class LDBFireQueueTest {
         LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
         String name = "queue_tester";
         LDBMeta meta = new LDBMeta(manager);
-        LDBDatabase db = new LDBDatabase(manager,name);
+        LDBDatabase db = manager.database(name);
 
         FireQueue queue = new LDBFireQueue(meta,db,name);
         FireQueueTester tester = new FireQueueTester(queue);

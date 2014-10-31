@@ -66,7 +66,7 @@ public class LDBFireStoreTest {
 
     public static void main(String[] args){
         LDBFireStore store = new LDBFireStore("/data/LevelDB_STORE1","TEST1");
-        //testAll(store);
-        testStore(store);
+        testAll(store);
+        //testStore(store);
     }
 }
