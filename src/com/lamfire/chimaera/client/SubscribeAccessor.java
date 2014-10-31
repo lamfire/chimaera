@@ -16,14 +16,14 @@ import com.lamfire.hydra.Session;
  * Time: 上午11:13
  * To change this template use File | Settings | File Templates.
  */
-public class SubscribeAccessor implements Subscribe, Rebundleable {
+public class SubscribeAccessor implements Subscribe, BindInterface {
     private ChimaeraTransfer transfer;
     private String store = "_SUBSCRIBE_";
-    private RebundleMonitor monitor;
+    private BindMonitor monitor;
 
     SubscribeAccessor(ChimaeraTransfer transfer) {
         this.transfer = transfer;
-        this.monitor = new RebundleMonitor();
+        this.monitor = new BindMonitor();
     }
 
     /**
@@ -40,7 +40,7 @@ public class SubscribeAccessor implements Subscribe, Rebundleable {
 
 
         //add monitor
-        Rebundler bundler = new Rebundler(this);
+        BindTask bundler = new BindTask(this);
         bundler.setKey(key);
         bundler.setClientId(clientId);
         bundler.setListener(listener);

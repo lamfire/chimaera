@@ -16,14 +16,14 @@ import com.lamfire.hydra.Session;
  * Time: 上午11:13
  * To change this template use File | Settings | File Templates.
  */
-public class PollerAccessor implements Poller, Rebundleable {
+public class PollerAccessor implements Poller, BindInterface {
     private ChimaeraTransfer transfer;
     private String store = "_POLLER_";
-    private RebundleMonitor monitor;
+    private BindMonitor monitor;
 
     PollerAccessor(ChimaeraTransfer transfer) {
         this.transfer = transfer;
-        this.monitor = new RebundleMonitor();
+        this.monitor = new BindMonitor();
     }
 
     public Command getBindCommand(String key, String clientId) {
@@ -48,7 +48,7 @@ public class PollerAccessor implements Poller, Rebundleable {
         future.waitResponse();
 
         //add monitor
-        Rebundler bundler = new Rebundler(this);
+        BindTask bundler = new BindTask(this);
         bundler.setKey(key);
         bundler.setClientId(clientId);
         bundler.setListener(listener);

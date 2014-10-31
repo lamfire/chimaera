@@ -11,7 +11,7 @@ import com.lamfire.hydra.Session;
  * Time: 下午3:05
  * To change this template use File | Settings | File Templates.
  */
-public interface Rebundleable {
+public interface BindInterface {
     public Command getBindCommand(String key, String clientId);
 
     public Command getUnbindCommand(String key, String clientId);

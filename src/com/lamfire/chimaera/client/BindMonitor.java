@@ -16,21 +16,21 @@ import java.util.concurrent.TimeUnit;
  * Time: 下午2:33
  * To change this template use File | Settings | File Templates.
  */
-public class RebundleMonitor {
-    private static final Logger LOGGER = Logger.getLogger(RebundleMonitor.class);
+public class BindMonitor {
+    private static final Logger LOGGER = Logger.getLogger(BindMonitor.class);
     private static final ScheduledExecutorService service = Executors.newScheduledThreadPool(1, Threads.makeThreadFactory("RebundleMonitor"));
 
     public static void shutdownMonitorThread(){
         service.shutdown();
     }
 
-    private Map<String, Rebundler> map = new HashMap<String, Rebundler>();
+    private Map<String, BindTask> map = new HashMap<String, BindTask>();
 
-    public RebundleMonitor() {
+    public BindMonitor() {
         service.scheduleWithFixedDelay(checker, 30, 30, TimeUnit.SECONDS);
     }
 
-    public void add(Rebundler reBundler) {
+    public void add(BindTask reBundler) {
         String entryKey = entryKey(reBundler.getKey(), reBundler.getClientId());
         this.map.put(entryKey, reBundler);
     }
@@ -39,7 +39,7 @@ public class RebundleMonitor {
         return key + ":" + clientId;
     }
 
-    public Rebundler remove(String key, String clientId) {
+    public BindTask remove(String key, String clientId) {
         String entryKey = entryKey(key, clientId);
         return this.map.remove(entryKey);
     }
@@ -51,8 +51,8 @@ public class RebundleMonitor {
                 LOGGER.debug("[RebundleMonitor]:check bundles [" + map.size() + "]");
             }
             try{
-                for (Map.Entry<String, Rebundler> e : map.entrySet()) {
-                    Rebundler rebundler = e.getValue();
+                for (Map.Entry<String, BindTask> e : map.entrySet()) {
+                    BindTask rebundler = e.getValue();
                     if (!rebundler.isAvailable()) {
                         LOGGER.info("[RebundleMonitor]: the bundle was unavailable :" + rebundler);
                         rebundler.rebind();

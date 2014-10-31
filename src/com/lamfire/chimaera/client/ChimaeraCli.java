@@ -5,9 +5,6 @@ import com.lamfire.chimaera.Poller;
 import com.lamfire.chimaera.Subscribe;
 import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
-import com.lamfire.utils.Threads;
-
-import java.util.concurrent.Executors;
 
 public class ChimaeraCli {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraCli.class);
@@ -66,7 +63,7 @@ public class ChimaeraCli {
         if (this.transfer != null) {
             this.transfer.shutdown();
         }
-        RebundleMonitor.shutdownMonitorThread();
+        BindMonitor.shutdownMonitorThread();
     }
 
     public boolean isConnected(){
