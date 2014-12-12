@@ -1,13 +1,15 @@
 package com.lamfire.chimaera.test.store;
 
 import com.lamfire.chimaera.store.FireRank;
+import com.lamfire.chimaera.store.Item;
 import com.lamfire.chimaera.store.leveldbstore.LDBDatabase;
 import com.lamfire.chimaera.store.leveldbstore.LDBFireRank;
 import com.lamfire.chimaera.store.leveldbstore.LDBManager;
 import com.lamfire.chimaera.store.leveldbstore.LDBMeta;
 import com.lamfire.chimaera.test.benchmark.FireRankBenchmark;
 import com.lamfire.chimaera.test.tester.FireRankTester;
-import com.lamfire.utils.ArrayUtils;
+
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,10 +45,30 @@ public class LDBFireRankTest {
     }
 
     public static void main(String[] args){
-        if(ArrayUtils.contains(args, "benchmark")){
-            benchmark();
-        }else{
-            test();
+//        if(ArrayUtils.contains(args, "benchmark")){
+//            benchmark();
+//        }else{
+//            test();
+//        }
+
+        LDBManager manager = new LDBManager("/data/LevelDB_TEST3");
+        String name = "rank_tester";
+        LDBMeta meta = new LDBMeta(manager);
+        LDBDatabase db = manager.getDB(name);
+        LDBDatabase idx = manager.getDB(name+"_idx");
+
+        FireRank rank = new LDBFireRank(meta,db,idx,name);
+
+        for(int i=0;i<10;i++){
+            rank.set(String.valueOf(i),i);
         }
+
+        rank.set("8",-100);
+
+        List<Item> max = rank.max((int)rank.size());
+        for(Item item : max){
+            System.out.println(item );
+        }
+
     }
 }

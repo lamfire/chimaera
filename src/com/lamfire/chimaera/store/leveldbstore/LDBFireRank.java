@@ -75,13 +75,19 @@ public class LDBFireRank implements FireRank {
         byte[] timeBytes = Bytes.toBytes(time);
         byte[] hashBytes = Bytes.toBytes(hash);
 
-        byte[] result = ArrayUtils.addAll(scoreBytes, timeBytes);
+
+        byte[] result = {1};
+        if(score < 0){
+            result[0] = 0;
+        }
+        result = ArrayUtils.addAll(result,scoreBytes);
+        result = ArrayUtils.addAll(result, timeBytes);
         result = ArrayUtils.addAll(result, hashBytes);
         return result;
     }
 
     public long decodeScore(byte[] scoreKey) {
-        return Bytes.toLong(scoreKey, 0);
+        return Bytes.toLong(scoreKey, 1);
     }
 
     public byte[] encodeIndexKey(String scoreKey) {
@@ -176,7 +182,6 @@ public class LDBFireRank implements FireRank {
                 return;
             }
 
-            score = decodeScore(scoreKey);
             byte[] newScoreKey = encodeScoreKey(name, score);
             update(nameKey, scoreKey, newScoreKey, score);
         } finally {

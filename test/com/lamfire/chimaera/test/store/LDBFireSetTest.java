@@ -19,7 +19,7 @@ import com.lamfire.utils.ArrayUtils;
 public class LDBFireSetTest {
 
     public static void benchmark(){
-        LDBManager manager = new LDBManager("/data/LevelDB_TEST1");
+        LDBManager manager = new LDBManager("k:/data/LevelDB_TEST1");
         String name = "set_benchmark";
         LDBMeta meta = new LDBMeta(manager);
         LDBDatabase db = manager.getDB(name);
