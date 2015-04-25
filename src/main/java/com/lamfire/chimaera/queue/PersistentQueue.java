@@ -2,6 +2,7 @@ package com.lamfire.chimaera.queue;
 
 import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.filequeue.FileQueue;
+import com.lamfire.filequeue.FileQueueBuilder;
 
 import java.io.IOException;
 
@@ -25,7 +26,8 @@ public class PersistentQueue implements FireQueue {
 
     public synchronized FileQueue open() throws IOException {
         if(queue == null){
-            queue = new FileQueue(dir,name);
+            FileQueueBuilder builder = new FileQueueBuilder();
+            queue = builder.dataDir(dir).name(name).build();
         }
         return queue;
     }
