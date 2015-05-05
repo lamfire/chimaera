@@ -1,16 +1,12 @@
 package com.lamfire.chimaera.test.client;
 
-import com.lamfire.chimaera.store.FireIncrement;
-import com.lamfire.chimaera.store.FireList;
-import com.lamfire.chimaera.test.Config;
-import com.lamfire.chimaera.test.benchmark.FireIncrementBenchmark;
-import com.lamfire.chimaera.test.benchmark.FireListBenchmark;
-import com.lamfire.chimaera.test.tester.FireIncrementTester;
-import com.lamfire.chimaera.test.tester.FireListTester;
-import com.lamfire.utils.ArrayUtils;
-import com.lamfire.utils.Asserts;
 
-import java.util.List;
+import com.lamfire.chimaera.test.Config;
+import com.lamfire.chimaera.test.benchmark.FireListBenchmark;
+import com.lamfire.chimaera.test.tester.FireListTester;
+import com.lamfire.pandora.FireList;
+import com.lamfire.utils.ArrayUtils;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,7 +28,7 @@ public class FireListTest {
     }
 
     public static void main(String[] args) {
-        FireList target =  Config.getFireStore(args).getFireList("FireList");
+        FireList target =  Config.getPandora(args).getFireList("FireList");
         if(ArrayUtils.contains(args, "benchmark")){
             benchmark(target);
         }else{

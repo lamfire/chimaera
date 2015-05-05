@@ -3,7 +3,7 @@ package com.lamfire.chimaera.client;
 import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.command.set.*;
 import com.lamfire.chimaera.response.*;
-import com.lamfire.chimaera.store.FireSet;
+import com.lamfire.pandora.FireSet;
 
 import java.util.List;
 

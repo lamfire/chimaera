@@ -6,7 +6,7 @@
 
     <groupId>com.lamfire</groupId>
     <artifactId>chimaera</artifactId>
-    <version>1.2.6-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
 
 
     <properties>
@@ -53,6 +53,11 @@
             <groupId>com.lamfire</groupId>
             <artifactId>leveldb</artifactId>
             <version>1.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lamfire</groupId>
+            <artifactId>pandora</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.lamfire</groupId>

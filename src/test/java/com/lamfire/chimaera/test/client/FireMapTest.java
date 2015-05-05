@@ -1,13 +1,11 @@
 package com.lamfire.chimaera.test.client;
 
-import com.lamfire.chimaera.store.FireList;
-import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.chimaera.test.Config;
 import com.lamfire.chimaera.test.benchmark.FireListBenchmark;
 import com.lamfire.chimaera.test.benchmark.FireMapBenchmark;
 import com.lamfire.chimaera.test.tester.FireListTester;
 import com.lamfire.chimaera.test.tester.FireMapTester;
+import com.lamfire.pandora.FireMap;
 import com.lamfire.utils.ArrayUtils;
 import com.lamfire.utils.Asserts;
 import com.lamfire.utils.RandomUtils;
@@ -34,7 +32,7 @@ public class FireMapTest {
     }
 
     public static void main(String[] args) {
-        FireMap target =  Config.getFireStore(args).getFireMap("FireMap");
+        FireMap target =  Config.getPandora(args).getFireMap("FireMap");
         if(ArrayUtils.contains(args, "benchmark")){
             benchmark(target);
         }else{

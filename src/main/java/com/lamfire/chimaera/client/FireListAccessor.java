@@ -6,7 +6,7 @@ import com.lamfire.chimaera.response.EmptyResponse;
 import com.lamfire.chimaera.response.GetResponse;
 import com.lamfire.chimaera.response.GetsResponse;
 import com.lamfire.chimaera.response.SizeResponse;
-import com.lamfire.chimaera.store.FireList;
+import com.lamfire.pandora.FireList;
 
 import java.util.List;
 

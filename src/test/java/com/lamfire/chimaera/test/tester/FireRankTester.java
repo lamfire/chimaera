@@ -1,7 +1,8 @@
 package com.lamfire.chimaera.test.tester;
 
-import com.lamfire.chimaera.store.FireRank;
-import com.lamfire.chimaera.store.Item;
+
+import com.lamfire.pandora.FireRank;
+import com.lamfire.pandora.Item;
 import com.lamfire.utils.Asserts;
 import com.lamfire.utils.RandomUtils;
 

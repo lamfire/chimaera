@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.queue;
 
-import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.FireQueue;
 
 /**
  * 阻塞对例

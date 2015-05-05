@@ -7,9 +7,9 @@ import com.lamfire.chimaera.command.rank.RankSetCommand;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
 
 @SERVICE(command = Command.RANK_SET)
 public class RankSetService implements Service<RankSetCommand> {
@@ -17,7 +17,7 @@ public class RankSetService implements Service<RankSetCommand> {
 
     @Override
     public Response execute(MessageContext context, RankSetCommand cmd) {
-        FireStore store = Chimaera.getFireStore(cmd.getStore());
+        Pandora store = Chimaera.getPandora(cmd.getStore());
 
         store.getFireRank(cmd.getKey()).set(cmd.getName(), cmd.getCount());
         return Responses.makeEmptyResponse(cmd);

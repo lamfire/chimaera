@@ -7,8 +7,9 @@ import com.lamfire.chimaera.response.EmptyResponse;
 import com.lamfire.chimaera.response.SizeResponse;
 import com.lamfire.chimaera.response.rank.RankListResponse;
 import com.lamfire.chimaera.response.rank.RankScoreResponse;
-import com.lamfire.chimaera.store.FireRank;
-import com.lamfire.chimaera.store.Item;
+import com.lamfire.pandora.FireRank;
+import com.lamfire.pandora.Item;
+
 
 import java.util.List;
 

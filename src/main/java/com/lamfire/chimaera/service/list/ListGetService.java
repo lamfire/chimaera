@@ -7,9 +7,9 @@ import com.lamfire.chimaera.command.list.ListGetCommand;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
 
 @SERVICE(command = Command.LIST_GET)
 public class ListGetService implements Service<ListGetCommand> {
@@ -17,7 +17,7 @@ public class ListGetService implements Service<ListGetCommand> {
 
     @Override
     public Response execute(MessageContext context, ListGetCommand cmd) {
-        FireStore store = Chimaera.getFireStore(cmd.getStore());
+        Pandora store = Chimaera.getPandora(cmd.getStore());
 
         byte[] bytes = store.getFireList(cmd.getKey()).get(cmd.getIndex());
         return Responses.makeGetResponse(cmd, bytes);

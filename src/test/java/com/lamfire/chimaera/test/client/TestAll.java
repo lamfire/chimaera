@@ -12,25 +12,25 @@ import com.lamfire.chimaera.test.tester.*;
  */
 public class TestAll {
     public static void test(String[] args){
-        FireIncrementTester t1 = new FireIncrementTester(Config.getFireStore(args).getFireIncrement("TEST_INCR"));
+        FireIncrementTester t1 = new FireIncrementTester(Config.getPandora(args).getFireIncrement("TEST_INCR"));
         t1.test();
 
-        FireListTester t2 = new FireListTester(Config.getFireStore(args).getFireList("TEST_LIST"));
+        FireListTester t2 = new FireListTester(Config.getPandora(args).getFireList("TEST_LIST"));
         t2.test();
 
-        FireMapTester t3 = new FireMapTester(Config.getFireStore(args).getFireMap("TEST_MAP"));
+        FireMapTester t3 = new FireMapTester(Config.getPandora(args).getFireMap("TEST_MAP"));
         t3.test();
 
-        FireQueueTester t4 = new FireQueueTester(Config.getFireStore(args).getFireQueue("TEST_QUEUE"));
+        FireQueueTester t4 = new FireQueueTester(Config.getPandora(args).getFireQueue("TEST_QUEUE"));
         t4.test();
 
-        FireRankTester t5 = new FireRankTester(Config.getFireStore(args).getFireRank("TEST_RANK"));
+        FireRankTester t5 = new FireRankTester(Config.getPandora(args).getFireRank("TEST_RANK"));
         t5.test();
 
-        FireSetTester t6 = new FireSetTester( Config.getFireStore(args).getFireSet("TEST_SET"));
+        FireSetTester t6 = new FireSetTester( Config.getPandora(args).getFireSet("TEST_SET"));
         t6.test();
 
-        FireStoreTester t7 = new FireStoreTester(Config.getFireStore(args));
+        FireStoreTester t7 = new FireStoreTester(Config.getPandora(args));
         t7.test();
     }
     public static void main(String[] args) {

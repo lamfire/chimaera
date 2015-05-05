@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.response.rank;
 
 import com.lamfire.chimaera.response.Response;
-import com.lamfire.chimaera.store.Item;
+import com.lamfire.pandora.Item;
 
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package com.lamfire.chimaera.queue;
 
-import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.filequeue.FileQueue;
 import com.lamfire.filequeue.FileQueueBuilder;
+import com.lamfire.pandora.FireQueue;
 
 import java.io.IOException;
 

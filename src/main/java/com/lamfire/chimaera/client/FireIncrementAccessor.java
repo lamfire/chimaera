@@ -5,7 +5,7 @@ import com.lamfire.chimaera.command.increment.*;
 import com.lamfire.chimaera.response.EmptyResponse;
 import com.lamfire.chimaera.response.SizeResponse;
 import com.lamfire.chimaera.response.increment.IncrGetResponse;
-import com.lamfire.chimaera.store.FireIncrement;
+import com.lamfire.pandora.FireIncrement;
 
 /**
  * Created with IntelliJ IDEA.

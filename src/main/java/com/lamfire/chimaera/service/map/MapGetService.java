@@ -8,10 +8,10 @@ import com.lamfire.chimaera.response.ErrorResponse;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
-import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.FireMap;
+import com.lamfire.pandora.Pandora;
 
 @SERVICE(command = Command.MAP_GET)
 public class MapGetService implements Service<MapGetCommand> {
@@ -19,7 +19,7 @@ public class MapGetService implements Service<MapGetCommand> {
 
     @Override
     public Response execute(MessageContext context, MapGetCommand cmd) {
-        FireStore store = Chimaera.getFireStore(cmd.getStore());
+        Pandora store = Chimaera.getPandora(cmd.getStore());
 
         FireMap map = store.getFireMap(cmd.getKey());
         if (map == null) {

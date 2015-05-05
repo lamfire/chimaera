@@ -1,8 +1,8 @@
 package com.lamfire.chimaera;
 
 import com.lamfire.chimaera.queue.PersistentQueue;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
 import com.lamfire.utils.*;
 import java.io.IOException;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class Chimaera {
     private static final Logger LOGGER = Logger.getLogger(Chimaera.class);
     private static final float FREE_MEMORY_THRESHOLD = 0.1f;
-    private static final Map<String, FireStore> stores = Maps.newConcurrentMap();
+    private static final Map<String, Pandora> stores = Maps.newConcurrentMap();
     private static boolean lackOfMemory = false;
     private static  ChimaeraOpts opts;
 
@@ -47,24 +47,21 @@ public class Chimaera {
         return opts;
     }
 
-    public static final FireStore getFireStore(String storeName) {
-        FireStore store = stores.get(storeName);
+    public static final Pandora getPandora(String storeName) {
+        Pandora store = stores.get(storeName);
         if (store != null) {
             return store;
         }
-        return newFireStore(storeName);
+        return newPandora(storeName);
     }
 
 
-    private synchronized static FireStore newFireStore(String storeName) {
-        FireStore store = stores.get(storeName);
+    private synchronized static Pandora newPandora(String storeName) {
+        Pandora store = stores.get(storeName);
         if (store == null) {
             try{
-                if(Chimaera.opts != null){
-                store = FireStoreFactory.makeFireStore(storeName,Chimaera.opts);
-                }else{
-                    store = FireStoreFactory.makeFireStoreWithMemory(storeName);
-                }
+                store = FireStoreFactory.makePandora(storeName, Chimaera.opts);
+
                 stores.put(storeName, store);
             }catch (IOException e){
                 LOGGER.error(e.getMessage(),e);

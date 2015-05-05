@@ -1,8 +1,6 @@
 package com.lamfire.chimaera.test.tester;
 
-import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.chimaera.test.Config;
+import com.lamfire.pandora.FireMap;
 import com.lamfire.utils.Asserts;
 import com.lamfire.utils.RandomUtils;
 

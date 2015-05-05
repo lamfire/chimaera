@@ -1,7 +1,6 @@
 package com.lamfire.chimaera.test.tester;
 
-import com.lamfire.chimaera.store.FireSet;
-import com.lamfire.chimaera.test.Config;
+import com.lamfire.pandora.FireSet;
 import com.lamfire.utils.Asserts;
 
 import java.util.List;

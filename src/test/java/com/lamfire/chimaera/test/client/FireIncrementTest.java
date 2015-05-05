@@ -1,15 +1,11 @@
 package com.lamfire.chimaera.test.client;
 
-import com.lamfire.chimaera.store.FireIncrement;
-import com.lamfire.chimaera.store.FireSet;
-import com.lamfire.chimaera.store.FireStore;
+
 import com.lamfire.chimaera.test.Config;
 import com.lamfire.chimaera.test.benchmark.FireIncrementBenchmark;
-import com.lamfire.chimaera.test.benchmark.FireSetBenchmark;
 import com.lamfire.chimaera.test.tester.FireIncrementTester;
-import com.lamfire.chimaera.test.tester.FireSetTester;
+import com.lamfire.pandora.FireIncrement;
 import com.lamfire.utils.ArrayUtils;
-import com.lamfire.utils.Asserts;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,7 +27,7 @@ public class FireIncrementTest {
     }
 
     public static void main(String[] args) {
-        FireIncrement target =  Config.getFireStore(args).getFireIncrement("FireIncrement");
+        FireIncrement target =  Config.getPandora(args).getFireIncrement("FireIncrement");
         if(ArrayUtils.contains(args, "benchmark")){
             benchmark(target);
         }else{

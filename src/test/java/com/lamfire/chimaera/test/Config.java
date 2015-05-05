@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.test;
 
 import com.lamfire.chimaera.client.ChimaeraCli;
-import com.lamfire.chimaera.store.*;
+import com.lamfire.pandora.Pandora;
 import com.lamfire.utils.PropertiesUtils;
 
 import java.util.Map;
@@ -70,16 +70,16 @@ public class Config {
         }
     }
 
-    public static  FireStore  getFireStore(){
-         return getChimaeraCli().getFireStore("DEFAULT");
+    public static Pandora getPandora(){
+         return getChimaeraCli().getPandora("DEFAULT");
     }
 
-    public static  FireStore  getFireStore(String name){
-        return getChimaeraCli().getFireStore(name);
+    public static  Pandora  getPandora(String name){
+        return getChimaeraCli().getPandora(name);
     }
 
-    public static FireStore getFireStore(String[] args){
-        return getChimaeraCli(args).getFireStore("DEFAULT");
+    public static Pandora getPandora(String[] args){
+        return getChimaeraCli(args).getPandora("DEFAULT");
     }
 
     public static void shutdown(){

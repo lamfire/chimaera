@@ -3,8 +3,8 @@ package com.lamfire.chimaera.client;
 import com.lamfire.chimaera.ChimaeraException;
 import com.lamfire.chimaera.Poller;
 import com.lamfire.chimaera.Subscribe;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
 
 public class ChimaeraCli {
     private static final Logger LOGGER = Logger.getLogger(ChimaeraCli.class);
@@ -41,7 +41,7 @@ public class ChimaeraCli {
         LOGGER.info("Trying to connect to " + transfer.getHost() + ":" + transfer.getPort());
     }
 
-    public FireStore getFireStore(String storeName) {
+    public Pandora getPandora(String storeName) {
         return new FireStoreAccessor(transfer, storeName);
     }
 

@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.test.benchmark;
 
-import com.lamfire.chimaera.store.FireList;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.FireList;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.Threads;
 

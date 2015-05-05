@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.lamfire:warden:0.9.1">
+    <CLASSES>
+      <root url="jar://D:/dev/tools/maven_repo/com/lamfire/warden/0.9.1/warden-0.9.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://D:/dev/tools/maven_repo/com/lamfire/warden/0.9.1/warden-0.9.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://D:/dev/tools/maven_repo/com/lamfire/warden/0.9.1/warden-0.9.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

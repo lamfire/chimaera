@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.test.tester;
 
-import com.lamfire.chimaera.store.FireIncrement;
-import com.lamfire.chimaera.store.FireStore;
+
+import com.lamfire.pandora.FireIncrement;
 import com.lamfire.utils.Asserts;
 
 /**

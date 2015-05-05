@@ -7,9 +7,9 @@ import com.lamfire.chimaera.command.list.ListSizeCommand;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
 
 @SERVICE(command = Command.LIST_SIZE)
 public class ListSizeService implements Service<ListSizeCommand> {
@@ -17,7 +17,7 @@ public class ListSizeService implements Service<ListSizeCommand> {
 
     @Override
     public Response execute(MessageContext context, ListSizeCommand cmd) {
-        FireStore store = Chimaera.getFireStore(cmd.getStore());
+        Pandora store = Chimaera.getPandora(cmd.getStore());
 
         long size = store.getFireList(cmd.getKey()).size();
 

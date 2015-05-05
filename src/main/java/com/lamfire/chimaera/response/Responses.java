@@ -5,7 +5,7 @@ import com.lamfire.chimaera.response.increment.IncrGetResponse;
 import com.lamfire.chimaera.response.map.MapKeysResponse;
 import com.lamfire.chimaera.response.rank.RankListResponse;
 import com.lamfire.chimaera.response.rank.RankScoreResponse;
-import com.lamfire.chimaera.store.Item;
+import com.lamfire.pandora.Item;
 
 import java.util.List;
 import java.util.Set;

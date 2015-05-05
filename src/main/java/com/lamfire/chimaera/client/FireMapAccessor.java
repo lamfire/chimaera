@@ -4,7 +4,7 @@ import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.command.map.*;
 import com.lamfire.chimaera.response.*;
 import com.lamfire.chimaera.response.map.MapKeysResponse;
-import com.lamfire.chimaera.store.FireMap;
+import com.lamfire.pandora.FireMap;
 
 import java.util.List;
 

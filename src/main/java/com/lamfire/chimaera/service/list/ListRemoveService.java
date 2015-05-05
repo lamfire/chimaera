@@ -7,9 +7,9 @@ import com.lamfire.chimaera.command.list.ListRemoveCommand;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
 
 @SERVICE(command = Command.LIST_REMOVE)
 public class ListRemoveService implements Service<ListRemoveCommand> {
@@ -17,7 +17,7 @@ public class ListRemoveService implements Service<ListRemoveCommand> {
 
     @Override
     public Response execute(MessageContext context, ListRemoveCommand cmd) {
-        FireStore store = Chimaera.getFireStore(cmd.getStore());
+        Pandora store = Chimaera.getPandora(cmd.getStore());
 
         byte[] bytes = store.getFireList(cmd.getKey()).remove(cmd.getIndex());
 

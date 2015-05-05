@@ -7,10 +7,10 @@ import com.lamfire.chimaera.command.rank.RankMaxCommand;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
-import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.chimaera.store.Item;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Item;
+import com.lamfire.pandora.Pandora;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class RankMaxService implements Service<RankMaxCommand> {
 
     @Override
     public Response execute(MessageContext context, RankMaxCommand cmd) {
-        FireStore store = Chimaera.getFireStore(cmd.getStore());
+        Pandora store = Chimaera.getPandora(cmd.getStore());
 
         List<Item> list = store.getFireRank(cmd.getKey()).max(cmd.getSize());
         if (LOGGER.isDebugEnabled()) {

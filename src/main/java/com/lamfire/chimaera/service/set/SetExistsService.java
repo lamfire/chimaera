@@ -7,9 +7,9 @@ import com.lamfire.chimaera.command.set.SetExistsCommand;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
 
 @SERVICE(command = Command.SET_EXISTS)
 public class SetExistsService implements Service<SetExistsCommand> {
@@ -17,7 +17,7 @@ public class SetExistsService implements Service<SetExistsCommand> {
 
     @Override
     public Response execute(MessageContext context, SetExistsCommand cmd) {
-        FireStore store = Chimaera.getFireStore(cmd.getStore());
+        Pandora store = Chimaera.getPandora(cmd.getStore());
 
         byte[] value = cmd.getValue();
         boolean exists = store.getFireSet(cmd.getKey()).exists(value);

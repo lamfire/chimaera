@@ -1,9 +1,9 @@
 package com.lamfire.chimaera.test.client;
 
-import com.lamfire.chimaera.store.FireRank;
 import com.lamfire.chimaera.test.Config;
 import com.lamfire.chimaera.test.benchmark.FireRankBenchmark;
 import com.lamfire.chimaera.test.tester.FireRankTester;
+import com.lamfire.pandora.FireRank;
 import com.lamfire.utils.ArrayUtils;
 
 /**
@@ -26,7 +26,7 @@ public class FireRankTest {
     }
 
     public static void main(String[] args) {
-        FireRank target =  Config.getFireStore(args).getFireRank("FireRank");
+        FireRank target =  Config.getPandora(args).getFireRank("FireRank");
         if(ArrayUtils.contains(args,"benchmark")){
             benchmark(target);
         }else{

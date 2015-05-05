@@ -4,7 +4,6 @@ import com.lamfire.chimaera.queue.BlockingQueue;
 import com.lamfire.chimaera.queue.PersistentQueue;
 import com.lamfire.chimaera.response.subscribe.PublishResponse;
 import com.lamfire.chimaera.serializer.Serializers;
-import com.lamfire.chimaera.store.FireQueue;
 import com.lamfire.hydra.Message;
 import com.lamfire.hydra.Session;
 import com.lamfire.hydra.SessionGroup;

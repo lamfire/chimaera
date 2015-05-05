@@ -1,7 +1,7 @@
 package com.lamfire.chimaera.test.benchmark;
 
-import com.lamfire.chimaera.store.FireMap;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.FireMap;
 import com.lamfire.utils.Lists;
 import com.lamfire.utils.RandomUtils;
 import com.lamfire.utils.Threads;

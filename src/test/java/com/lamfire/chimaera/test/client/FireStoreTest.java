@@ -1,9 +1,7 @@
 package com.lamfire.chimaera.test.client;
 
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.chimaera.test.Config;
 import com.lamfire.chimaera.test.tester.FireStoreTester;
-import com.lamfire.utils.Asserts;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,7 +13,7 @@ import com.lamfire.utils.Asserts;
 public class FireStoreTest {
 
     public static void main(String[] args) {
-        FireStoreTester test = new FireStoreTester(Config.getFireStore(args));
+        FireStoreTester test = new FireStoreTester(Config.getPandora(args));
         test.test();
     }
 }

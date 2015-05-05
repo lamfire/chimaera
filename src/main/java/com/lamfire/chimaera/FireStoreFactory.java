@@ -1,14 +1,10 @@
 package com.lamfire.chimaera;
 
-import com.lamfire.chimaera.store.FireStore;
-
-import com.lamfire.chimaera.store.leveldbstore.LDBFireStore;
-import com.lamfire.chimaera.store.leveldbstore.LDBOptions;
-import com.lamfire.chimaera.store.memstore.MemoryFireStore;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
+import com.lamfire.pandora.PandoraMaker;
 import com.lamfire.utils.FileUtils;
 import com.lamfire.utils.FilenameUtils;
-import org.iq80.leveldb.Options;
 
 import java.io.IOException;
 
@@ -22,33 +18,25 @@ import java.io.IOException;
 public class FireStoreFactory {
     private static final Logger LOGGER = Logger.getLogger(FireStoreFactory.class);
 
-    public synchronized static FireStore makeFireStore(String name,ChimaeraOpts opts)throws IOException{
-        FireStore store = null;
-        if (opts != null && opts.isStoreOnDisk()) {
-            store = makeFireStoreWithLDB(name, opts);
-        } else {
-            store = makeFireStoreWithMemory(name);
-        }
+    public synchronized static Pandora makePandora(String name, ChimaeraOpts opts)throws IOException{
+        Pandora store = null;
+        store = make(name, opts);
         return store;
     }
 
-    public static FireStore makeFireStoreWithMemory(String name){
-        return new MemoryFireStore(name);
-    }
 
-
-    public synchronized static FireStore makeFireStoreWithLDB(String name,ChimaeraOpts opts) throws IOException {
+    private synchronized static Pandora make(String name,ChimaeraOpts opts) throws IOException {
         if(!FileUtils.exists(opts.getDataDir())){
             FileUtils.makeDirs(opts.getDataDir());
         }
         String storeDir = FilenameUtils.concat(opts.getDataDir(),name);
-        LDBOptions options = new LDBOptions();
-        options.cacheSize(opts.getCacheSize());
-        options.blockSize(opts.getBlockSize());
-        options.maxOpenFiles(opts.getMaxOpenFiles());
-        options.createIfMissing(true);
-        options.writeBufferSize(opts.getWriteBufferSize());
-        LDBFireStore store = new LDBFireStore(storeDir,name,options);
+        PandoraMaker maker = new PandoraMaker(storeDir,name);
+        maker.cacheSize(opts.getCacheSize());
+        maker.blockSize(opts.getBlockSize());
+        maker.maxOpenFiles(opts.getMaxOpenFiles());
+        maker.createIfMissing(true);
+        maker.writeBufferSize(opts.getWriteBufferSize());
+        Pandora store = maker.make();
         LOGGER.info("MAKE LDB STORE[" + name + "] :" + opts.getDataDir());
         return store;
     }

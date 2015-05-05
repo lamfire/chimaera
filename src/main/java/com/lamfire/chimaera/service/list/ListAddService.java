@@ -7,9 +7,9 @@ import com.lamfire.chimaera.command.list.ListAddCommand;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
 import com.lamfire.chimaera.service.Service;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
 
 @SERVICE(command = Command.LIST_ADD)
 public class ListAddService implements Service<ListAddCommand> {
@@ -17,7 +17,7 @@ public class ListAddService implements Service<ListAddCommand> {
 
     @Override
     public Response execute(MessageContext context, ListAddCommand cmd) {
-        FireStore store = Chimaera.getFireStore(cmd.getStore());
+        Pandora store = Chimaera.getPandora(cmd.getStore());
 
         store.getFireList(cmd.getKey()).add(cmd.getValue());
         return Responses.makeEmptyResponse(cmd);

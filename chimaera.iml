@@ -17,6 +17,7 @@
     <orderEntry type="library" name="Maven: com.lamfire:lamfire:2.2.8" level="project" />
     <orderEntry type="library" name="Maven: com.lamfire:hydra:1.1.4" level="project" />
     <orderEntry type="library" name="Maven: com.lamfire:leveldb:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.lamfire:pandora:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.lamfire:warden:0.9.1" level="project" />
   </component>
 </module>

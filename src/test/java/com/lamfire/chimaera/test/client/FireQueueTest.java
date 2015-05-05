@@ -1,14 +1,11 @@
 package com.lamfire.chimaera.test.client;
 
-import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.FireQueue;
+
 import com.lamfire.chimaera.test.Config;
-import com.lamfire.chimaera.test.benchmark.FireMapBenchmark;
 import com.lamfire.chimaera.test.benchmark.FireQueueBenchmark;
-import com.lamfire.chimaera.test.tester.FireMapTester;
 import com.lamfire.chimaera.test.tester.FireQueueTester;
+import com.lamfire.pandora.FireQueue;
 import com.lamfire.utils.ArrayUtils;
-import com.lamfire.utils.Asserts;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,7 +27,7 @@ public class FireQueueTest {
     }
 
     public static void main(String[] args) {
-        FireQueue target =  Config.getFireStore(args).getFireQueue("FireQueue");
+        FireQueue target =  Config.getPandora(args).getFireQueue("FireQueue");
         if(ArrayUtils.contains(args, "benchmark")){
             benchmark(target);
         }else{

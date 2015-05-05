@@ -6,9 +6,9 @@ import com.lamfire.chimaera.command.Command;
 import com.lamfire.chimaera.command.RemoveCommand;
 import com.lamfire.chimaera.response.Response;
 import com.lamfire.chimaera.response.Responses;
-import com.lamfire.chimaera.store.FireStore;
 import com.lamfire.hydra.MessageContext;
 import com.lamfire.logger.Logger;
+import com.lamfire.pandora.Pandora;
 
 @SERVICE(command = Command.REMOVE)
 public class RemoveService implements Service<RemoveCommand> {
@@ -16,7 +16,7 @@ public class RemoveService implements Service<RemoveCommand> {
 
     @Override
     public Response execute(MessageContext context, RemoveCommand cmd) {
-        FireStore store = Chimaera.getFireStore(cmd.getStore());
+        Pandora store = Chimaera.getPandora(cmd.getStore());
         store.remove(cmd.getKey());
         return Responses.makeEmptyResponse(cmd);
     }

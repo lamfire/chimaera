@@ -2,7 +2,7 @@ package com.lamfire.chimaera.client;
 
 import com.lamfire.chimaera.command.*;
 import com.lamfire.chimaera.response.*;
-import com.lamfire.chimaera.store.*;
+import com.lamfire.pandora.*;
 
 import java.util.Set;
 
@@ -13,7 +13,7 @@ import java.util.Set;
  * Time: 下午1:54
  * To change this template use File | Settings | File Templates.
  */
-public class FireStoreAccessor implements FireStore {
+public class FireStoreAccessor implements Pandora {
     private ChimaeraTransfer transfer;
     private String store;
 

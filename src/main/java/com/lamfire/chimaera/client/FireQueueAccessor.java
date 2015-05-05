@@ -5,7 +5,8 @@ import com.lamfire.chimaera.command.queue.*;
 import com.lamfire.chimaera.response.EmptyResponse;
 import com.lamfire.chimaera.response.GetResponse;
 import com.lamfire.chimaera.response.SizeResponse;
-import com.lamfire.chimaera.store.FireQueue;
+import com.lamfire.pandora.FireQueue;
+
 
 /**
  * Created with IntelliJ IDEA.

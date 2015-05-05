@@ -1,10 +1,9 @@
 package com.lamfire.chimaera.test.tester;
 
-import com.lamfire.chimaera.store.FireMap;
-import com.lamfire.chimaera.store.FireRank;
-import com.lamfire.chimaera.store.FireStore;
-import com.lamfire.chimaera.test.Config;
-import com.lamfire.utils.Asserts;
+
+import com.lamfire.pandora.FireMap;
+import com.lamfire.pandora.FireRank;
+import com.lamfire.pandora.Pandora;
 
 import java.util.Set;
 
@@ -16,9 +15,9 @@ import java.util.Set;
  * To change this template use File | Settings | File Templates.
  */
 public class FireStoreTester {
-    FireStore store;
+    Pandora store;
 
-    public FireStoreTester(FireStore store){
+    public FireStoreTester(Pandora store){
         this.store = store;
     }
 
