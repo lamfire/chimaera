@@ -57,7 +57,7 @@ public class FireRankTester {
         for(int i=0;i<size;i++){
             rank.put(String.valueOf(i));
         }
-        Asserts.assertEquals(size,rank.size());
+        Asserts.equalsAssert(size,rank.size());
         long timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("[END] test size():  time_millis:" + timeUsed +" ms");
         System.out.println("<-----------------------------------------------------------------");
@@ -76,7 +76,7 @@ public class FireRankTester {
         for(int i=0;i<count;i++){
             this.rank.put(name);
         }
-        Asserts.assertEquals(count,rank.score(name));
+        Asserts.equalsAssert(count,rank.score(name));
         System.out.println("score : " + rank.score(name));
         long timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("[END] test put():  time_millis:" + timeUsed +" ms");
@@ -92,7 +92,7 @@ public class FireRankTester {
         for(int i=0;i<count;i++){
             this.rank.put(String.valueOf(i));
         }
-        Asserts.assertEquals(count,rank.size());
+        Asserts.equalsAssert(count,rank.size());
         long timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("[END] test batch puts():  time_millis:" + timeUsed +" ms");
         System.out.println("<-----------------------------------------------------------------");
@@ -111,7 +111,7 @@ public class FireRankTester {
         this.rank.incr(name,10);
         System.out.println("incr score : 10");
         long score = this.rank.score(name);
-        Asserts.assertEquals(score,11);
+        Asserts.equalsAssert(score,11);
         System.out.println("get score = " + rank.score(name));
 
         long timeUsed = System.currentTimeMillis() - startAt;
@@ -133,14 +133,14 @@ public class FireRankTester {
         for(int i=0;i<size;i++){
             rank.put(String.valueOf(i));
         }
-        Asserts.assertEquals(size,rank.size());
+        Asserts.equalsAssert(size,rank.size());
         System.out.println("puted name : " + rank.size());
 
         System.out.println("removing names : " + size);
         for(int i=0;i<size;i++){
             rank.remove(String.valueOf(i));
         }
-        Asserts.assertEquals(0,rank.size());
+        Asserts.equalsAssert(0,rank.size());
         System.out.println("[TEST] size = "+ rank.size());
 
         long timeUsed = System.currentTimeMillis() - startAt;
@@ -157,7 +157,7 @@ public class FireRankTester {
         long timeUsed = System.currentTimeMillis() - startAt;
 
         long score = this.rank.score("TEST");
-        Asserts.assertEquals(99, this.rank.score("TEST"));
+        Asserts.equalsAssert(99, this.rank.score("TEST"));
         System.out.println("get score = " + score);
         System.out.println("[END] test set():  time_millis:" + timeUsed +" ms");
         System.out.println("<-----------------------------------------------------------------");
@@ -229,7 +229,7 @@ public class FireRankTester {
         for(int i=0;i<size;i++){
             rank.put(String.valueOf(i));
         }
-        Asserts.assertEquals(size,rank.size());
+        Asserts.equalsAssert(size,rank.size());
 
         rank.put("999999");
         rank.put("999999");
@@ -244,16 +244,16 @@ public class FireRankTester {
         print(maxItems);
 
         Item top0 = maxItems.get(0);
-        Asserts.assertEquals(top0.getValue(),3);
-        Asserts.assertEquals(top0.getName(),"999999");
+        Asserts.equalsAssert(top0.getValue(),3);
+        Asserts.equalsAssert(top0.getName(),"999999");
 
         Item top1 = maxItems.get(1);
-        Asserts.assertEquals(top1.getValue(),2);
-        Asserts.assertEquals(top1.getName(),"9999999");
+        Asserts.equalsAssert(top1.getValue(),2);
+        Asserts.equalsAssert(top1.getName(),"9999999");
 
         Item top2 = maxItems.get(2);
-        Asserts.assertEquals(top2.getValue(),1);
-        Asserts.assertEquals(top2.getName(),"99999999");
+        Asserts.equalsAssert(top2.getValue(),1);
+        Asserts.equalsAssert(top2.getName(),"99999999");
 
         long timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("[END] test max():  time_millis:" + timeUsed +" ms");
@@ -274,7 +274,7 @@ public class FireRankTester {
                 rank.put(String.valueOf(i));
             }
         }
-        Asserts.assertEquals(size,rank.size());
+        Asserts.equalsAssert(size,rank.size());
 
         rank.put("999999");
         rank.put("999999");
@@ -289,16 +289,16 @@ public class FireRankTester {
         print(items);
 
         Item top0 = items.get(2);
-        Asserts.assertEquals(top0.getValue(),3);
-        Asserts.assertEquals(top0.getName(),"999999");
+        Asserts.equalsAssert(top0.getValue(),3);
+        Asserts.equalsAssert(top0.getName(),"999999");
 
         Item top1 = items.get(1);
-        Asserts.assertEquals(top1.getValue(),2);
-        Asserts.assertEquals(top1.getName(),"9999999");
+        Asserts.equalsAssert(top1.getValue(),2);
+        Asserts.equalsAssert(top1.getName(),"9999999");
 
         Item top2 = items.get(0);
-        Asserts.assertEquals(top2.getValue(),1);
-        Asserts.assertEquals(top2.getName(),"99999999");
+        Asserts.equalsAssert(top2.getValue(),1);
+        Asserts.equalsAssert(top2.getName(),"99999999");
 
         long timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("[END] test min():  time_millis:" + timeUsed +" ms");
@@ -316,7 +316,7 @@ public class FireRankTester {
         for(int i=0;i<size;i++){
             rank.put(String.valueOf(i));
         }
-        Asserts.assertEquals(size,rank.size());
+        Asserts.equalsAssert(size,rank.size());
 
         for(int i=0;i<100;i++){
             for(int j=10;j<i;j++){
@@ -329,8 +329,8 @@ public class FireRankTester {
 
         int name = 10;
         for(Item item : items){
-            Asserts.assertEquals(String.valueOf(name) ,item.getName());
-            Asserts.assertEquals(item.getValue() ,100 - name);
+            Asserts.equalsAssert(String.valueOf(name) ,item.getName());
+            Asserts.equalsAssert(item.getValue() ,100 - name);
             name++;
         }
 
@@ -358,8 +358,8 @@ public class FireRankTester {
 
         int name = 0;
         for(Item item : items){
-            Asserts.assertEquals(String.valueOf(name) ,item.getName());
-            Asserts.assertEquals(item.getValue() ,(name +1));
+            Asserts.equalsAssert(String.valueOf(name) ,item.getName());
+            Asserts.equalsAssert(item.getValue() ,(name +1));
             name++;
         }
 
@@ -380,7 +380,7 @@ public class FireRankTester {
         System.out.println("set score :" + score);
         long value = this.rank.score(name);
         System.out.println("score = " + value);
-        Asserts.assertEquals(score,value);
+        Asserts.equalsAssert(score,value);
         long timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("[END] test minRange():  time_millis:" + timeUsed +" ms");
         System.out.println("<-----------------------------------------------------------------");

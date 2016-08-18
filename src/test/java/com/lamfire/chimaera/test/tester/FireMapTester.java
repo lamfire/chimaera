@@ -43,7 +43,7 @@ public class FireMapTester {
 
         long size = map.size();
         System.out.println("map.size():" + size);
-        Asserts.assertEquals(2, size);
+        Asserts.equalsAssert(2, size);
 
 
         startAt = System.currentTimeMillis();
@@ -56,13 +56,13 @@ public class FireMapTester {
         value =new String(map.get(field));
         timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("map.get("+field+"):"+value+" ,time_millis:" + timeUsed + " ms");
-        Asserts.assertEquals(value, "22222222222222");
+        Asserts.equalsAssert(value, "22222222222222");
 
         startAt = System.currentTimeMillis();
         boolean exists =  map.exists(field);
         timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("map.exists("+field+") :"+exists+",time_millis:" + timeUsed + " ms");
-        Asserts.assertTrue(exists);
+        Asserts.trueAssert(exists);
 
 
         startAt = System.currentTimeMillis();
@@ -72,14 +72,14 @@ public class FireMapTester {
 
         size = map.size();
         System.out.println("map.size():" + size);
-        Asserts.assertEquals(1, size);
+        Asserts.equalsAssert(1, size);
 
 
         startAt = System.currentTimeMillis();
         exists =  map.exists(field);
         timeUsed = System.currentTimeMillis() - startAt;
         System.out.println("map.exists("+field+") :"+exists+",time_millis:" + timeUsed + " ms");
-        Asserts.assertFalse(exists);
+        Asserts.falseAssert(exists);
 
         List<String> keys = map.keys();
         System.out.println(keys);

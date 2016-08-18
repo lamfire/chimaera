@@ -23,13 +23,13 @@ public class FireIncrementTester {
         String name = "INC_001";
 
         inc.clear();
-        Asserts.assertEquals(0, inc.size());
+        Asserts.equalsAssert(0, inc.size());
 
         inc.set(name,0);
-        Asserts.assertEquals(1, inc.size());
+        Asserts.equalsAssert(1, inc.size());
 
         inc.remove(name);
-        Asserts.assertEquals(0, inc.size());
+        Asserts.equalsAssert(0, inc.size());
 
 
         long startAt = System.currentTimeMillis();
@@ -44,7 +44,7 @@ public class FireIncrementTester {
         long value = inc.get(name);
         System.out.println("increment.get() : " +value);
 
-        Asserts.assertEquals(value, count * seed);
+        Asserts.equalsAssert(value, count * seed);
 
         startAt = System.currentTimeMillis();
         for(int i=0;i<count;i++){
@@ -57,7 +57,7 @@ public class FireIncrementTester {
         value = inc.get(name);
         System.out.println("increment.get() : " +value);
 
-        Asserts.assertEquals(value,0);
+        Asserts.equalsAssert(value,0);
 
         startAt = System.currentTimeMillis();
         for(int i=0;i<count;i++){
@@ -79,7 +79,7 @@ public class FireIncrementTester {
 
         value =inc.get(name);
         System.out.println("final increment.get():"+value);
-        Asserts.assertEquals(value,0);
+        Asserts.equalsAssert(value,0);
 
         System.out.println("<<== finish : " + this.getClass().getName());
     }

@@ -41,13 +41,13 @@ public class PersistentQueue implements FireQueue {
     @Override
     public void push(byte[] value) {
         checkStatus();
-        queue.add(value);
+        queue.push(value);
     }
 
     @Override
     public byte[] pop() {
         checkStatus();
-        return queue.poll();
+        return queue.pull();
     }
 
     @Override

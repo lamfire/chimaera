@@ -25,9 +25,9 @@ public class FireQueueTester {
         String s = "hayash";
         queue.push(s.getBytes());
         String peek = new String(queue.peek());
-        Asserts.assertEquals(s, peek);
+        Asserts.equalsAssert(s, peek);
         String pop = new String(queue.pop());
-        Asserts.assertEquals(s, pop);
+        Asserts.equalsAssert(s, pop);
 
         for(int i=0;i<100;i++){
             String val = String.valueOf(i);
@@ -37,17 +37,17 @@ public class FireQueueTester {
 
         long size = queue.size();
         System.out.println("queue.size():"+size);
-        Asserts.assertEquals(100,size);
+        Asserts.equalsAssert(100,size);
 
         for(int i=0;i<100;i++){
             String val = new String(queue.pop());
             System.out.println("queue.pop():"+val);
-            Asserts.assertEquals(val,String.valueOf(i));
+            Asserts.equalsAssert(val,String.valueOf(i));
         }
 
         size = queue.size();
         System.out.println("queue.size():"+size);
-        Asserts.assertEquals(0, size);
+        Asserts.equalsAssert(0, size);
 
         System.out.println("<<== finish : " + this.getClass().getName());
     }
